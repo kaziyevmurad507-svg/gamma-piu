@@ -1,0 +1,72 @@
+{
+  "Nav": {
+    "announcement": "Bakı daxilində pulsuz çatdırılma",
+    "home": "Ana səhifə", "catalog": "Kataloq", "about": "Haqqımızda",
+    "favorites": "Seçilmişlər", "compare": "Müqayisə", "cart": "Səbət",
+    "search": "Axtarış", "menu": "Menyu", "close": "Bağla"
+  },
+  "Footer": {
+    "tagline": "Peşəkar alətlər. Dəqiq nəticə. Bakıdakı barber və saç ustaları üçün seçilmiş kolleksiya.",
+    "shop": "Mağaza", "support": "Dəstək", "delivery": "Çatdırılma", "howToOrder": "Sifariş qaydası",
+    "whatsapp": "WhatsApp ilə əlaqə", "language": "Dil / Language",
+    "notice": "Nümunə kataloq: qiymət, stok, variant və texniki məlumatlar satıcı tərəfindən təsdiqlənməlidir.",
+    "legal": "© 2026 Gamma Piu Baku · Dizayn nümunəsi", "currency": "AZN · AZ / RU / EN"
+  },
+  "Categories": {
+    "clippers": "Saçqırxanlar", "trimmers": "Trimmerlər", "dryers": "Fenlər", "scissors": "Qayçılar",
+    "shavers": "Şeyverlər", "blades": "Bıçaqlar", "accessories": "Başlıqlar və aksesuarlar"
+  },
+  "Colors": { "black": "Qara", "blue": "Mavi", "silver": "Gümüşü", "steel": "Polad" },
+  "Product": { "addToCart": "Səbətə", "addFavorite": "Seçilmişlərə əlavə et" },
+  "Home": {
+    "eyebrow": "GAMMA PIU · PEŞƏKAR SEÇİM",
+    "heroTitle": "Ustalığınızın yeni gücü.",
+    "heroText": "Hər kəsimdə dəqiqlik. Hər detalda peşəkarlıq. Gamma Piu alətlərini Bakıda kəşf edin.",
+    "shopNow": "İndi alış-veriş et",
+    "heroNote": "Boosted · Saçqırxan · 390 AZN",
+    "dryerEyebrow": "YÜNGÜL FORMA. BÖYÜK İMKAN.", "dryerPrice": "590 AZN",
+    "deliveryTitle": "Bakıda sizə daha yaxın.", "deliveryText": "Şəhər daxilində çatdırılma pulsuzdur.",
+    "promise1": "Peşəkar alətlər", "promise2": "WhatsApp ilə rahat sifariş", "promise3": "Bakı daxilində pulsuz çatdırılma",
+    "categoriesEyebrow": "KATEQORİYALAR", "categoriesTitle": "İşinizə uyğun alət.",
+    "cat": {
+      "clippers": { "title": "Saçqırxanlar", "sub": "Dəqiq və güclü" },
+      "trimmers": { "title": "Trimmerlər", "sub": "İncə konturlar" },
+      "dryers": { "title": "Fenlər", "sub": "Peşəkar stil" },
+      "scissors": { "title": "Qayçılar", "sub": "Əl işi dəqiqliyi" },
+      "shavers": { "title": "Şeyverlər", "sub": "Hamar nəticə" },
+      "blades": { "title": "Bıçaq və başlıqlar", "sub": "Tamamlayıcı detallar" }
+    },
+    "featuredEyebrow": "SEÇİLMİŞ MƏHSULLAR", "featuredTitle": "Ustanın seçimi.",
+    "newEyebrow": "YENİ GƏLƏNLƏR · NÜMUNƏ SEÇİM", "newTitle": "Kolleksiyada yeniliklər.",
+    "seeAll": "Hamısına bax →", "seeAllMobile": "Bütün məhsullara bax →",
+    "craftEyebrow": "DƏQİQLİK DETALDAN BAŞLAYIR", "craftTitle": "Alətiniz işinizin imzasıdır.",
+    "craftText": "Konturdan son toxunuşa qədər — saçqırxan, trimmer və şeyveri iş üsulunuza uyğun seçin.",
+    "craftCta": "Barber kolleksiyası",
+    "accEyebrow": "KİÇİK DETAL, BÖYÜK FƏRQ", "accTitle": "Dəstinizi tamamlayın.", "accLink": "Aksesuarlar →",
+    "helpTitle": "Hansı alət sizə uyğundur?", "helpText": "Seçiminizi WhatsApp-da birlikdə dəqiqləşdirək.", "helpLink": "Məsləhət alın →",
+    "shipTitle": "Bakı daxilində çatdırılma bizdən.", "shipText": "Ünvan və çatdırılma vaxtı sifariş zamanı WhatsApp-da dəqiqləşdirilir.", "shipPrice": "0 AZN",
+    "stepsEyebrow": "NECƏ SİFARİŞ ETMƏLİ", "stepsTitle": "Üç addım. Bir rahat sifariş.",
+    "step1Title": "Alətinizi seçin", "step1Text": "Məhsulları müqayisə edin, uyğun variantı səbətə əlavə edin.",
+    "step2Title": "WhatsApp-a keçin", "step2Text": "Səbətinizin siyahısını göndərin. Onlayn kart ödənişi tələb olunmur.",
+    "step3Title": "Sifarişi təsdiqləyin", "step3Text": "Stok, yekun məbləğ və çatdırılmanı satıcı ilə razılaşdırın.",
+    "faqEyebrow": "SUALINIZ VAR?", "faqTitle": "Alışdan əvvəl bilməli olduqlarınız.",
+    "q1": "Sifariş necə tamamlanır?", "a1": "Səbətdən WhatsApp-a keçin. Satıcı məhsulları və çatdırılmanı sizinlə təsdiqləyəcək.",
+    "q2": "Bakıdan kənara çatdırılma varmı?", "a2": "Bakıdan kənar ünvanlar üçün imkan və çatdırılma haqqı ayrıca dəqiqləşdirilir.",
+    "q3": "Məhsul haqqında necə məlumat alım?", "a3": "Uyğun başlıq, bıçaq və texniki detallar üçün WhatsApp vasitəsilə məsləhət alın.",
+    "finalTitle": "Növbəti kəsiminiz buradan başlayır.", "finalCta": "Kataloqu kəşf et"
+  },
+  "Catalog": {
+    "title": "Peşəkar alətlər", "count": "{count} məhsul",
+    "intro": "Kəsim, kontur və stil üçün Gamma Piu kolleksiyası.",
+    "searchPlaceholder": "Məhsul, model və ya kateqoriya axtarın",
+    "filters": "Filtrlər", "category": "Kateqoriya", "all": "Hamısı",
+    "price": "Qiymət · AZN", "min": "Min", "max": "Maks",
+    "availability": "Mövcudluq", "inStock": "Yalnız stokda", "onOrder": "Sifarişlə",
+    "color": "Rəng", "reset": "Filtrləri sıfırla",
+    "showing": "{count} məhsul göstərilir", "sortBy": "Sıralama",
+    "sort": { "recommended": "Tövsiyə edilən", "price-asc": "Qiymət: aşağıdan yuxarı", "price-desc": "Qiymət: yuxarıdan aşağı", "newest": "Yeni gələnlər" },
+    "allCategories": "Bütün kateqoriyalar",
+    "shown": "{total} məhsuldan {shown}-i göstərilir", "backToTop": "Yuxarı qayıt",
+    "empty": "Heç nə tapılmadı. Filtrləri dəyişməyi sınayın.", "showResults": "{count} məhsulu göstər"
+  }
+}

@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* Design tokens from Figma. Each --color-x becomes classes like bg-x, text-x, border-x */
+@theme {
+  --color-canvas: #ffffff;
+  --color-ink: #24252b;
+  --color-muted: #73747d;
+  --color-action: #2454f5;
+  --color-action-hover: #1943d7;
+  --color-action-pressed: #163bba;
+  --color-action-soft: #edf1ff;
+  --color-disabled: #c5c8d4;
+  --color-lavender: #edebfa;
+  --color-cream: #f8f2e6;
+  --color-media: #f4f4f6;
+  --color-line: #e6e6eb;
+  --color-danger: #ba4141;
+  --color-ok: #347258;
+  --color-ok-soft: #edf6ef;
+  --color-warn: #8a652f;
+  --color-warn-soft: #faf2e4;
+
+  --radius-panel: 20px;
+  --radius-card: 24px;
+  --radius-bento: 32px;
+
+  --shadow-soft: 0 8px 30px #2323390a;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* Visible keyboard focus: 2px blue ring with 3px gap (as in Figma) */
+:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 3px;
+}

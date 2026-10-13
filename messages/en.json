@@ -1,0 +1,72 @@
+{
+  "Nav": {
+    "announcement": "Free delivery within Baku",
+    "home": "Home", "catalog": "Catalog", "about": "About us",
+    "favorites": "Favorites", "compare": "Compare", "cart": "Cart",
+    "search": "Search", "menu": "Menu", "close": "Close"
+  },
+  "Footer": {
+    "tagline": "Professional tools. Precise results. A curated collection for barbers and hair stylists in Baku.",
+    "shop": "Shop", "support": "Support", "delivery": "Delivery", "howToOrder": "How to order",
+    "whatsapp": "Contact us on WhatsApp", "language": "Language / Dil",
+    "notice": "Sample catalog: prices, stock, variants and technical details must be confirmed by the seller.",
+    "legal": "© 2026 Gamma Piu Baku · Design sample", "currency": "AZN · AZ / RU / EN"
+  },
+  "Categories": {
+    "clippers": "Clippers", "trimmers": "Trimmers", "dryers": "Hair dryers", "scissors": "Scissors",
+    "shavers": "Shavers", "blades": "Blades", "accessories": "Guards & accessories"
+  },
+  "Colors": { "black": "Black", "blue": "Blue", "silver": "Silver", "steel": "Steel" },
+  "Product": { "addToCart": "Add to cart", "addFavorite": "Add to favorites" },
+  "Home": {
+    "eyebrow": "GAMMA PIU · PROFESSIONAL CHOICE",
+    "heroTitle": "A new edge for your craft.",
+    "heroText": "Precision in every cut. Professionalism in every detail. Discover Gamma Piu tools in Baku.",
+    "shopNow": "Shop now",
+    "heroNote": "Boosted · Clipper · 390 AZN",
+    "dryerEyebrow": "LIGHT BODY. BIG POWER.", "dryerPrice": "590 AZN",
+    "deliveryTitle": "Closer to you in Baku.", "deliveryText": "Delivery within the city is free.",
+    "promise1": "Professional tools", "promise2": "Easy ordering via WhatsApp", "promise3": "Free delivery in Baku",
+    "categoriesEyebrow": "CATEGORIES", "categoriesTitle": "The right tool for your work.",
+    "cat": {
+      "clippers": { "title": "Clippers", "sub": "Precise and powerful" },
+      "trimmers": { "title": "Trimmers", "sub": "Fine outlines" },
+      "dryers": { "title": "Hair dryers", "sub": "Pro styling" },
+      "scissors": { "title": "Scissors", "sub": "Handcrafted precision" },
+      "shavers": { "title": "Shavers", "sub": "Smooth finish" },
+      "blades": { "title": "Blades & guards", "sub": "Finishing details" }
+    },
+    "featuredEyebrow": "FEATURED PRODUCTS", "featuredTitle": "The master's choice.",
+    "newEyebrow": "NEW ARRIVALS · SAMPLE SELECTION", "newTitle": "New in the collection.",
+    "seeAll": "View all →", "seeAllMobile": "View all products →",
+    "craftEyebrow": "PRECISION STARTS WITH DETAIL", "craftTitle": "Your tool is your signature.",
+    "craftText": "From the outline to the final touch — choose a clipper, trimmer and shaver that fit your way of working.",
+    "craftCta": "Barber collection",
+    "accEyebrow": "SMALL DETAIL, BIG DIFFERENCE", "accTitle": "Complete your kit.", "accLink": "Accessories →",
+    "helpTitle": "Which tool is right for you?", "helpText": "Let's narrow down your choice together on WhatsApp.", "helpLink": "Get advice →",
+    "shipTitle": "Delivery within Baku is on us.", "shipText": "Address and delivery time are confirmed on WhatsApp when you order.", "shipPrice": "0 AZN",
+    "stepsEyebrow": "HOW TO ORDER", "stepsTitle": "Three steps. One easy order.",
+    "step1Title": "Choose your tool", "step1Text": "Compare products and add the right one to your cart.",
+    "step2Title": "Go to WhatsApp", "step2Text": "Send your cart list. No online card payment required.",
+    "step3Title": "Confirm the order", "step3Text": "Agree on stock, the final amount and delivery with the seller.",
+    "faqEyebrow": "QUESTIONS?", "faqTitle": "What to know before you buy.",
+    "q1": "How is an order completed?", "a1": "Go from your cart to WhatsApp. The seller will confirm the items and delivery with you.",
+    "q2": "Do you deliver outside Baku?", "a2": "Availability and delivery fees outside Baku are confirmed separately.",
+    "q3": "How do I get product information?", "a3": "For guards, blades and technical details, ask us on WhatsApp.",
+    "finalTitle": "Your next cut starts here.", "finalCta": "Explore the catalog"
+  },
+  "Catalog": {
+    "title": "Professional tools", "count": "{count, plural, one {# product} other {# products}}",
+    "intro": "The Gamma Piu collection for cutting, outlining and styling.",
+    "searchPlaceholder": "Search by product, model or category",
+    "filters": "Filters", "category": "Category", "all": "All",
+    "price": "Price · AZN", "min": "Min", "max": "Max",
+    "availability": "Availability", "inStock": "In stock only", "onOrder": "On order",
+    "color": "Color", "reset": "Reset filters",
+    "showing": "Showing {count, plural, one {# product} other {# products}}", "sortBy": "Sort by",
+    "sort": { "recommended": "Recommended", "price-asc": "Price: low to high", "price-desc": "Price: high to low", "newest": "Newest" },
+    "allCategories": "All categories",
+    "shown": "Showing {shown} of {total}", "backToTop": "Back to top",
+    "empty": "Nothing found. Try changing the filters.", "showResults": "Show {count}"
+  }
+}
