@@ -66,7 +66,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
       className="flex flex-col gap-8"
       onSubmit={(e) => { e.preventDefault(); submit(); }}
       // Typing is debounced, checkboxes and select apply right away
-      onChange={(e) => submit(["search", "number"].includes((e.target as HTMLInputElement).type) ? 400 : 0)}
+      onChange={(e) => submit(["search", "number"].includes((e.target as unknown as HTMLInputElement).type) ? 400 : 0)}
     >
       <div className="relative">
         <Search size={20} className="pointer-events-none absolute left-[18px] top-1/2 -translate-y-1/2 text-muted" />

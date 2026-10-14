@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { StockBadge } from "@/components/ui/StockBadge"; // ASSUMED: <StockBadge stock={number} />
+import { StockBadge } from "@/components/ui/StockBadge";
+import { getStockStatus } from "@/lib/stock";
 import type { Product } from "@/lib/catalog";
 import { AddToCartButton, FavoriteButton } from "./ProductActions";
 
@@ -9,6 +10,7 @@ export function ProductCard({ p }: { p: Product }) {
   const t = useTranslations();
   // Show color only if we have a translation for it
   const color = p.color && t.has(`Colors.${p.color}`) ? ` · ${t(`Colors.${p.color}`)}` : "";
+  const status = getStockStatus(p.stock);
   const href = `/product/${p.slug}`; // product page comes in step 5
   return (
     <article className="flex min-w-0 flex-col gap-3">
@@ -21,7 +23,7 @@ export function ProductCard({ p }: { p: Product }) {
       <div className="flex flex-col items-start gap-1.5 px-1">
         <p className="text-xs text-muted">{t(`Categories.${p.category}`)}{color}</p>
         <Link href={href} className="text-[15px] font-semibold lg:text-lg">{p.name}</Link>
-        <StockBadge stock={p.stock} />
+        <StockBadge status={status} label={t(`Stock.${status}`)} />
         <div className="mt-1.5 flex w-full flex-col gap-2.5 lg:flex-row lg:items-center">
           <p className="text-[19px] font-semibold lg:flex-1 lg:text-[22px]">{p.price} AZN</p>
           <AddToCartButton id={p.id} />
