@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { ArrowUpRight, Minus, Plus, Truck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { btnClass } from "../ui/Button";
 import { Container, SectionHead } from "../ui/Section";
 
 export function Ordering() {
@@ -9,7 +10,7 @@ export function Ordering() {
     <Container className="flex flex-col gap-12 py-8 lg:gap-16 lg:py-12">
       {/* Delivery banner */}
       <section id="delivery" className="flex scroll-mt-6 flex-col gap-6 rounded-bento bg-action-soft p-7 lg:flex-row lg:items-center lg:p-10">
-        <span className="grid size-20 shrink-0 place-items-center rounded-full bg-canvas"><Truck size={36} /></span>
+        <span className="grid size-20 shrink-0 place-items-center rounded-full bg-canvas"><Truck size={36} className="text-action" /></span>
         <div className="flex flex-1 flex-col gap-2">
           <h2 className="text-[28px] font-medium leading-[1.2] lg:text-[34px]">{t("shipTitle")}</h2>
           <p className="text-sm text-muted">{t("shipText")}</p>
@@ -39,8 +40,8 @@ export function Ordering() {
         </div>
         <div className="flex flex-1 flex-col gap-3">
           {[1, 2, 3].map((n) => (
-            <details key={n} open={n === 1} className="group rounded-panel border border-line p-5">
-              <summary className="flex cursor-pointer list-none items-center gap-3 text-[15px] font-medium [&::-webkit-details-marker]:hidden">
+            <details key={n} open={n === 1} className="group rounded-panel border border-line p-5 transition-colors hover:border-action">
+              <summary className="flex cursor-pointer list-none items-center gap-3 text-[15px] font-medium transition-colors hover:text-action [&::-webkit-details-marker]:hidden">
                 <span className="flex-1">{t(`q${n}`)}</span>
                 <Minus size={18} className="hidden group-open:block" />
                 <Plus size={18} className="group-open:hidden" />
@@ -54,7 +55,7 @@ export function Ordering() {
       {/* Final call to action */}
       <section className="flex flex-col gap-6 rounded-bento bg-lavender p-7 lg:flex-row lg:items-center lg:p-10">
         <h2 className="flex-1 text-[30px] font-medium leading-[1.2] lg:text-[38px]">{t("finalTitle")}</h2>
-        <Link href="/catalog" className="inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-action px-[22px] text-sm font-semibold text-canvas">
+        <Link href="/catalog" className={btnClass()}>
           {t("finalCta")}<ArrowUpRight size={18} />
         </Link>
       </section>

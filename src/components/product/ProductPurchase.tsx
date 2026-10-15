@@ -6,17 +6,24 @@ import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
 import { Quantity } from "@/components/ui/Quantity";
 import { StockBadge } from "@/components/ui/StockBadge";
+import { Check } from "lucide-react";
+import { useFlash } from "@/lib/use-flash";
+import { addToCart, toggleCompare, toggleFav, useStore } from "@/lib/store";
 import type { Variant } from "@/lib/product";
 import { getStockStatus } from "@/lib/stock";
 
 // Whole numbers without decimals: 390 AZN, but 12.5 -> 12.50 AZN
 const money = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(2)} AZN`;
 
-export function ProductPurchase({ eyebrow, name, description, variants }: { eyebrow: string; name: string; description: string; variants: Variant[] }) {
+export function ProductPurchase({ productId, eyebrow, name, description, variants }: { productId: string; eyebrow: string; name: string; description: string; variants: Variant[] }) {
   const t = useTranslations("Product");
   const s = useTranslations("Stock");
   const [id, setId] = useState(variants[0].id);
   const [qty, setQty] = useState(1);
+  const [added, flash] = useFlash();
+  const [full, setFull] = useState(false); // compare list is full
+  const { fav, cmp } = useStore();
+  const isFav = fav.includes(productId), isCmp = cmp.includes(productId);
   const v = variants.find((x) => x.id === id) ?? variants[0];
   const status = getStockStatus(v.stock);
   const max = v.stock > 0 ? v.stock : 10; // out of stock = order on request, allow a few
@@ -44,15 +51,21 @@ export function ProductPurchase({ eyebrow, name, description, variants }: { eyeb
         </div>
       )}
 
-      {/* Cart, favorites and compare get real logic in step 6 */}
       <div className="flex gap-3">
         <Quantity value={qty} max={max} onChange={setQty} decreaseLabel={t("decrease")} increaseLabel={t("increase")} />
-        <Button className="flex-1"><Plus size={20} />{t("addToCartFull")}</Button>
+        <Button variant={added ? "success" : "primary"} className="flex-1" onClick={() => { addToCart(v.id, qty); flash(); }}>
+          {added ? <><Check size={20} />{t("added")}</> : <><Plus size={20} />{t("addToCartFull")}</>}
+        </Button>
       </div>
       <div className="flex gap-3">
-        <Button variant="secondary" className="flex-1"><Heart size={20} />{t("favorite")}</Button>
-        <Button variant="secondary" className="flex-1"><Columns2 size={20} />{t("compare")}</Button>
+        <Button variant="secondary" aria-pressed={isFav} className={`flex-1 ${isFav ? "border-danger text-danger hover:border-danger hover:bg-canvas hover:text-danger" : "hover:border-danger hover:bg-canvas hover:text-danger"}`} onClick={() => toggleFav(productId)}>
+          <Heart size={20} className={isFav ? "fill-danger text-danger" : ""} />{isFav ? t("favoriteOn") : t("favorite")}
+        </Button>
+        <Button variant="secondary" aria-pressed={isCmp} className={`flex-1 ${isCmp ? "border-action bg-action-soft text-action" : ""}`} onClick={() => setFull(!toggleCompare(productId))}>
+          <Columns2 size={20} />{isCmp ? t("compareOn") : t("compare")}
+        </Button>
       </div>
+      {full && <p role="status" className="text-xs text-warn">{t("compareFull")}</p>}
 
       <div id="delivery-info" className="flex gap-3 rounded-card bg-action-soft p-5">
         <Truck size={20} className="shrink-0" />

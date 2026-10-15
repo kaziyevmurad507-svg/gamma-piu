@@ -38,3 +38,20 @@ body {
   outline: 2px solid var(--color-action);
   outline-offset: 3px;
 }
+
+/* Tailwind 4 resets buttons to the arrow cursor: bring the hand back on everything clickable */
+button:not(:disabled), [role="button"], [role="switch"], select, summary, label[for] { cursor: pointer; }
+
+/* Plain text links in header, footer and menus turn blue on hover */
+nav a, footer a { transition: color 0.15s; }
+nav a:hover, footer a:hover { color: var(--color-action); }
+
+/* Counter badge "pop" when the number changes */
+@theme {
+  --animate-bump: bump 0.35s ease-out;
+  @keyframes bump { 40% { transform: scale(1.4); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation: none !important; transition: none !important; }
+}

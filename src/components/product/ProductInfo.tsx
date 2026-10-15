@@ -11,7 +11,7 @@ const text = (v: unknown, locale: string): string => {
   return String(v ?? "");
 };
 
-const tab = "flex h-11 items-center rounded-full bg-media px-4 text-[13px] hover:bg-line";
+const tab = "flex h-11 items-center rounded-full bg-media px-4 text-[13px] transition-colors hover:bg-action-soft hover:text-action";
 
 export function ProductInfo({ name, specs }: { name: string; specs: Record<string, unknown> }) {
   const t = useTranslations();
@@ -49,7 +49,7 @@ export function ProductInfo({ name, specs }: { name: string; specs: Record<strin
           <p className="text-sm text-muted">{box}</p>
           <p className="text-[13px]">{t("Product.boxHint")}</p>
           <a href={`${WA_URL}?text=${encodeURIComponent(t("Product.askText", { name }))}`} target="_blank" rel="noopener noreferrer"
-            className="inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full border border-line bg-canvas px-[22px] text-sm font-semibold hover:bg-media">
+            className="inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full border border-line bg-canvas px-[22px] text-sm font-semibold transition hover:border-action hover:bg-action-soft hover:text-action active:scale-[0.97]">
             <MessageCircle size={20} />{t("Product.ask")}
           </a>
         </section>

@@ -4,18 +4,20 @@ import type { Sort } from "./categories";
 export type Product = {
   id: string; slug: string; name: string; category: string; color: string | null;
   price: number; stock: number; image: string | null; featured: boolean;
+  variantId: string; specs: Record<string, unknown>; // cheapest variant (the one whose price the card shows)
 };
-export type Filters = { q?: string; cats?: string[]; min?: number; max?: number; avail?: string[]; colors?: string[]; sort?: Sort };
+export type Filters = { q?: string; cats?: string[]; min?: number; max?: number; avail?: string[]; colors?: string[]; sort?: Sort; ids?: string[] };
 
 const BUCKET = "product-images"; // ASSUMED Storage bucket name (must be public)
 const SELECT =
-  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug), product_variants(price, stock, is_active), product_images(path, sort_order, is_main)";
+  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug), product_variants(id, price, stock, is_active), product_images(path, sort_order, is_main)";
 
 // flag = only featured / only new products (used on the home page)
 export async function getProducts(locale: string, f: Filters = {}, limit = 100, flag?: "is_featured" | "is_new") {
   const db = await createClient();
   let q = db.from("products").select(SELECT).eq("is_published", true).order("created_at", { ascending: false });
   if (flag) q = q.eq(flag, true);
+  if (f.ids) q = q.in("id", f.ids);
   if (f.cats?.length) q = q.in("categories.slug", f.cats);
   if (f.colors?.length) q = q.in("specs->>color", f.colors); // ASSUMED: color is stored as specs.color
   const term = f.q?.replace(/[%,()]/g, " ").trim();
@@ -29,8 +31,9 @@ export async function getProducts(locale: string, f: Filters = {}, limit = 100, 
     const vs = r.product_variants.filter((v: { is_active: boolean }) => v.is_active);
     if (!vs.length) return []; // hide products without active variants
     const img = [...r.product_images].sort((a, b) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order)[0];
+    const cheapest = vs.reduce((a: { price: number }, b: { price: number }) => (Number(b.price) < Number(a.price) ? b : a));
     return [{
-      id: r.id, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug,
+      id: r.id, variantId: cheapest.id, specs: r.specs ?? {}, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug,
       color: r.specs?.color ?? null,
       price: Math.min(...vs.map((v: { price: number }) => Number(v.price))), // "from" price
       stock: vs.reduce((n: number, v: { stock: number }) => n + v.stock, 0),
@@ -55,3 +58,10 @@ export async function getProducts(locale: string, f: Filters = {}, limit = 100, 
 
 export const getFeatured = (locale: string) => getProducts(locale, {}, 4, "is_featured");
 export const getNew = (locale: string) => getProducts(locale, {}, 4, "is_new");
+
+// Products by id, in the order of the ids (used by favorites and compare)
+export async function getProductsByIds(locale: string, ids: string[]) {
+  if (!ids.length) return [];
+  const list = await getProducts(locale, { ids }, 100);
+  return ids.flatMap((id) => list.find((p) => p.id === id) ?? []);
+}

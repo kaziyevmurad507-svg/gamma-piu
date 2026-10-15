@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { ArrowDownRight, ArrowUpRight, MessageCircle, Scissors, Sparkles, Truck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { btnClass } from "../ui/Button";
 import { Container } from "../ui/Section";
 
 const PROMISES = [[Scissors, "promise1"], [MessageCircle, "promise2"], [Truck, "promise3"]] as const;
@@ -16,7 +17,7 @@ export function Hero() {
           <div className="flex flex-col gap-[22px]">
             <h1 className="text-[42px] font-semibold leading-[1.04] lg:w-[430px] lg:text-[64px]">{t("heroTitle")}</h1>
             <p className="text-[15px] text-muted lg:w-[310px]">{t("heroText")}</p>
-            <Link href="/catalog" className="inline-flex h-12 w-fit items-center gap-2.5 rounded-full bg-action px-[22px] text-sm font-semibold text-canvas">
+            <Link href="/catalog" className={`${btnClass()} w-fit`}>
               <ArrowUpRight size={20} />{t("shopNow")}
             </Link>
           </div>

@@ -1,0 +1,119 @@
+"use client";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowLeft, ChevronRight, MessageCircle, ShieldCheck, ShoppingBag, Trash2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { btnClass, IconButton } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
+import { PageIntro, Skeleton } from "@/components/ui/PageIntro";
+import { Quantity } from "@/components/ui/Quantity";
+import { StockBadge } from "@/components/ui/StockBadge";
+import { loadCartLines } from "@/lib/actions";
+import { money } from "@/lib/money";
+import { getStockStatus } from "@/lib/stock";
+import { removeFromCart, setQty, useStore } from "@/lib/store";
+import { useLoaded } from "@/lib/use-loaded";
+import { WA_URL } from "@/lib/whatsapp";
+
+export function CartView() {
+  const t = useTranslations("Cart");
+  const p = useTranslations("Product");
+  const n = useTranslations();
+  const locale = useLocale();
+  const { cart, ready } = useStore();
+  const rows = useLoaded(cart.map((l) => l.id), async (ids) => {
+    const lines = await loadCartLines(locale, ids);
+    ids.filter((id) => !lines.some((l) => l.id === id)).forEach(removeFromCart); // no longer on sale: drop from cart
+    return lines;
+  });
+
+  // Join server data with the quantity saved in the browser
+  const items = (rows ?? []).flatMap((l) => {
+    const qty = cart.find((c) => c.id === l.id)?.qty;
+    return qty ? [{ ...l, qty }] : [];
+  });
+  const units = items.reduce((sum, l) => sum + l.qty, 0);
+  const total = items.reduce((sum, l) => sum + l.qty * l.price, 0);
+  const loading = !ready || rows === null;
+
+  return (
+    <div className="flex flex-col gap-8">
+      <PageIntro home={n("Nav.home")} crumb={n("Nav.cart")} title={t("title")} chip={items.length ? t("count", { count: items.length }) : undefined} text={t("intro")} />
+
+      <ol aria-label={t("steps")} className="flex items-center gap-3 text-xs lg:gap-6">
+        <li aria-current="step" className="font-semibold text-action">01 {t("stepCart")}</li>
+        <ChevronRight size={14} aria-hidden />
+        <li className="text-muted">02 WhatsApp</li>
+        <ChevronRight size={14} aria-hidden />
+        <li className="text-muted">03 {t("stepConfirm")}</li>
+      </ol>
+
+      {loading ? (
+        <Skeleton className="h-[200px]" />
+      ) : !items.length ? (
+        <div className="flex flex-col items-center gap-4 rounded-bento bg-media p-10 text-center">
+          <ShoppingBag size={30} aria-hidden />
+          <p className="text-[22px] font-medium">{t("emptyTitle")}</p>
+          <p className="text-sm text-muted">{t("emptyText")}</p>
+          <LinkButton href="/catalog">{t("toCatalog")}</LinkButton>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+            <div className="flex flex-1 flex-col items-start gap-5 lg:min-w-0">
+              {items.map((l) => {
+                const status = getStockStatus(l.stock);
+                const href = `/product/${l.slug}`;
+                return (
+                  <article key={l.id} className="flex w-full flex-col gap-[18px] rounded-card border border-line p-[18px] lg:flex-row lg:items-center lg:gap-5 lg:p-6">
+                    <div className="flex items-center gap-5 lg:flex-1 lg:min-w-0">
+                      <Link href={href} tabIndex={-1} aria-hidden className="relative h-[100px] w-[88px] shrink-0 rounded-panel bg-media lg:h-[130px] lg:w-[120px]">
+                        {l.image && <Image src={l.image} alt="" fill sizes="120px" className="object-contain p-2" />}
+                      </Link>
+                      <div className="flex min-w-0 flex-1 flex-col items-start gap-2">
+                        <Link href={href} className="text-base font-semibold lg:text-xl">{l.name}</Link>
+                        <p className="text-xs text-muted">{[l.category && n(`Categories.${l.category}`), l.variant].filter(Boolean).join(" · ")}</p>
+                        <p className="text-[13px]">{t("perUnit", { price: money(l.price) })}</p>
+                        <StockBadge status={status} label={n(`Stock.${status}`)} />
+                      </div>
+                    </div>
+                    {/* lg:contents = on desktop these three sit in the same row as the photo */}
+                    <div className="flex items-center justify-between lg:contents">
+                      <Quantity value={l.qty} max={l.stock > 0 ? l.stock : 10} onChange={(v) => setQty(l.id, v)} decreaseLabel={p("decrease")} increaseLabel={p("increase")} />
+                      <p className="text-[19px] font-semibold lg:w-[100px] lg:text-right lg:text-[23px]">{money(l.qty * l.price)}</p>
+                      <IconButton aria-label={t("remove")} onClick={() => removeFromCart(l.id)} className="text-muted"><Trash2 size={18} /></IconButton>
+                    </div>
+                  </article>
+                );
+              })}
+              <LinkButton href="/catalog" variant="secondary"><ArrowLeft size={20} />{t("continue")}</LinkButton>
+            </div>
+
+            <aside className="flex flex-col gap-6 rounded-bento bg-lavender p-6 lg:w-[400px] lg:shrink-0 lg:p-8">
+              <h2 className="text-[26px] font-medium">{t("summaryTitle")}</h2>
+              <dl className="flex flex-col gap-4 text-sm">
+                <div className="flex justify-between"><dt className="text-muted">{t("products", { count: units })}</dt><dd>{money(total)}</dd></div>
+                <div className="flex justify-between"><dt className="text-muted">{t("delivery")}</dt><dd className="text-ok">{money(0)}</dd></div>
+                <div className="flex items-center justify-between border-t border-line pt-5"><dt className="font-medium">{t("total")}</dt><dd className="text-[30px] font-semibold">{money(total)}</dd></div>
+              </dl>
+              {/* Message text with the order list comes in step 7 */}
+              <a href={WA_URL} target="_blank" rel="noopener noreferrer" className={btnClass()}>
+                <MessageCircle size={20} />{t("order")}
+              </a>
+              <p className="text-xs text-muted">{t("note")}</p>
+              <p className="flex gap-2 text-xs"><ShieldCheck size={18} className="shrink-0 text-action" aria-hidden />{t("noCard")}</p>
+            </aside>
+          </div>
+
+          <div className="flex flex-col gap-5 rounded-bento bg-cream p-6 lg:flex-row lg:p-8">
+            <MessageCircle size={30} className="shrink-0 text-action" aria-hidden />
+            <div className="flex flex-col gap-2">
+              <p className="text-xl font-medium">{t("nextTitle")}</p>
+              <p className="text-sm text-muted">{t("nextText")}</p>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

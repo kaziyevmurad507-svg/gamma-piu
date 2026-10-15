@@ -34,7 +34,7 @@ export default async function ProductPage({ params }: Props) {
       <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:gap-16">
         <div className="lg:w-[624px] lg:shrink-0"><ProductGallery images={p.images} name={p.name} /></div>
         <div className="min-w-0 flex-1">
-          <ProductPurchase eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} />
+          <ProductPurchase productId={p.id} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} />
         </div>
       </div>
 
