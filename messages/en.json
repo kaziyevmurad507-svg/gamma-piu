@@ -242,7 +242,9 @@
     "emptyTitle": "Your cart is empty.",
     "emptyText": "Pick tools from the catalog.",
     "removedToast": "Removed from your cart",
-    "undo": "Undo"
+    "undo": "Undo",
+    "waHead": "Hello! I would like to place an order from the Gamma Piu site:",
+    "waTotal": "Total"
   },
   "Compare": {
     "title": "Side by side.",

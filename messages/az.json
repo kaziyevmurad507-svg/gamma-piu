@@ -242,7 +242,9 @@
     "emptyTitle": "Səbətiniz boşdur.",
     "emptyText": "Kataloqdan alət seçin.",
     "removedToast": "Məhsul səbətdən silindi",
-    "undo": "Geri qaytar"
+    "undo": "Geri qaytar",
+    "waHead": "Salam! Gamma Piu saytından sifariş vermək istəyirəm:",
+    "waTotal": "Cəmi"
   },
   "Compare": {
     "title": "Yan-yana seçim.",

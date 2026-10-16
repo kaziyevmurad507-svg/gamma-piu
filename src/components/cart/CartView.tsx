@@ -14,7 +14,7 @@ import { money } from "@/lib/money";
 import { getStockStatus } from "@/lib/stock";
 import { announceRemoved, removeFromCart, restoreLine, setQty, useStore } from "@/lib/store";
 import { useLoaded } from "@/lib/use-loaded";
-import { WA_URL } from "@/lib/whatsapp";
+import { orderUrl } from "@/lib/whatsapp";
 
 export function CartView() {
   const t = useTranslations("Cart");
@@ -23,6 +23,7 @@ export function CartView() {
   const locale = useLocale();
   const { cart, ready } = useStore();
   const [leaving, setLeaving] = useState<string | null>(null); // line that is sliding out
+  const [sent, setSent] = useState(false); // true after "Order" click: step 02 becomes active
   const [edits, setEdits] = useState(0); // grows on every quantity click, so prices "pop" only after a user action
   const rows = useLoaded(cart.map((l) => l.id), async (ids) => {
     const lines = await loadCartLines(locale, ids);
@@ -47,6 +48,7 @@ export function CartView() {
   });
   const units = items.reduce((sum, l) => sum + l.qty, 0);
   const total = items.reduce((sum, l) => sum + l.qty * l.price, 0);
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
   const loading = !ready || rows === null;
 
   return (
@@ -54,9 +56,9 @@ export function CartView() {
       <PageIntro home={n("Nav.home")} crumb={n("Nav.cart")} title={t("title")} chip={items.length ? t("count", { count: items.length }) : undefined} text={t("intro")} />
 
       <ol aria-label={t("steps")} className="flex items-center gap-3 text-xs lg:gap-6">
-        <li aria-current="step" className="font-semibold text-action">01 {t("stepCart")}</li>
+        <li aria-current={sent ? undefined : "step"} className={sent ? "text-muted" : "font-semibold text-action"}>01 {t("stepCart")}</li>
         <ChevronRight size={14} aria-hidden />
-        <li className="text-muted">02 WhatsApp</li>
+        <li aria-current={sent ? "step" : undefined} className={sent ? "font-semibold text-action" : "text-muted"}>02 WhatsApp</li>
         <ChevronRight size={14} aria-hidden />
         <li className="text-muted">03 {t("stepConfirm")}</li>
       </ol>
@@ -114,8 +116,9 @@ export function CartView() {
                 <div className="flex justify-between"><dt className="text-muted">{t("delivery")}</dt><dd className="text-ok">{money(0)}</dd></div>
                 <div className="flex items-center justify-between border-t border-line pt-5"><dt className="font-medium">{t("total")}</dt><dd key={edits} className={`text-[30px] font-semibold ${edits ? "animate-pop" : ""}`}>{money(total)}</dd></div>
               </dl>
-              {/* Message text with the order list comes in step 7 */}
-              <a href={WA_URL} target="_blank" rel="noopener noreferrer" className={btnClass()}>
+              {/* The link is built on click, so the site address (origin) is known */}
+              <a href={orderUrl(items.map((l) => ({ name: l.name, variant: l.variant, qty: l.qty, price: l.price, link: `${origin}/${locale}/product/${l.slug}` })), t("waHead"), t("waTotal"), money(total).replace(/\u00a0/g, " "), (v) => money(v).replace(/\u00a0/g, " "))}
+                target="_blank" rel="noopener noreferrer" onClick={() => setSent(true)} className={btnClass()}>
                 <MessageCircle size={20} />{t("order")}
               </a>
               <p className="text-xs text-muted">{t("note")}</p>
