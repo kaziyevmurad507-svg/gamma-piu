@@ -16,7 +16,7 @@ export function Input({ label, error, id, className, ...props }: Props) {
         aria-invalid={!!error}
         aria-describedby={error ? errorId : undefined}
         className={cn(
-          'h-[52px] rounded-card border bg-canvas px-[18px] text-sm placeholder:text-muted',
+          'field-hover h-[52px] rounded-card border bg-canvas px-[18px] text-sm placeholder:text-muted',
           error ? 'border-danger' : 'border-line',
           className,
         )}

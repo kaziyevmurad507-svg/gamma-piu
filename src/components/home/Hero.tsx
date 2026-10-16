@@ -30,11 +30,11 @@ export function Hero() {
         </section>
 
         <div className="flex flex-col gap-5 lg:w-[352px]">
-          <Link href="/catalog?cat=dryers" className="relative h-[228px] overflow-hidden rounded-bento bg-media p-6 lg:h-[326px]">
+          <Link href="/catalog?cat=dryers" className="group relative h-[228px] overflow-hidden rounded-bento bg-media p-6 tile-hover lg:h-[326px]">
             <p className="text-[11px] text-muted">{t("dryerEyebrow")}</p>
-            <p className="mt-2 text-[26px] font-semibold">iQ Perfetto</p>
-            <Image src="/images/dryer.png" alt="" width={250} height={198} className="absolute left-[134px] top-[60px] h-auto w-[196px] lg:left-[54px] lg:top-[88px] lg:w-[250px]" />
-            <span className="absolute bottom-6 left-6 flex items-center gap-2 text-[13px] font-medium">{t("dryerPrice")}<ArrowUpRight size={17} /></span>
+            <p className="mt-2 text-[26px] font-semibold transition-colors duration-300 group-hover:text-action">iQ Perfetto</p>
+            <Image src="/images/dryer.png" alt="" width={250} height={198} className="absolute left-[134px] top-[60px] h-auto w-[196px] transition-transform duration-500 ease-in-out group-hover:-rotate-6 group-hover:scale-110 lg:left-[54px] lg:top-[88px] lg:w-[250px]" />
+            <span className="absolute bottom-6 left-6 flex items-center gap-2 text-[13px] font-medium transition-colors duration-300 group-hover:text-action">{t("dryerPrice")}<ArrowUpRight size={17} className="transition-transform duration-200 ease-in-out group-hover:-translate-y-0.5 group-hover:translate-x-1" /></span>
           </Link>
           <div className="flex h-[186px] flex-col gap-3 rounded-bento bg-cream p-7 lg:h-[240px]">
             <Truck size={28} />

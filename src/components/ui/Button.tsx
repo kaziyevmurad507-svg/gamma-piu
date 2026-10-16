@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react';
 import { cn } from '@/lib/cn';
 
-type Variant = 'primary' | 'secondary' | 'success';
+type Variant = 'primary' | 'secondary' | 'success' | 'bare'; // bare = shape only, colors come from className
 
 // One place for button look: used by Button, LinkButton and plain <a> buttons
 export const btnClass = (variant: Variant = 'primary') =>
@@ -12,6 +12,7 @@ export const btnClass = (variant: Variant = 'primary') =>
     variant === 'secondary' &&
       'border border-line bg-canvas text-ink hover:border-action hover:bg-action-soft hover:text-action active:bg-action-soft disabled:text-muted disabled:hover:border-line disabled:hover:bg-canvas disabled:hover:text-muted',
     variant === 'success' && 'bg-ok text-white',
+    variant === 'bare' && 'border',
   );
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant };

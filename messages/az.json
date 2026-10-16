@@ -72,7 +72,13 @@
     "favoriteOn": "Seçilmişlərdə",
     "compareOn": "Müqayisədə",
     "compareFull": "Müqayisəyə ən çox 3 məhsul əlavə etmək olar.",
-    "added": "Əlavə edildi"
+    "added": "Əlavə edildi",
+    "replaceTitle": "Müqayisə siyahısını əvəz et",
+    "replaceText": "Müqayisədə artıq «{from}» var. Siyahı «{to}» ilə əvəz edilsin?",
+    "replace": "Əvəz et",
+    "cancel": "Ləğv et",
+    "addedToast": "Məhsul səbətə əlavə edildi",
+    "goToCart": "Səbətə keç"
   },
   "Home": {
     "eyebrow": "GAMMA PIU · PEŞƏKAR SEÇİM",
@@ -119,8 +125,8 @@
     "featuredTitle": "Ustanın seçimi.",
     "newEyebrow": "YENİ GƏLƏNLƏR · NÜMUNƏ SEÇİM",
     "newTitle": "Kolleksiyada yeniliklər.",
-    "seeAll": "Hamısına bax →",
-    "seeAllMobile": "Bütün məhsullara bax →",
+    "seeAll": "Hamısına bax",
+    "seeAllMobile": "Bütün məhsullara bax",
     "craftEyebrow": "DƏQİQLİK DETALDAN BAŞLAYIR",
     "craftTitle": "Alətiniz işinizin imzasıdır.",
     "craftText": "Konturdan son toxunuşa qədər — saçqırxan, trimmer və şeyveri iş üsulunuza uyğun seçin.",
@@ -234,7 +240,9 @@
     "nextTitle": "Sonrakı addım: şəxsi təsdiq.",
     "nextText": "WhatsApp söhbətində ünvanınızı bildirin, çatdırılma vaxtı və ödəniş üsulunu razılaşdırın. Bu ekran sifarişin artıq təsdiqləndiyini göstərmir.",
     "emptyTitle": "Səbətiniz boşdur.",
-    "emptyText": "Kataloqdan alət seçin."
+    "emptyText": "Kataloqdan alət seçin.",
+    "removedToast": "Məhsul səbətdən silindi",
+    "undo": "Geri qaytar"
   },
   "Compare": {
     "title": "Yan-yana seçim.",
@@ -255,5 +263,10 @@
     "emptyTitle": "Müqayisə üçün məhsul seçin.",
     "emptyText": "Məhsul səhifəsində “Müqayisə et” düyməsinə toxunun. Ən çox 3 məhsul.",
     "same": "ortaq"
+  },
+  "About": {
+    "title": "Haqqımızda",
+    "intro": "Gamma Piu — Bakıda peşəkar bərbər ləvazimatlarının onlayn mağazasıdır. Sifarişlər WhatsApp vasitəsilə qəbul olunur.",
+    "cta": "WhatsApp-da yazın"
   }
 }

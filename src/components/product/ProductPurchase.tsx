@@ -8,22 +8,24 @@ import { Quantity } from "@/components/ui/Quantity";
 import { StockBadge } from "@/components/ui/StockBadge";
 import { Check } from "lucide-react";
 import { useFlash } from "@/lib/use-flash";
-import { addToCart, toggleCompare, toggleFav, useStore } from "@/lib/store";
+import { ReplaceNotice, useCompare } from "./ProductActions";
+import { addToCart, toggleFav, useStore } from "@/lib/store";
 import type { Variant } from "@/lib/product";
 import { getStockStatus } from "@/lib/stock";
 
 // Whole numbers without decimals: 390 AZN, but 12.5 -> 12.50 AZN
 const money = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(2)} AZN`;
 
-export function ProductPurchase({ productId, eyebrow, name, description, variants }: { productId: string; eyebrow: string; name: string; description: string; variants: Variant[] }) {
+export function ProductPurchase({ productId, category, eyebrow, name, description, variants }: { productId: string; category: string; eyebrow: string; name: string; description: string; variants: Variant[] }) {
   const t = useTranslations("Product");
   const s = useTranslations("Stock");
   const [id, setId] = useState(variants[0].id);
   const [qty, setQty] = useState(1);
   const [added, flash] = useFlash();
-  const [full, setFull] = useState(false); // compare list is full
-  const { fav, cmp } = useStore();
-  const isFav = fav.includes(productId), isCmp = cmp.includes(productId);
+  const { fav } = useStore();
+  const isFav = fav.includes(productId);
+  const cmp = useCompare(productId, category);
+  const isCmp = cmp.on;
   const v = variants.find((x) => x.id === id) ?? variants[0];
   const status = getStockStatus(v.stock);
   const max = v.stock > 0 ? v.stock : 10; // out of stock = order on request, allow a few
@@ -54,18 +56,21 @@ export function ProductPurchase({ productId, eyebrow, name, description, variant
       <div className="flex gap-3">
         <Quantity value={qty} max={max} onChange={setQty} decreaseLabel={t("decrease")} increaseLabel={t("increase")} />
         <Button variant={added ? "success" : "primary"} className="flex-1" onClick={() => { addToCart(v.id, qty); flash(); }}>
-          {added ? <><Check size={20} />{t("added")}</> : <><Plus size={20} />{t("addToCartFull")}</>}
+          <span key={String(added)} className="inline-flex animate-drop items-center gap-2.5">{added ? <><Check size={20} />{t("added")}</> : <><Plus size={20} />{t("addToCartFull")}</>}</span>
         </Button>
       </div>
       <div className="flex gap-3">
-        <Button variant="secondary" aria-pressed={isFav} className={`flex-1 ${isFav ? "border-danger text-danger hover:border-danger hover:bg-canvas hover:text-danger" : "hover:border-danger hover:bg-canvas hover:text-danger"}`} onClick={() => toggleFav(productId)}>
+        <Button variant="bare" aria-pressed={isFav} onClick={() => toggleFav(productId)}
+          className={`flex-1 hover:border-danger hover:text-danger ${isFav ? "border-danger bg-canvas text-danger" : "border-line bg-canvas text-ink"}`}>
           <Heart size={20} className={isFav ? "fill-danger text-danger" : ""} />{isFav ? t("favoriteOn") : t("favorite")}
         </Button>
-        <Button variant="secondary" aria-pressed={isCmp} className={`flex-1 ${isCmp ? "border-action bg-action-soft text-action" : ""}`} onClick={() => setFull(!toggleCompare(productId))}>
+        <Button variant="bare" aria-pressed={isCmp} onClick={cmp.toggle}
+          className={`flex-1 hover:border-action hover:text-action ${isCmp ? "border-action bg-action-soft text-action" : "border-line bg-canvas text-ink"}`}>
           <Columns2 size={20} />{isCmp ? t("compareOn") : t("compare")}
         </Button>
       </div>
-      {full && <p role="status" className="text-xs text-warn">{t("compareFull")}</p>}
+      {cmp.full && <p role="status" className="text-xs text-warn">{t("compareFull")}</p>}
+      {cmp.ask && <ReplaceNotice category={category} onReplace={cmp.replace} onCancel={cmp.cancel} className="" />}
 
       <div id="delivery-info" className="flex gap-3 rounded-card bg-action-soft p-5">
         <Truck size={20} className="shrink-0" />

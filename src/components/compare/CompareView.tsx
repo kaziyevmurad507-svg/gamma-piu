@@ -11,6 +11,7 @@ import { StockBadge } from "@/components/ui/StockBadge";
 import { loadProducts } from "@/lib/actions";
 import { money } from "@/lib/money";
 import { getStockStatus } from "@/lib/stock";
+import { groupCats } from "@/lib/categories";
 import { addToCart, COMPARE_MAX, removeCompare, useStore } from "@/lib/store";
 import { useLoaded } from "@/lib/use-loaded";
 import { WA_URL } from "@/lib/whatsapp";
@@ -29,7 +30,7 @@ export function CompareView() {
   const p = useTranslations("Product");
   const n = useTranslations();
   const locale = useLocale();
-  const { cmp, ready } = useStore();
+  const { cmp, cmpGroup, ready } = useStore();
   const [onlyDiff, setOnlyDiff] = useState(false);
   const rows = useLoaded(cmp, (ids) => loadProducts(locale, ids));
 
@@ -65,12 +66,12 @@ export function CompareView() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
             <div className="flex items-center gap-2.5 lg:flex-1">
               <button type="button" role="switch" aria-checked={onlyDiff} aria-label={t("onlyDiff")} onClick={() => setOnlyDiff(!onlyDiff)}
-                className={`flex h-[26px] w-[42px] shrink-0 items-center rounded-full p-[3px] transition-colors ${onlyDiff ? "justify-end bg-action" : "justify-start bg-line"}`}>
-                <span className="size-5 rounded-full bg-canvas" />
+                className={`flex h-[26px] w-[42px] shrink-0 items-center rounded-full p-[3px] transition-colors duration-200 ease-in-out ${onlyDiff ? "bg-action" : "bg-line"}`}>
+                <span className={`size-5 rounded-full bg-canvas shadow-soft transition-transform duration-200 ease-in-out ${onlyDiff ? "translate-x-4" : ""}`} />
               </button>
               <span className="text-[13px]">{t("onlyDiff")}</span>
             </div>
-            {items.length < COMPARE_MAX && <LinkButton href="/catalog" variant="secondary" className="w-full lg:w-auto"><Plus size={20} />{t("addProduct")}</LinkButton>}
+            {items.length < COMPARE_MAX && <LinkButton href={`/catalog?${groupCats(cmpGroup).map((c) => `cat=${c}`).join("&")}`} variant="secondary" className="w-full lg:w-auto"><Plus size={20} />{t("addProduct")}</LinkButton>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -86,11 +87,11 @@ export function CompareView() {
                   <div key={x.id} className="flex min-w-0 flex-1 flex-col items-start gap-3 pb-5">
                     <div className="relative h-[170px] w-full rounded-card bg-media lg:h-[272px]">
                       {x.image && <Image src={x.image} alt="" fill sizes="(min-width:1024px) 30vw, 50vw" className="object-contain p-5" />}
-                      <button type="button" aria-label={t("remove")} onClick={() => removeCompare(x.id)} className="absolute right-2.5 top-2.5 grid size-11 place-items-center rounded-full bg-canvas">
+                      <button type="button" aria-label={t("remove")} onClick={() => removeCompare(x.id)} className="photo-btn absolute right-2.5 top-2.5 grid size-11 place-items-center rounded-full bg-canvas shadow-soft">
                         <X size={16} />
                       </button>
                     </div>
-                    <Link href={`/product/${x.slug}`} className="text-base font-semibold lg:text-2xl">{x.name}</Link>
+                    <Link href={`/product/${x.slug}`} className="link-text text-base font-semibold lg:text-2xl">{x.name}</Link>
                     <StockBadge status={status} label={n(`Stock.${status}`)} />
                     <p className="text-[21px] font-semibold lg:text-[28px]">{money(x.price)}</p>
                     <Button className="w-full" onClick={() => addToCart(x.variantId)}>
@@ -102,7 +103,7 @@ export function CompareView() {
             </div>
 
             {matrix.map((r) => (
-              <div key={r.key} className="flex flex-col gap-2.5 py-3.5 lg:flex-row lg:gap-5 lg:py-2">
+              <div key={r.key} className="flex animate-rise flex-col gap-2.5 py-3.5 lg:flex-row lg:gap-5 lg:py-2">
                 <div className="flex items-center lg:h-[52px] lg:w-[260px] lg:shrink-0">
                   <p className="flex-1 text-[13px] text-muted">{r.label}</p>
                   {items.length > 1 && <p className={`text-[10px] uppercase lg:hidden ${r.diff ? "text-warn" : "text-ok"}`}>{r.diff ? t("different") : t("same")}</p>}

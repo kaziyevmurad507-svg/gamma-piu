@@ -6,6 +6,7 @@ import { routing } from '@/i18n/routing';
 import '../globals.css';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Toast } from "@/components/layout/Toast";
 
 
 // latin-ext is needed for Azerbaijani letters (ə ğ ı ş ö ü), cyrillic for Russian
@@ -36,7 +37,9 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <Header/>
           <main className="flex-1">{children}</main>
-          <Footer/></NextIntlClientProvider>
+          <Footer/>
+          <Toast/>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

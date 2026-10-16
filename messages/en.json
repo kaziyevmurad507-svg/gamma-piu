@@ -72,7 +72,13 @@
     "favoriteOn": "In favorites",
     "compareOn": "In comparison",
     "compareFull": "You can compare up to 3 products.",
-    "added": "Added"
+    "added": "Added",
+    "replaceTitle": "Replace the comparison list",
+    "replaceText": "The comparison already has “{from}”. Replace the list with “{to}”?",
+    "replace": "Replace",
+    "cancel": "Cancel",
+    "addedToast": "Added to your cart",
+    "goToCart": "Go to cart"
   },
   "Home": {
     "eyebrow": "GAMMA PIU · PROFESSIONAL CHOICE",
@@ -119,8 +125,8 @@
     "featuredTitle": "The master's choice.",
     "newEyebrow": "NEW ARRIVALS · SAMPLE SELECTION",
     "newTitle": "New in the collection.",
-    "seeAll": "View all →",
-    "seeAllMobile": "View all products →",
+    "seeAll": "View all",
+    "seeAllMobile": "View all products",
     "craftEyebrow": "PRECISION STARTS WITH DETAIL",
     "craftTitle": "Your tool is your signature.",
     "craftText": "From the outline to the final touch — choose a clipper, trimmer and shaver that fit your way of working.",
@@ -234,7 +240,9 @@
     "nextTitle": "Next step: personal confirmation.",
     "nextText": "In the WhatsApp chat, share your address and agree on delivery time and payment method. This screen does not mean the order is already confirmed.",
     "emptyTitle": "Your cart is empty.",
-    "emptyText": "Pick tools from the catalog."
+    "emptyText": "Pick tools from the catalog.",
+    "removedToast": "Removed from your cart",
+    "undo": "Undo"
   },
   "Compare": {
     "title": "Side by side.",
@@ -255,5 +263,10 @@
     "emptyTitle": "Pick products to compare.",
     "emptyText": "Tap “Compare” on a product page. Up to 3 products.",
     "same": "same"
+  },
+  "About": {
+    "title": "About us",
+    "intro": "Gamma Piu is an online store of professional hairdressing supplies in Baku. Orders are taken through WhatsApp.",
+    "cta": "Write on WhatsApp"
   }
 }

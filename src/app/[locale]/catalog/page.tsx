@@ -1,3 +1,4 @@
+import { btnClass } from "@/components/ui/Button";
 import { getTranslations } from "next-intl/server";
 import { ArrowUp } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -29,7 +30,7 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
   return (
     <Container id="catalog-top" className="flex flex-col gap-8 pb-16 pt-8">
       <div className="flex flex-col gap-3.5">
-        <p className="text-xs text-muted"><Link href="/">{t("Nav.home")}</Link> / {t("Nav.catalog")}</p>
+        <p className="text-xs text-muted"><Link href="/" className="link-text">{t("Nav.home")}</Link> / {t("Nav.catalog")}</p>
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-[34px] font-semibold leading-[1.12] lg:text-5xl">{t("Catalog.title")}</h1>
           <span className={`${chip} shrink-0 bg-action-soft font-semibold text-action`}>{t("Catalog.count", { count: products.length })}</span>
@@ -49,7 +50,7 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
             <ProductGrid products={products} className="lg:grid-cols-3" />
             <div className="flex flex-col items-center gap-3.5 pt-6">
               <p className="text-xs text-muted">{t("Catalog.shown", { shown: products.length, total: products.length })}</p>
-              <a href="#catalog-top" className="flex h-12 items-center gap-2.5 rounded-full border border-line px-[22px] text-sm font-semibold"><ArrowUp size={18} />{t("Catalog.backToTop")}</a>
+              <a href="#catalog-top" className={btnClass("secondary")}><ArrowUp size={18} />{t("Catalog.backToTop")}</a>
             </div>
           </>
         ) : (

@@ -27,14 +27,14 @@ export default async function ProductPage({ params }: Props) {
   return (
     <Container className="flex flex-col gap-10 pb-16 pt-6">
       <nav aria-label={t("Product.breadcrumb")} className="text-xs text-muted">
-        <Link href="/">{t("Nav.home")}</Link>
-        {category && <> / <Link href={`/catalog?cat=${p.category}`}>{category}</Link></>} / {p.name}
+        <Link href="/" className="link-text">{t("Nav.home")}</Link>
+        {category && <> / <Link href={`/catalog?cat=${p.category}`} className="link-text">{category}</Link></>} / {p.name}
       </nav>
 
       <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:gap-16">
         <div className="lg:w-[624px] lg:shrink-0"><ProductGallery images={p.images} name={p.name} /></div>
         <div className="min-w-0 flex-1">
-          <ProductPurchase productId={p.id} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} />
+          <ProductPurchase productId={p.id} category={p.category} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} />
         </div>
       </div>
 

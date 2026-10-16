@@ -13,7 +13,7 @@ export function LocaleSwitcher({ className = "" }: { className?: string }) {
       {LOCALES.map((l, i) => (
         <Fragment key={l}>
           {i > 0 && <span className="text-muted">·</span>}
-          <Link href={path} locale={l} className={l === current ? "text-action" : "text-muted"}>{l.toUpperCase()}</Link>
+          <Link href={path} locale={l} className={`transition-colors hover:text-action ${l === current ? "text-action" : "text-muted"}`}>{l.toUpperCase()}</Link>
         </Fragment>
       ))}
     </div>

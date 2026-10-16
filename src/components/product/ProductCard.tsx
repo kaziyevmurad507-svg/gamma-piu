@@ -14,13 +14,13 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
   const status = getStockStatus(p.stock);
   const href = `/product/${p.slug}`; // product page comes in step 5
   return (
-    <article className="group flex min-w-0 flex-col gap-3">
+    <article className="group flex min-w-0 animate-rise flex-col gap-3">
       <div className="relative">
         <Link href={href} tabIndex={-1} aria-hidden className={`relative block overflow-hidden rounded-card bg-media ${wide ? "h-[268px]" : "h-[184px] lg:h-[268px]"}`}>
           {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain p-5 transition-transform duration-300 group-hover:scale-105" />}
         </Link>
         <FavoriteButton id={p.id} />
-        <CompareButton id={p.id} />
+        <CompareButton id={p.id} category={p.category} />
       </div>
       <div className="flex flex-col items-start gap-1.5 px-1">
         <p className="text-xs text-muted">{t(`Categories.${p.category}`)}{color}</p>

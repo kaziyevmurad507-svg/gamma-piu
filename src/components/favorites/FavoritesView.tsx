@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronDown, Columns2, Heart, Plus } from "lucide-react";
+import { Columns2, Heart, Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { PageIntro, Skeleton } from "@/components/ui/PageIntro";
+import { Select } from "@/components/ui/Select";
 import { ProductCard } from "@/components/product/ProductCard";
 import { loadProducts } from "@/lib/actions";
 import { money } from "@/lib/money";
@@ -46,15 +47,9 @@ export function FavoritesView() {
         <>
           <div className="flex items-center justify-between gap-3">
             <p className="text-[13px] text-muted">{t("countLine", { count: list.length })}</p>
-            <label className="relative flex h-11 items-center gap-2 rounded-full bg-media pl-4 pr-10 text-[13px]">
-              <span className="hidden lg:inline">{t("sortLabel")}:</span>
-              <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="appearance-none bg-transparent pr-1">
-                <option value="recent">{t("sortRecent")}</option>
-                <option value="price-asc">{n("Catalog.sort.price-asc")}</option>
-                <option value="price-desc">{n("Catalog.sort.price-desc")}</option>
-              </select>
-              <ChevronDown size={16} aria-hidden className="pointer-events-none absolute right-4" />
-            </label>
+            <Select value={sort} onChange={(val) => setSort(val as Sort)} label={t("sortLabel")} prefix={t("sortLabel")} options={[
+              { value: "recent", label: t("sortRecent") }, { value: "price-asc", label: n("Catalog.sort.price-asc") }, { value: "price-desc", label: n("Catalog.sort.price-desc") },
+            ]} />
           </div>
 
           <div className="grid gap-x-6 gap-y-9 lg:grid-cols-3">
@@ -75,7 +70,7 @@ export function FavoritesView() {
               <div className="flex flex-col gap-2">
                 <p className="text-lg font-medium">{t("compareTitle")}</p>
                 <p className="text-[13px] text-muted">{t("compareText")}</p>
-                <Link href="/compare" className="text-[13px] font-semibold text-action">{t("compareLink")}</Link>
+                <Link href="/compare" className="link-accent text-[13px] font-semibold">{t("compareLink")}</Link>
               </div>
             </div>
             <div className="flex flex-1 gap-4 rounded-card bg-media p-6">
