@@ -195,18 +195,6 @@
     "limited": "Az qalıb",
     "out": "Sifarişlə"
   },
-  "Specs": {
-    "motor": "Mühərrik",
-    "battery_life": "Batareya müddəti",
-    "charge_time": "Şarj müddəti",
-    "blade_width": "Bıçaq eni",
-    "weight": "Çəki",
-    "use": "İstifadə",
-    "power": "Güc",
-    "temperature": "Temperatur",
-    "rpm": "Fırlanma sürəti",
-    "size": "Ölçü"
-  },
   "Favorites": {
     "title": "Seçilmişləriniz",
     "intro": "Bəyəndiyiniz alətlər bir yerdə. Seçiminizə istədiyiniz vaxt qayıdın.",

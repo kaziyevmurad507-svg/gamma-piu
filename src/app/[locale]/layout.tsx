@@ -8,7 +8,9 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toast } from "@/components/layout/Toast";
 import { CategoriesProvider } from "@/components/layout/CategoriesProvider";
+import { SpecTypesProvider } from "@/components/layout/SpecTypesProvider";
 import { getCategories } from "@/lib/category-data";
+import { getSpecTypes } from "@/lib/spec-data";
 
 
 // latin-ext is needed for Azerbaijani letters (ə ğ ı ş ö ü), cyrillic for Russian
@@ -32,17 +34,19 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const categories = await getCategories(locale);
+  const [categories, specTypes] = await Promise.all([getCategories(locale), getSpecTypes(locale)]);
 
   return (
     <html lang={locale} className={inter.variable}>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
           <CategoriesProvider list={categories}>
-            <Header/>
-            <main className="flex-1">{children}</main>
-            <Footer/>
-            <Toast/>
+            <SpecTypesProvider list={specTypes}>
+              <Header/>
+              <main className="flex-1">{children}</main>
+              <Footer/>
+              <Toast/>
+            </SpecTypesProvider>
           </CategoriesProvider>
         </NextIntlClientProvider>
       </body>

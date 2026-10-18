@@ -12,7 +12,9 @@ import { loadProducts } from "@/lib/actions";
 import { money } from "@/lib/money";
 import { getStockStatus } from "@/lib/stock";
 import { useCategories } from "@/components/layout/CategoriesProvider";
+import { useSpecTypes } from "@/components/layout/SpecTypesProvider";
 import { groupSlugs } from "@/lib/categories";
+import { specLabel, specOrder } from "@/lib/specs";
 import { addToCart, COMPARE_MAX, removeCompare, useStore } from "@/lib/store";
 import { useLoaded } from "@/lib/use-loaded";
 import { WA_URL } from "@/lib/whatsapp";
@@ -32,6 +34,7 @@ export function CompareView() {
   const n = useTranslations();
   const locale = useLocale();
   const cats = useCategories();
+  const types = useSpecTypes();
   const { cmp, cmpGroup, ready } = useStore();
   const [onlyDiff, setOnlyDiff] = useState(false);
   const rows = useLoaded(cmp, (ids) => loadProducts(locale, ids));
@@ -39,12 +42,12 @@ export function CompareView() {
   const items = (rows ?? []).filter((x) => cmp.includes(x.id));
   const loading = !ready || rows === null;
 
-  // Matrix rows: category, then every spec key (first-seen order), color last
-  const keys = [...new Set(items.flatMap((x) => Object.keys(x.specs)))].filter((k) => k !== "box" && k !== "color");
+  // Matrix rows: category, then every spec key (database order, unknown keys last), color last
+  const keys = specOrder(types, [...new Set(items.flatMap((x) => Object.keys(x.specs)))].filter((k) => k !== "box" && k !== "color"));
   const colorOf = (c: string | null) => (c ? (n.has(`Colors.${c}`) ? n(`Colors.${c}`) : c) : "");
   const matrix = [
     { key: "category", label: t("category"), values: items.map((x) => x.categoryName) },
-    ...keys.map((k) => ({ key: k, label: n.has(`Specs.${k}`) ? n(`Specs.${k}`) : k.replace(/_/g, " "), values: items.map((x) => text(x.specs[k], locale)) })),
+    ...keys.map((k) => ({ key: k, label: specLabel(types, k), values: items.map((x) => text(x.specs[k], locale)) })),
     ...(items.some((x) => x.color) ? [{ key: "color", label: t("color"), values: items.map((x) => colorOf(x.color)) }] : []),
   ]
     .map((r) => ({ ...r, values: r.values.map((v) => v || "—"), diff: items.length > 1 && new Set(r.values.map((v) => v || "—")).size > 1 }))

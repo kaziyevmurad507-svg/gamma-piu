@@ -195,18 +195,6 @@
     "limited": "Low stock",
     "out": "On order"
   },
-  "Specs": {
-    "motor": "Motor",
-    "battery_life": "Battery life",
-    "charge_time": "Charge time",
-    "blade_width": "Blade width",
-    "weight": "Weight",
-    "use": "Usage",
-    "power": "Power",
-    "temperature": "Temperature",
-    "rpm": "Motor speed",
-    "size": "Size"
-  },
   "Favorites": {
     "title": "Your favorites",
     "intro": "The tools you like, all in one place. Come back to your picks any time.",

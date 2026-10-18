@@ -6,6 +6,7 @@ import { ProductInfo } from "@/components/product/ProductInfo";
 import { ProductMain } from "@/components/product/ProductMain";
 import { Container } from "@/components/ui/Section";
 import { getProduct, getRelated } from "@/lib/product";
+import { getSpecTypes } from "@/lib/spec-data";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -19,7 +20,7 @@ export default async function ProductPage({ params }: Props) {
   const { locale, slug } = await params;
   const p = await getProduct(locale, slug);
   if (!p) notFound();
-  const [t, related] = await Promise.all([getTranslations(), getRelated(locale, p.id)]);
+  const [t, related, types] = await Promise.all([getTranslations(), getRelated(locale, p.id), getSpecTypes(locale)]);
   const category = p.categoryName;
   const eyebrow = [p.brand ?? "Gamma Piu", category].filter(Boolean).join(" · ").toLocaleUpperCase(locale);
 
@@ -32,7 +33,7 @@ export default async function ProductPage({ params }: Props) {
 
       <ProductMain productId={p.id} group={p.group} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} images={p.images} />
 
-      <ProductInfo name={p.name} specs={p.specs} />
+      <ProductInfo name={p.name} specs={p.specs} types={types} />
 
       {related.length > 0 && (
         <section className="flex flex-col gap-8">

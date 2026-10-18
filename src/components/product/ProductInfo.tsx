@@ -1,5 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Info, MessageCircle, Package } from "lucide-react";
+import { specLabel, type SpecType } from "@/lib/specs";
 import { WA_URL } from "@/lib/whatsapp";
 
 // A spec value can be plain text or { az, ru, en }
@@ -13,7 +14,7 @@ const text = (v: unknown, locale: string): string => {
 
 const tab = "flex h-11 items-center rounded-full bg-media px-4 text-[13px] transition-colors hover:bg-action-soft hover:text-action";
 
-export function ProductInfo({ name, specs }: { name: string; specs: Record<string, unknown> }) {
+export function ProductInfo({ name, specs, types }: { name: string; specs: Record<string, unknown>; types: SpecType[] }) {
   const t = useTranslations();
   const locale = useLocale();
   // "box" holds the box contents text, "color" is only used by catalog filters
@@ -36,7 +37,7 @@ export function ProductInfo({ name, specs }: { name: string; specs: Record<strin
             <dl className="flex flex-col gap-3.5">
               {rows.map(([k, v]) => (
                 <div key={k} className="flex gap-5 border-b border-line pb-3 text-[13px]">
-                  <dt className="flex-1 text-muted">{t.has(`Specs.${k}`) ? t(`Specs.${k}`) : k.replace(/_/g, " ")}</dt>
+                  <dt className="flex-1 text-muted">{specLabel(types, k)}</dt>
                   <dd className="flex-1 text-right font-medium">{text(v, locale)}</dd>
                 </div>
               ))}
