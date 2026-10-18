@@ -85,7 +85,7 @@ export function CartView() {
                     <div className="overflow-hidden pb-5">
                   <article className="flex w-full flex-col gap-[18px] rounded-card border border-line p-[18px] lg:flex-row lg:items-center lg:gap-5 lg:p-6">
                     <div className="flex items-center gap-5 lg:flex-1 lg:min-w-0">
-                      <Link href={href} tabIndex={-1} aria-hidden className="relative h-[100px] w-[88px] shrink-0 rounded-panel bg-media lg:h-[130px] lg:w-[120px]">
+                      <Link href={href} tabIndex={-1} aria-hidden className="relative h-[100px] w-[88px] shrink-0 rounded-panel border border-line bg-canvas lg:h-[130px] lg:w-[120px]">
                         {l.image && <Image src={l.image} alt="" fill sizes="120px" className="object-contain p-2" />}
                       </Link>
                       <div className="flex min-w-0 flex-1 flex-col items-start gap-2">

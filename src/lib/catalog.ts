@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"; // ASSUMED path: change to your server client
-import type { Sort } from "./categories";
+import { colorOf, type Sort } from "./categories";
 
 export type Product = {
   id: string; slug: string; name: string; category: string; color: string | null;
@@ -10,7 +10,7 @@ export type Filters = { q?: string; cats?: string[]; min?: number; max?: number;
 
 const BUCKET = "product-images"; // ASSUMED Storage bucket name (must be public)
 const SELECT =
-  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug), product_variants(id, price, stock, is_active), product_images(path, sort_order, is_main)";
+  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug), product_variants(id, name_en, price, stock, is_active), product_images(path, sort_order, is_main, variant_id)";
 
 // flag = only featured / only new products (used on the home page)
 export async function getProducts(locale: string, f: Filters = {}, limit = 100, flag?: "is_featured" | "is_new") {
@@ -19,7 +19,6 @@ export async function getProducts(locale: string, f: Filters = {}, limit = 100, 
   if (flag) q = q.eq(flag, true);
   if (f.ids) q = q.in("id", f.ids);
   if (f.cats?.length) q = q.in("categories.slug", f.cats);
-  if (f.colors?.length) q = q.in("specs->>color", f.colors); // ASSUMED: color is stored as specs.color
   const term = f.q?.replace(/[%,()]/g, " ").trim();
   if (term) q = q.or(["az", "ru", "en"].map((l) => `name_${l}.ilike.%${term}%`).join(","));
   const { data, error } = await q;
@@ -30,13 +29,19 @@ export async function getProducts(locale: string, f: Filters = {}, limit = 100, 
   let list = (data ?? []).flatMap((r: any): Product[] => {
     const vs = r.product_variants.filter((v: { is_active: boolean }) => v.is_active);
     if (!vs.length) return []; // hide products without active variants
-    const img = [...r.product_images].sort((a, b) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order)[0];
-    const cheapest = vs.reduce((a: { price: number }, b: { price: number }) => (Number(b.price) < Number(a.price) ? b : a));
+    // With a color filter, only variants of the chosen colors count (price, stock, photo)
+    const want = f.colors ?? [];
+    const pool = want.length ? vs.filter((v: { name_en: string }) => want.includes(colorOf(v.name_en) ?? "")) : vs;
+    if (!pool.length) return [];
+    const cheapest = pool.reduce((a: { price: number }, b: { price: number }) => (Number(b.price) < Number(a.price) ? b : a));
+    const imgs = [...r.product_images].sort((a, b) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order);
+    // the card shows the photo of the variant whose price it shows
+    const img = imgs.find((i) => i.variant_id === cheapest.id) ?? imgs.find((i) => !i.variant_id) ?? imgs[0];
     return [{
       id: r.id, variantId: cheapest.id, specs: r.specs ?? {}, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug,
       color: r.specs?.color ?? null,
-      price: Math.min(...vs.map((v: { price: number }) => Number(v.price))), // "from" price
-      stock: vs.reduce((n: number, v: { stock: number }) => n + v.stock, 0),
+      price: Math.min(...pool.map((v: { price: number }) => Number(v.price))), // "from" price
+      stock: pool.reduce((n: number, v: { stock: number }) => n + v.stock, 0),
       image: img ? db.storage.from(BUCKET).getPublicUrl(img.path).data.publicUrl : null,
       featured: r.is_featured,
     }];

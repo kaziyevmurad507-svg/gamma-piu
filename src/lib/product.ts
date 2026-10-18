@@ -6,14 +6,16 @@ import { pick } from "./i18n-field";
 const BUCKET = "product-images";
 
 export type Variant = { id: string; sku: string; name: string; price: number; stock: number };
+// variantId = null: common photo; otherwise the photo belongs to that variant (color) only
+export type ProductImage = { url: string; variantId: string | null };
 export type ProductDetail = {
   id: string; slug: string; name: string; description: string; brand: string | null; category: string;
-  specs: Record<string, unknown>; variants: Variant[]; images: string[];
+  specs: Record<string, unknown>; variants: Variant[]; images: ProductImage[];
 };
 
 const SELECT =
   "id, slug, name_az, name_ru, name_en, description_az, description_ru, description_en, specs, categories(slug), brands(name), " +
-  "product_variants(id, sku, name_az, name_ru, name_en, price, stock, is_active, sort_order), product_images(path, sort_order, is_main)";
+  "product_variants(id, sku, name_az, name_ru, name_en, price, stock, is_active, sort_order), product_images(path, sort_order, is_main, variant_id)";
 
 // cache() lets the page and generateMetadata share one request
 export const getProduct = cache(async (locale: string, slug: string): Promise<ProductDetail | null> => {
@@ -27,9 +29,9 @@ export const getProduct = cache(async (locale: string, slug: string): Promise<Pr
     .sort((a: any, b: any) => a.sort_order - b.sort_order)
     .map((v: any) => ({ id: v.id, sku: v.sku, name: pick(v, "name", locale) || v.sku, price: Number(v.price), stock: v.stock }));
   if (!variants.length) return null; // nothing to sell
-  const images: string[] = [...r.product_images]
+  const images: ProductImage[] = [...r.product_images]
     .sort((a: any, b: any) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order)
-    .map((i: any) => db.storage.from(BUCKET).getPublicUrl(i.path).data.publicUrl);
+    .map((i: any) => ({ url: db.storage.from(BUCKET).getPublicUrl(i.path).data.publicUrl, variantId: i.variant_id ?? null }));
   return {
     id: r.id, slug: r.slug, name: pick(r, "name", locale), description: pick(r, "description", locale),
     brand: r.brands?.name ?? null, category: r.categories?.slug ?? "",

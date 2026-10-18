@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { ProductInfo } from "@/components/product/ProductInfo";
-import { ProductPurchase } from "@/components/product/ProductPurchase";
+import { ProductMain } from "@/components/product/ProductMain";
 import { Container } from "@/components/ui/Section";
 import { getProduct, getRelated } from "@/lib/product";
 
@@ -31,12 +30,7 @@ export default async function ProductPage({ params }: Props) {
         {category && <> / <Link href={`/catalog?cat=${p.category}`} className="link-text">{category}</Link></>} / {p.name}
       </nav>
 
-      <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:gap-16">
-        <div className="lg:w-[624px] lg:shrink-0"><ProductGallery images={p.images} name={p.name} /></div>
-        <div className="min-w-0 flex-1">
-          <ProductPurchase productId={p.id} category={p.category} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} />
-        </div>
-      </div>
+      <ProductMain productId={p.id} category={p.category} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} images={p.images} />
 
       <ProductInfo name={p.name} specs={p.specs} />
 

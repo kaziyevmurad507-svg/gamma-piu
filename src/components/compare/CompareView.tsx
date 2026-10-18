@@ -85,9 +85,9 @@ export function CompareView() {
                 const status = getStockStatus(x.stock);
                 return (
                   <div key={x.id} className="flex min-w-0 flex-1 flex-col items-start gap-3 pb-5">
-                    <div className="relative h-[170px] w-full rounded-card bg-media lg:h-[272px]">
+                    <div className="relative h-[170px] w-full rounded-card border border-line bg-canvas lg:h-[272px]">
                       {x.image && <Image src={x.image} alt="" fill sizes="(min-width:1024px) 30vw, 50vw" className="object-contain p-5" />}
-                      <button type="button" aria-label={t("remove")} onClick={() => removeCompare(x.id)} className="photo-btn absolute right-2.5 top-2.5 grid size-11 place-items-center rounded-full bg-canvas shadow-soft">
+                      <button type="button" aria-label={t("remove")} onClick={() => removeCompare(x.id)} className="photo-btn absolute right-2.5 top-2.5 grid size-11 place-items-center rounded-full bg-action-soft text-action shadow-soft">
                         <X size={16} />
                       </button>
                     </div>

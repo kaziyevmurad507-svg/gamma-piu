@@ -16,10 +16,9 @@ import { getStockStatus } from "@/lib/stock";
 // Whole numbers without decimals: 390 AZN, but 12.5 -> 12.50 AZN
 const money = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(2)} AZN`;
 
-export function ProductPurchase({ productId, category, eyebrow, name, description, variants }: { productId: string; category: string; eyebrow: string; name: string; description: string; variants: Variant[] }) {
+export function ProductPurchase({ productId, category, eyebrow, name, description, variants, id, onVariant }: { productId: string; category: string; eyebrow: string; name: string; description: string; variants: Variant[]; id: string; onVariant: (id: string) => void }) {
   const t = useTranslations("Product");
   const s = useTranslations("Stock");
-  const [id, setId] = useState(variants[0].id);
   const [qty, setQty] = useState(1);
   const [added, flash] = useFlash();
   const { fav } = useStore();
@@ -46,7 +45,7 @@ export function ProductPurchase({ productId, category, eyebrow, name, descriptio
           <p className="text-[13px] font-medium">{t("variant", { name: v.name })}</p>
           <div className="flex flex-wrap gap-2.5">
             {variants.map((x) => (
-              <Chip key={x.id} selected={x.id === id} onClick={() => { setId(x.id); setQty(1); }}>{x.name}</Chip>
+              <Chip key={x.id} selected={x.id === id} onClick={() => { onVariant(x.id); setQty(1); }}>{x.name}</Chip>
             ))}
           </div>
           <p className="text-[11px] text-muted">{t("variantNote")}</p>

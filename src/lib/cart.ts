@@ -10,7 +10,7 @@ export async function getCartLines(locale: string, ids: string[]): Promise<CartL
   const db = await createClient();
   const { data, error } = await db
     .from("product_variants")
-    .select("id, sku, name_az, name_ru, name_en, price, stock, products!inner(slug, name_az, name_ru, name_en, is_published, categories(slug), product_images(path, sort_order, is_main))")
+    .select("id, sku, name_az, name_ru, name_en, price, stock, products!inner(slug, name_az, name_ru, name_en, is_published, categories(slug), product_images(path, sort_order, is_main, variant_id))")
     .in("id", ids)
     .eq("is_active", true)
     .eq("products.is_published", true);
@@ -18,7 +18,8 @@ export async function getCartLines(locale: string, ids: string[]): Promise<CartL
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const lines = (data ?? []).map((v: any): CartLine => {
     const p = v.products;
-    const img = [...p.product_images].sort((a: any, b: any) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order)[0];
+    const imgs = [...p.product_images].sort((a: any, b: any) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order);
+    const img = imgs.find((i: any) => i.variant_id === v.id) ?? imgs.find((i: any) => !i.variant_id) ?? imgs[0];
     return {
       id: v.id, slug: p.slug, name: pick(p, "name", locale), category: p.categories?.slug ?? "",
       variant: pick(v, "name", locale) || v.sku, price: Number(v.price), stock: v.stock,

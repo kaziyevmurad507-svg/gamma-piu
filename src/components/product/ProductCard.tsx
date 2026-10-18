@@ -16,7 +16,7 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
   return (
     <article className="group flex min-w-0 animate-rise flex-col gap-3">
       <div className="relative">
-        <Link href={href} tabIndex={-1} aria-hidden className={`relative block overflow-hidden rounded-card bg-media ${wide ? "h-[268px]" : "h-[184px] lg:h-[268px]"}`}>
+        <Link href={href} tabIndex={-1} aria-hidden className={`relative block overflow-hidden rounded-card border border-line bg-canvas ${wide ? "h-[268px]" : "h-[184px] lg:h-[268px]"}`}>
           {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain p-5 transition-transform duration-300 group-hover:scale-105" />}
         </Link>
         <FavoriteButton id={p.id} />

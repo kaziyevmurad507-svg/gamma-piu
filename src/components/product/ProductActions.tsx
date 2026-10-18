@@ -16,7 +16,7 @@ export function FavoriteButton({ id }: { id: string }) {
   const on = useStore().fav.includes(id);
   const [clicks, setClicks] = useState(0); // new key = heart "beats" after every click
   return (
-    <button type="button" aria-pressed={on} aria-label={on ? t("removeFavorite") : t("addFavorite")} onClick={() => { setClicks(clicks + 1); toggleFav(id); }} className={`absolute right-3 top-3 bg-canvas ${round}`}>
+    <button type="button" aria-pressed={on} aria-label={on ? t("removeFavorite") : t("addFavorite")} onClick={() => { setClicks(clicks + 1); toggleFav(id); }} className={`absolute right-3 top-3 bg-action-soft text-action ${round}`}>
       <Heart key={clicks} size={18} className={cn("transition-colors", clicks > 0 && "animate-heart", on ? "fill-danger text-danger" : "hover:text-danger")} />
     </button>
   );
@@ -69,7 +69,7 @@ export function CompareButton({ id, category }: { id: string; category: string }
   return (
     <>
       <button type="button" aria-pressed={c.on} aria-label={c.on ? t("compareOn") : t("compare")} title={c.on ? t("compareOn") : t("compare")}
-        onClick={c.toggle} className={cn("absolute right-3 top-[60px]", round, c.on ? "bg-action text-white" : "bg-canvas")}>
+        onClick={c.toggle} className={cn("absolute right-3 top-[60px]", round, c.on ? "bg-action text-white" : "bg-action-soft text-action")}>
         <Columns2 size={18} />
       </button>
       {c.full && <p role="status" className="absolute animate-drop right-3 top-[108px] z-10 max-w-[180px] rounded-panel bg-ink px-3 py-2 text-xs text-white">{t("compareFull")}</p>}

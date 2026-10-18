@@ -8,7 +8,10 @@ import { CATEGORIES, COLORS, SORTS } from "@/lib/categories";
 
 export type Values = { q: string; cats: string[]; min: string; max: string; avail: string[]; colors: string[]; sort: string };
 
-const SWATCH = { black: "bg-ink", blue: "bg-action", silver: "bg-[#c9cad0]" } as const;
+const SWATCH: Record<(typeof COLORS)[number], string> = {
+  black: "bg-ink", grey: "bg-[#8b8d96]", silver: "bg-[#c9cad0]", gold: "bg-[#d4af37]", rose: "bg-[#e0a899]", pink: "bg-[#f4a6c0]",
+  red: "bg-[#d93a3a]", violet: "bg-[#8a5cd6]", blue: "bg-action", green: "bg-[#3fae6a]", orange: "bg-[#f28c28]",
+};
 const box = "checkbox size-[18px] shrink-0 appearance-none rounded-md border border-line bg-canvas";
 const field = "field-hover h-[52px] w-full min-w-0 rounded-card border border-line bg-canvas px-[18px] text-sm";
 const row = "flex cursor-pointer items-center gap-2.5 text-[13px] transition-colors hover:text-action has-checked:text-action";
@@ -117,7 +120,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
 
           <div className="flex flex-col gap-3.5">
             <p className="text-[13px] font-semibold">{c("color")}</p>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {COLORS.map((k) => (
                 <label key={k} title={t(`Colors.${k}`)}>
                   <input type="checkbox" name="color" value={k} defaultChecked={v.colors.includes(k)} className="peer sr-only" />
