@@ -24,11 +24,11 @@ Frames: Homepage D 3:38237 / M 3:38573, Catalog D 3:38903 / M 3:39172, Product D
 Tokens: colors canvas, ink, muted, action (+hover, pressed, soft), disabled, lavender, cream, media, line, danger, ok(+soft), warn(+soft); radii `rounded-panel` 20, `rounded-card` 24, `rounded-bento` 32; `shadow-soft`; font Inter. Breakpoint: base = mobile (390), `lg:` = desktop (1440, content max 1440 with px-16).
 
 ## Data model (Supabase)
-- `categories(id, parent_id, slug unique, name_az/ru/en, sort_order)`; fixed slugs used in code: clippers, trimmers, dryers, scissors, shavers, blades, accessories (`src/lib/categories.ts`, names in messages `Categories.*`).
+- `categories(id, parent_id, slug unique, name_az/ru/en, sort_order)`; fixed slugs used in code: clippers, trimmers, dryers, irons, scissors, shavers, blades, accessories (`src/lib/categories.ts`, names in messages `Categories.*`).
 - `brands(id, slug, name)`.
 - `products(id, category_id, brand_id, slug unique, name_*, description_*, specs jsonb, is_published, is_new, is_featured, created_at, updated_at)`. No price/stock on products.
 - `product_variants(id, product_id, sku unique, name_*, price numeric, stock int, is_active, image_path, sort_order)`: variants are the options (color etc.); price/stock live here.
-- `product_images(id, product_id, path, sort_order, is_main)`; files in public Storage bucket `product-images`, folder = product slug.
+- `product_images(id, product_id, variant_id null, path, sort_order, is_main)` (one is_main per product); files in public Storage bucket `product-images`, folder = product slug.
 - `admins` table exists (for step 8). RLS: public read of published products / active variants.
 - Derived on the site: card price = min active variant price, stock = sum of active variants, hidden if no active variant. Stock status: 0 out, 1-3 limited, more in stock (`src/lib/stock.ts`).
 
@@ -60,8 +60,25 @@ Tokens: colors canvas, ink, muted, action (+hover, pressed, soft), disabled, lav
 - Native `<select>` is not used any more; use `components/ui/Select`.
 
 ## Roadmap
-0 setup, 1 DB, 2 i18n, 3 design system, 4 header/home/catalog, 5 product page, 6 favorites / compare / cart (+ hover and motion polish): **done** (pending his push of the last zip `step6-complete`).
+0 setup, 1 DB, 2 i18n, 3 design system, 4 header/home/catalog, 5 product page, 6 favorites / compare / cart (+ hover and motion polish): **done**.
 7 WhatsApp order (NEXT: build the message text from the cart lines: product name, variant, qty, line price, total, language of the page; open `WA_URL?text=`; decide cart step 02 behavior; no payment on site), 8 admin `/admin` (multi-photo upload, main photo), 9 SEO (metadata, sitemap, robots), 10 Playwright tests, 11 deploy (Vercel).
 
 ## Open items
 Delete `src/app/proxy.ts` (duplicate of `src/proxy.ts`), `src/components/LanguageSwitcher.tsx`, `src/components/ui/KitPreview.tsx`. `/about` is a simple placeholder built only from facts already on the site (replace when he sends a design or text). Not yet in design/: Favorites, Compare, Cart screenshots; empty states, toast, ReplaceNotice, custom Select open state, switch ON state, header counters are NOT in Figma (added by Claude, he accepted). Compare on mobile with 3 products gets narrow. Other home blocks (accessories, help, delivery cards) have no hover effect yet (offered, he did not answer). Home marketing blocks (Boosted 390 AZN, iQ Perfetto 590 AZN) are static in messages. Remove "Nümunə kataloq" sample notice (Footer, product page) before launch. Catalog color filter reads `specs.color`. Price range slider in the design is replaced by Min/Max inputs.
+
+## Step 7 and 8a (done 2026-10-18)
+- Step 7: WhatsApp order from the cart works (text in the page language, `NEXT_PUBLIC_WHATSAPP` in `.env.local`).
+- Step 8a = real catalog: 31 products / 53 variants / about 248 photos in Supabase, all published, stock 10, prices from `tools/products.csv`. Photos: bucket `product-images/<slug>/<color>-<n>.jpg` (common photos `<n>.jpg`). Delivered as zip `gamma-piu-step8-v7` (check it is in his commit).
+- DB: `product_images.variant_id` (uuid, null = common photo, migration `supabase/001_variant_images.sql`). Constraint `one_main_image`: only ONE `is_main` per product, `sort_order` is sequential per product. `product_variants.image_path` is unused. Run photo SQL in the SQL Editor WITHOUT begin/commit (that showed Success but inserted 0 rows once).
+- Code: `ProductMain.tsx` keeps the chosen variant; the gallery shows only that color's photos (else the common ones), arrows + scrolling thumbnails. Card and cart use the photo/price of the chosen variant. Color filter = 11 colors derived from the variant English name (`COLOR_GROUPS` / `colorOf` in `src/lib/categories.ts`); with a color filter the card shows that color's photo, price and stock. Category `irons` added. Photo frames are white with a border; round buttons on photos are soft blue (`bg-action-soft text-action`). Home tile "iQ Perfetto" uses `public/images/dryer-perfetto.png`.
+- `tools/`: `products.csv` (UTF-8, `;`), `import_products.py` (`python tools/import_products.py F:\GammaPiu` -> `F:\GammaPiu_upload` + `1_products.sql` + `2_photos.sql`), `upload_photos.mjs` (`node --env-file=.env.local tools/upload_photos.mjs F:\GammaPiu_upload`, key only in env `SUPABASE_SERVICE_KEY`), `3_descriptions.sql` (RU/EN descriptions, check with him). `1_products.sql` WIPES all products (and his stock/price edits): never run it again. To add photos later: put them in the source folder, run the script, upload, run only `2_photos.sql`.
+- Added variants not in his original CSV: hybrid-mini +Black; donna-keratin-glory Black/Gold/Golden rose/Lilac; x-hybrid-cordless Black/Golden rose (SKUs changed); glamour Green renamed Teal. No photos yet: megacosmo-2200, megacosmo-2500, donna-keratin, rainbow-antistatic, turbostar green. To confirm: clipper-shorty "fırçasız" (brushless) motor.
+- Specs on the site are almost empty (labels exist for power, temperature, rpm, size, motor, battery_life, charge_time, blade_width, weight, use). Offer not yet answered: extract specs from the descriptions into one SQL.
+
+## NEXT: step 8 admin (his requirement 2026-10-18)
+He wants to add/edit product specs and add NEW CATEGORIES from the admin. Plan (his answers pending):
+1. Categories from the DB instead of the hardcoded `CATEGORIES`, `Categories.*` messages and `compareGroup` in `src/lib/categories.ts`: use `categories.name_az/ru/en`, add `sort_order`, a hidden flag and `compare_group`. Filter, card, cart, compare, breadcrumbs read from the DB. Home tiles stay 6 fixed (grid-cols-6).
+2. Table `spec_types` (key + label az/ru/en); values stay in `products.specs` (string or {az,ru,en}); compare rows align by key; labels fall back to messages `Specs.*`.
+3. `/admin`: Supabase Auth + `admins` table; product list/form, variants, photos per color with a main photo, specs editor, categories section.
+Do 1 and 2 first (no UI), then the admin. Ask him: Figma admin frame link (or build in the site style); should a new category get a home tile automatically (proposal: no, only in the catalog filter); a category with products can only be hidden, not deleted (proposal: yes).
+
