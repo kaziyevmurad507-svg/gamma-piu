@@ -82,3 +82,11 @@ He wants to add/edit product specs and add NEW CATEGORIES from the admin. Plan (
 3. `/admin`: Supabase Auth + `admins` table; product list/form, variants, photos per color with a main photo, specs editor, categories section.
 Do 1 and 2 first (no UI), then the admin. Ask him: Figma admin frame link (or build in the site style); should a new category get a home tile automatically (proposal: no, only in the catalog filter); a category with products can only be hidden, not deleted (proposal: yes).
 
+
+## Admin (step 8, in progress)
+- Done: part 1 categories from DB, part 2 spec_types, part 3 admin shell (login, menu, dashboard). Admin UI is Russian only (his decision), no language switch, no orders (orders live in WhatsApp, not in DB).
+- `/admin` is its own root layout (`src/app/admin/layout.tsx`, no `/az` prefix). `src/proxy.ts` refreshes the Supabase session for `/admin*`, intl for the rest. Login `/admin/login` (email + password, Supabase Auth, server actions in `src/app/admin/actions.ts`). Pages inside `src/app/admin/(panel)/` are protected by `(panel)/layout.tsx` -> `requireAdmin()` (`lib/admin.ts`: logged in + `rpc('is_admin')`).
+- DB (migration `supabase/004_admin.sql`): function `is_admin()` (table `admins` has ONE column `user_id uuid`), RLS on admins (no direct reads), policy "admin all" (read+write) on products, product_variants, product_images, categories, brands, spec_types. Visitors still see only published/active rows.
+- Menu items live in `components/admin/AdminNav.tsx` (`ITEMS`): add a line when a page appears. Data helper `lib/admin-data.ts` `getAdminProducts(db)`. Admin reuses `Button`, `Input`, `StockBadge`.
+- Dashboard (Figma 3:40670 desktop, 3:40856 mobile): kept metrics (catalog, unpublished, low stock), stock list with search (name or SKU), WhatsApp and store settings cards. Left out on purpose: orders block + orders metric + menu item, "Add product" button, pencil links, "all catalog" link (come with step 4), language switch, bell, mobile menu icon (pills row replaces it).
+- NEXT: step 4 product list + form (variants price/stock), then 5 photos per color, 6 specs editor + categories section (deleting a category with products is allowed by his decision: delete products first, with a confirm), 7 mobile polish + cleanup.
