@@ -11,7 +11,8 @@ import { StockBadge } from "@/components/ui/StockBadge";
 import { loadProducts } from "@/lib/actions";
 import { money } from "@/lib/money";
 import { getStockStatus } from "@/lib/stock";
-import { groupCats } from "@/lib/categories";
+import { useCategories } from "@/components/layout/CategoriesProvider";
+import { groupSlugs } from "@/lib/categories";
 import { addToCart, COMPARE_MAX, removeCompare, useStore } from "@/lib/store";
 import { useLoaded } from "@/lib/use-loaded";
 import { WA_URL } from "@/lib/whatsapp";
@@ -30,6 +31,7 @@ export function CompareView() {
   const p = useTranslations("Product");
   const n = useTranslations();
   const locale = useLocale();
+  const cats = useCategories();
   const { cmp, cmpGroup, ready } = useStore();
   const [onlyDiff, setOnlyDiff] = useState(false);
   const rows = useLoaded(cmp, (ids) => loadProducts(locale, ids));
@@ -41,7 +43,7 @@ export function CompareView() {
   const keys = [...new Set(items.flatMap((x) => Object.keys(x.specs)))].filter((k) => k !== "box" && k !== "color");
   const colorOf = (c: string | null) => (c ? (n.has(`Colors.${c}`) ? n(`Colors.${c}`) : c) : "");
   const matrix = [
-    { key: "category", label: t("category"), values: items.map((x) => n(`Categories.${x.category}`)) },
+    { key: "category", label: t("category"), values: items.map((x) => x.categoryName) },
     ...keys.map((k) => ({ key: k, label: n.has(`Specs.${k}`) ? n(`Specs.${k}`) : k.replace(/_/g, " "), values: items.map((x) => text(x.specs[k], locale)) })),
     ...(items.some((x) => x.color) ? [{ key: "color", label: t("color"), values: items.map((x) => colorOf(x.color)) }] : []),
   ]
@@ -71,7 +73,7 @@ export function CompareView() {
               </button>
               <span className="text-[13px]">{t("onlyDiff")}</span>
             </div>
-            {items.length < COMPARE_MAX && <LinkButton href={`/catalog?${groupCats(cmpGroup).map((c) => `cat=${c}`).join("&")}`} variant="secondary" className="w-full lg:w-auto"><Plus size={20} />{t("addProduct")}</LinkButton>}
+            {items.length < COMPARE_MAX && <LinkButton href={`/catalog?${groupSlugs(cats, cmpGroup).map((c) => `cat=${c}`).join("&")}`} variant="secondary" className="w-full lg:w-auto"><Plus size={20} />{t("addProduct")}</LinkButton>}
           </div>
 
           <div className="flex flex-col gap-2">

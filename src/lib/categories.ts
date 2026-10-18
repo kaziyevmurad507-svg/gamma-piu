@@ -1,5 +1,3 @@
-// Fixed lists used by filters. Slugs must match your categories table.
-export const CATEGORIES = ["clippers", "trimmers", "dryers", "irons", "scissors", "shavers", "blades", "accessories"] as const;
 // Filter colors. Each one lists the variant names (English, lowercase, dashes) that belong to it, e.g. "Golden rose" -> golden-rose
 export const COLOR_GROUPS = {
   black: ["black", "black-matt"], grey: ["grey"], silver: ["silver"], gold: ["gold"], rose: ["golden-rose"],
@@ -15,6 +13,8 @@ export const colorOf = (nameEn?: string | null) => {
 export const SORTS = ["recommended", "price-asc", "price-desc", "newest"] as const;
 export type Sort = (typeof SORTS)[number];
 
-// Products are compared only inside one group. Blades and accessories are one group (one card on the home page)
-export const compareGroup = (cat: string) => (cat === "accessories" ? "blades" : cat);
-export const groupCats = (group: string) => (group === "blades" ? ["blades", "accessories"] : [group]);
+// Category from the database. group = compare group: products are compared only inside one group.
+// A category with compare_group set (e.g. accessories -> blades) joins the group of that other category.
+export type Category = { slug: string; name: string; group: string; hidden: boolean };
+export const groupName = (list: Category[], group: string) => list.find((c) => c.slug === group)?.name ?? group;
+export const groupSlugs = (list: Category[], group: string) => list.filter((c) => c.group === group).map((c) => c.slug);

@@ -20,10 +20,10 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
           {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain p-5 transition-transform duration-300 group-hover:scale-105" />}
         </Link>
         <FavoriteButton id={p.id} />
-        <CompareButton id={p.id} category={p.category} />
+        <CompareButton id={p.id} group={p.group} />
       </div>
       <div className="flex flex-col items-start gap-1.5 px-1">
-        <p className="text-xs text-muted">{t(`Categories.${p.category}`)}{color}</p>
+        <p className="text-xs text-muted">{p.categoryName}{color}</p>
         <Link href={href} className="text-[15px] font-semibold transition-colors hover:text-action lg:text-lg">{p.name}</Link>
         <StockBadge status={status} label={t(`Stock.${status}`)} />
         <div className={`mt-1.5 flex w-full gap-2.5 ${wide ? "items-center" : "flex-col lg:flex-row lg:items-center"}`}>

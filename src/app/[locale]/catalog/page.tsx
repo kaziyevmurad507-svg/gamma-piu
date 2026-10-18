@@ -6,7 +6,8 @@ import { CatalogForm } from "@/components/catalog/CatalogForm";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { Container } from "@/components/ui/Section";
 import { getProducts } from "@/lib/catalog";
-import { CATEGORIES, COLORS, SORTS } from "@/lib/categories";
+import { getCategories } from "@/lib/category-data";
+import { COLORS, SORTS } from "@/lib/categories";
 
 type SP = Record<string, string | string[] | undefined>;
 const all = (v: SP[string]) => (Array.isArray(v) ? v : v ? [v] : []);
@@ -20,9 +21,10 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
   const { locale } = await params;
   const sp = await searchParams;
   const t = await getTranslations();
+  const cats = (await getCategories(locale)).filter((c) => !c.hidden);
 
   const v = {
-    q: one(sp.q).slice(0, 80), cats: only(sp.cat, CATEGORIES), min: one(sp.min), max: one(sp.max),
+    q: one(sp.q).slice(0, 80), cats: only(sp.cat, cats.map((c) => c.slug)), min: one(sp.min), max: one(sp.max),
     avail: only(sp.avail, ["stock", "order"] as const), colors: only(sp.color, COLORS), sort: only(sp.sort, SORTS)[0] ?? "recommended",
   };
   const products = await getProducts(locale, { q: v.q, cats: v.cats, min: num(v.min), max: num(v.max), avail: v.avail, colors: v.colors, sort: v.sort });
@@ -41,7 +43,7 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
       <CatalogForm v={v} count={products.length}>
         <div className="flex flex-wrap gap-2">
           {(v.cats.length ? v.cats : [""]).map((s) => (
-            <span key={s} className={`${chip} bg-action-soft font-semibold text-action`}>{s ? t(`Categories.${s}`) : t("Catalog.allCategories")}</span>
+            <span key={s} className={`${chip} bg-action-soft font-semibold text-action`}>{s ? cats.find((c) => c.slug === s)?.name : t("Catalog.allCategories")}</span>
           ))}
           {(v.min || v.max) && <span className={`${chip} bg-media`}>{v.min || "0"}–{v.max || "∞"} AZN</span>}
         </div>

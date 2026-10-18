@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { Select } from "@/components/ui/Select";
-import { CATEGORIES, COLORS, SORTS } from "@/lib/categories";
+import { useCategories } from "@/components/layout/CategoriesProvider";
+import { COLORS, SORTS } from "@/lib/categories";
 
 export type Values = { q: string; cats: string[]; min: string; max: string; avail: string[]; colors: string[]; sort: string };
 
@@ -29,6 +30,7 @@ function Check({ name, value, label, on }: { name: string; value: string; label:
 export function CatalogForm({ v, count, children }: { v: Values; count: number; children: ReactNode }) {
   const t = useTranslations();
   const c = useTranslations("Catalog");
+  const cats = useCategories().filter((x) => !x.hidden);
   const router = useRouter();
   const pathname = usePathname();
   const form = useRef<HTMLFormElement>(null);
@@ -101,7 +103,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
             <label className={row}>
               <input type="checkbox" checked={!v.cats.length} onChange={clearCats} className={box} />{c("all")}
             </label>
-            {CATEGORIES.map((s) => <Check key={s} name="cat" value={s} label={t(`Categories.${s}`)} on={v.cats.includes(s)} />)}
+            {cats.map((x) => <Check key={x.slug} name="cat" value={x.slug} label={x.name} on={v.cats.includes(x.slug)} />)}
           </div>
 
           <div className="flex flex-col gap-3.5">

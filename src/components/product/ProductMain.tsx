@@ -4,7 +4,7 @@ import { ProductGallery } from "./ProductGallery";
 import { ProductPurchase } from "./ProductPurchase";
 import type { ProductImage, Variant } from "@/lib/product";
 
-type Props = { productId: string; category: string; eyebrow: string; name: string; description: string; variants: Variant[]; images: ProductImage[] };
+type Props = { productId: string; group: string; eyebrow: string; name: string; description: string; variants: Variant[]; images: ProductImage[] };
 
 // Holds the chosen variant, so the photos change together with the color
 export function ProductMain({ images, name, ...rest }: Props) {

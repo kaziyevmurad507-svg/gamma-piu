@@ -16,14 +16,14 @@ import { getStockStatus } from "@/lib/stock";
 // Whole numbers without decimals: 390 AZN, but 12.5 -> 12.50 AZN
 const money = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(2)} AZN`;
 
-export function ProductPurchase({ productId, category, eyebrow, name, description, variants, id, onVariant }: { productId: string; category: string; eyebrow: string; name: string; description: string; variants: Variant[]; id: string; onVariant: (id: string) => void }) {
+export function ProductPurchase({ productId, group, eyebrow, name, description, variants, id, onVariant }: { productId: string; group: string; eyebrow: string; name: string; description: string; variants: Variant[]; id: string; onVariant: (id: string) => void }) {
   const t = useTranslations("Product");
   const s = useTranslations("Stock");
   const [qty, setQty] = useState(1);
   const [added, flash] = useFlash();
   const { fav } = useStore();
   const isFav = fav.includes(productId);
-  const cmp = useCompare(productId, category);
+  const cmp = useCompare(productId, group);
   const isCmp = cmp.on;
   const v = variants.find((x) => x.id === id) ?? variants[0];
   const status = getStockStatus(v.stock);
@@ -69,7 +69,7 @@ export function ProductPurchase({ productId, category, eyebrow, name, descriptio
         </Button>
       </div>
       {cmp.full && <p role="status" className="text-xs text-warn">{t("compareFull")}</p>}
-      {cmp.ask && <ReplaceNotice category={category} onReplace={cmp.replace} onCancel={cmp.cancel} className="" />}
+      {cmp.ask && <ReplaceNotice group={group} onReplace={cmp.replace} onCancel={cmp.cancel} className="" />}
 
       <div id="delivery-info" className="flex gap-3 rounded-card bg-action-soft p-5">
         <Truck size={20} className="shrink-0" />

@@ -90,7 +90,7 @@ export function CartView() {
                       </Link>
                       <div className="flex min-w-0 flex-1 flex-col items-start gap-2">
                         <Link href={href} className="link-text text-base font-semibold lg:text-xl">{l.name}</Link>
-                        <p className="text-xs text-muted">{[l.category && n(`Categories.${l.category}`), l.variant].filter(Boolean).join(" · ")}</p>
+                        <p className="text-xs text-muted">{[l.categoryName, l.variant].filter(Boolean).join(" · ")}</p>
                         <p className="text-[13px]">{t("perUnit", { price: money(l.price) })}</p>
                         <StockBadge status={status} label={n(`Stock.${status}`)} />
                       </div>

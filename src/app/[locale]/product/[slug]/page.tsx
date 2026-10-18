@@ -20,7 +20,7 @@ export default async function ProductPage({ params }: Props) {
   const p = await getProduct(locale, slug);
   if (!p) notFound();
   const [t, related] = await Promise.all([getTranslations(), getRelated(locale, p.id)]);
-  const category = p.category ? t(`Categories.${p.category}`) : "";
+  const category = p.categoryName;
   const eyebrow = [p.brand ?? "Gamma Piu", category].filter(Boolean).join(" · ").toLocaleUpperCase(locale);
 
   return (
@@ -30,7 +30,7 @@ export default async function ProductPage({ params }: Props) {
         {category && <> / <Link href={`/catalog?cat=${p.category}`} className="link-text">{category}</Link></>} / {p.name}
       </nav>
 
-      <ProductMain productId={p.id} category={p.category} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} images={p.images} />
+      <ProductMain productId={p.id} group={p.group} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} images={p.images} />
 
       <ProductInfo name={p.name} specs={p.specs} />
 

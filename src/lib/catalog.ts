@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server"; // ASSUMED path: change to your server client
 import { colorOf, type Sort } from "./categories";
+import { pick } from "./i18n-field";
 
 export type Product = {
-  id: string; slug: string; name: string; category: string; color: string | null;
+  id: string; slug: string; name: string; category: string; categoryName: string; group: string; color: string | null;
   price: number; stock: number; image: string | null; featured: boolean;
   variantId: string; specs: Record<string, unknown>; // cheapest variant (the one whose price the card shows)
 };
@@ -10,12 +11,12 @@ export type Filters = { q?: string; cats?: string[]; min?: number; max?: number;
 
 const BUCKET = "product-images"; // ASSUMED Storage bucket name (must be public)
 const SELECT =
-  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug), product_variants(id, name_en, price, stock, is_active), product_images(path, sort_order, is_main, variant_id)";
+  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug, name_az, name_ru, name_en, compare_group, is_hidden), product_variants(id, name_en, price, stock, is_active), product_images(path, sort_order, is_main, variant_id)";
 
 // flag = only featured / only new products (used on the home page)
 export async function getProducts(locale: string, f: Filters = {}, limit = 100, flag?: "is_featured" | "is_new") {
   const db = await createClient();
-  let q = db.from("products").select(SELECT).eq("is_published", true).order("created_at", { ascending: false });
+  let q = db.from("products").select(SELECT).eq("is_published", true).eq("categories.is_hidden", false).order("created_at", { ascending: false });
   if (flag) q = q.eq(flag, true);
   if (f.ids) q = q.in("id", f.ids);
   if (f.cats?.length) q = q.in("categories.slug", f.cats);
@@ -38,7 +39,7 @@ export async function getProducts(locale: string, f: Filters = {}, limit = 100, 
     // the card shows the photo of the variant whose price it shows
     const img = imgs.find((i) => i.variant_id === cheapest.id) ?? imgs.find((i) => !i.variant_id) ?? imgs[0];
     return [{
-      id: r.id, variantId: cheapest.id, specs: r.specs ?? {}, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug,
+      id: r.id, variantId: cheapest.id, specs: r.specs ?? {}, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug, categoryName: pick(r.categories, "name", locale), group: r.categories.compare_group ?? r.categories.slug,
       color: r.specs?.color ?? null,
       price: Math.min(...pool.map((v: { price: number }) => Number(v.price))), // "from" price
       stock: pool.reduce((n: number, v: { stock: number }) => n + v.stock, 0),
