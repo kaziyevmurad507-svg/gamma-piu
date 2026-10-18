@@ -1,5 +1,7 @@
 import Image from "next/image";
-import { AlertCircle, MessageCircle, Package, PackageX, Search } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, MessageCircle, Package, PackageX, Pencil, Plus, Search } from "lucide-react";
+import { btnClass } from "@/components/ui/Button";
 import { StockBadge } from "@/components/ui/StockBadge";
 import { requireAdmin } from "@/lib/admin";
 import { getAdminProducts } from "@/lib/admin-data";
@@ -27,6 +29,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           <h1 className="text-[34px] font-semibold leading-[1.1] lg:text-[42px]">Обзор магазина.</h1>
           <p className="text-[13px] text-muted">{date}</p>
         </div>
+        <Link href="/admin/products/new" className={btnClass()}><Plus size={20} />Добавить товар</Link>
       </div>
 
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -76,7 +79,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                 {p.image && <Image src={p.image} alt="" fill sizes="62px" className="object-contain p-2" />}
               </div>
               <div className="flex min-w-0 flex-1 flex-col gap-1">
-                <p className="text-sm font-medium">{p.name}</p>
+                <Link href={`/admin/products/${p.id}`} className="text-sm font-medium hover:text-action">{p.name}</Link>
                 <p className="text-[11px] text-muted">{p.category} · вариантов: {p.variants}{!p.published && " · не опубликован"}</p>
               </div>
             </div>
@@ -84,11 +87,12 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               <p className="text-sm">{p.price === null ? "—" : money(p.price)}</p>
               <p className="text-xs text-muted">{p.stock} шт.</p>
               <StockBadge status={p.status} label={STOCK_LABEL[p.status]} />
+              <Link href={`/admin/products/${p.id}`} aria-label={`Изменить: ${p.name}`} className="text-action transition-opacity hover:opacity-70"><Pencil size={18} /></Link>
             </div>
           </div>
         ))}
         {!found.length && <p className="py-6 text-center text-sm text-muted">Ничего не найдено</p>}
-        <p className="text-xs text-muted">Показано {Math.min(SHOWN, found.length)} из {found.length}{q && ` (всего товаров: ${all.length})`}</p>
+        <p className="text-xs text-muted">Показано {Math.min(SHOWN, found.length)} из {found.length}{q && ` (всего товаров: ${all.length})`} · <Link href="/admin/products" className="text-action">Весь каталог →</Link></p>
       </section>
 
       <div className="flex flex-col gap-5 lg:flex-row">
