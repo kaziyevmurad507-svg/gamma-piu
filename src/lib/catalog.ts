@@ -36,8 +36,10 @@ export async function getProducts(locale: string, f: Filters = {}, limit = 100, 
     if (!pool.length) return [];
     const cheapest = pool.reduce((a: { price: number }, b: { price: number }) => (Number(b.price) < Number(a.price) ? b : a));
     const imgs = [...r.product_images].sort((a, b) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order);
-    // the card shows the photo of the variant whose price it shows
-    const img = imgs.find((i) => i.variant_id === cheapest.id) ?? imgs.find((i) => !i.variant_id) ?? imgs[0];
+    // the main photo (star in the admin) wins, if it is common or belongs to a color that is shown;
+    // otherwise the card shows the photo of the variant whose price it shows
+    const shown = new Set(pool.map((v: { id: string }) => v.id));
+    const img = imgs.find((i) => i.is_main && (!i.variant_id || shown.has(i.variant_id))) ?? imgs.find((i) => i.variant_id === cheapest.id) ?? imgs.find((i) => !i.variant_id) ?? imgs[0];
     return [{
       id: r.id, variantId: cheapest.id, specs: r.specs ?? {}, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug, categoryName: pick(r.categories, "name", locale), group: r.categories.compare_group ?? r.categories.slug,
       color: r.specs?.color ?? null,

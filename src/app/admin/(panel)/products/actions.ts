@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin";
+import { removeFiles } from "@/lib/admin-storage";
 import type { ProductFormData } from "@/lib/admin-data";
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -46,7 +47,11 @@ export async function saveProduct(d: ProductFormData): Promise<{ error: string }
     const { data: old } = await db.from("product_variants").select("id").eq("product_id", id);
     const kept = d.variants.map((v) => v.id);
     const gone = (old ?? []).map((v) => v.id).filter((x) => !kept.includes(x));
-    if (gone.length) await db.from("product_variants").delete().in("id", gone);
+    if (gone.length) {
+      const { data: pics } = await db.from("product_images").select("path").in("variant_id", gone);
+      await db.from("product_variants").delete().in("id", gone); // their photo records go with them
+      await removeFiles(db, (pics ?? []).map((p) => p.path));
+    }
   }
   const { error: ve } = await db.from("product_variants").upsert(
     d.variants.map((v, i) => ({
@@ -63,13 +68,15 @@ export async function saveProduct(d: ProductFormData): Promise<{ error: string }
   return { id };
 }
 
-// Removes the product, its variants and photo records (files in Storage stay)
+// Removes the product, its variants, photo records and photo files
 export async function deleteProduct(id: string) {
   const { db } = await requireAdmin();
+  const { data: pics } = await db.from("product_images").select("path").eq("product_id", id);
   await db.from("product_images").delete().eq("product_id", id);
   await db.from("product_variants").delete().eq("product_id", id);
   const { error } = await db.from("products").delete().eq("id", id);
   if (error) throw new Error(dbError(error));
+  await removeFiles(db, (pics ?? []).map((p) => p.path));
   revalidatePath("/", "layout");
   redirect("/admin/products");
 }

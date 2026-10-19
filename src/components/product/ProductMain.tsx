@@ -9,9 +9,8 @@ type Props = { productId: string; group: string; eyebrow: string; name: string; 
 // Holds the chosen variant, so the photos change together with the color
 export function ProductMain({ images, name, ...rest }: Props) {
   const [id, setId] = useState(rest.variants[0].id);
-  // Photos of the chosen color only; if it has none, the common photos
-  const own = images.filter((i) => i.variantId === id);
-  const shown = (own.length ? own : images.filter((i) => !i.variantId)).map((i) => i.url);
+  // Photos of the chosen color first, then the common photos (they are shown with every color)
+  const shown = [...images.filter((i) => i.variantId === id), ...images.filter((i) => !i.variantId)].map((i) => i.url);
 
   return (
     <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:gap-16">

@@ -1,8 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { BUCKET } from "./admin-storage";
 import { pick } from "./i18n-field";
 import { getStockStatus, type StockStatus } from "./stock";
 
-const BUCKET = "product-images";
 export type AdminProduct = {
   id: string; name: string; category: string; categorySlug: string; variants: number; price: number | null; stock: number;
   status: StockStatus; image: string | null; published: boolean; skus: string[];
@@ -74,5 +74,14 @@ export async function getFormOptions(db: SupabaseClient) {
     categories: (c.data ?? []).map((r: any) => ({ value: r.id as string, label: pick(r, "name", "ru") })),
     brands: (b.data ?? []).map((r: any) => ({ value: r.id as string, label: r.name as string })),
   };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+}
+
+// Photos of one product for the photo manager, in display order (variantId null = common photo)
+export type AdminImage = { id: string; url: string; variantId: string | null; isMain: boolean };
+export async function getProductImages(db: SupabaseClient, productId: string): Promise<AdminImage[]> {
+  const { data } = await db.from("product_images").select("id, path, variant_id, is_main, sort_order").eq("product_id", productId).order("sort_order");
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  return (data ?? []).map((i: any) => ({ id: i.id, url: db.storage.from(BUCKET).getPublicUrl(i.path).data.publicUrl, variantId: i.variant_id, isMain: i.is_main }));
   /* eslint-enable @typescript-eslint/no-explicit-any */
 }
