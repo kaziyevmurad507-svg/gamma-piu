@@ -12,6 +12,7 @@ export function Select({ value, onChange, options, label, prefix, className }: {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0); // highlighted option while the list is open
   const box = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLUListElement>(null);
   const id = useId();
   const cur = Math.max(0, options.findIndex((o) => o.value === value));
 
@@ -22,6 +23,9 @@ export function Select({ value, onChange, options, label, prefix, className }: {
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
+
+  // Keep the highlighted option visible when the list is long (keyboard arrows)
+  useEffect(() => { if (open) list.current?.children[active]?.scrollIntoView({ block: "nearest" }); }, [open, active]);
 
   const show = () => { setActive(cur); setOpen(true); };
   const choose = (i: number) => { onChange(options[i].value); setOpen(false); };
@@ -46,7 +50,7 @@ export function Select({ value, onChange, options, label, prefix, className }: {
         <ChevronDown size={16} aria-hidden className={cn("transition-transform duration-200", open && "rotate-180")} />
       </button>
       {open && (
-        <ul id={id} role="listbox" aria-label={label} className="absolute right-0 z-30 mt-2 animate-drop flex w-max min-w-full flex-col gap-0.5 rounded-card border border-line bg-canvas p-1.5 shadow-soft">
+        <ul ref={list} id={id} role="listbox" aria-label={label} className="absolute right-0 z-30 mt-2 animate-drop flex max-h-72 w-max min-w-full flex-col gap-0.5 overflow-y-auto overscroll-contain rounded-card border border-line bg-canvas p-1.5 shadow-soft">
           {options.map((o, i) => (
             <li key={o.value} role="option" aria-selected={o.value === value} onMouseEnter={() => setActive(i)} onClick={() => choose(i)}
               className={cn("flex cursor-pointer items-center gap-3 rounded-panel px-3.5 py-2.5 text-[13px] transition-colors", i === active && "bg-action-soft text-action", o.value === value && "font-semibold")}>

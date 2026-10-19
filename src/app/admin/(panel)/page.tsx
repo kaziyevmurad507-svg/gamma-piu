@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AlertCircle, MessageCircle, Package, PackageX, Pencil, Plus, Search } from "lucide-react";
+import { AlertCircle, MessageCircle, Package, PackageX, Pencil, Plus } from "lucide-react";
+import { AdminSearch } from "@/components/admin/AdminSearch";
 import { btnClass } from "@/components/ui/Button";
 import { StockBadge } from "@/components/ui/StockBadge";
 import { requireAdmin } from "@/lib/admin";
@@ -8,7 +9,7 @@ import { getAdminProducts } from "@/lib/admin-data";
 import { money } from "@/lib/money";
 
 const STOCK_LABEL = { in_stock: "В наличии", limited: "Мало", out: "Нет в наличии" } as const;
-const SHOWN = 4; // rows in the stock list
+const SHOWN = 4; // rows in the stock list (8 while searching)
 const card = "flex items-center gap-4 rounded-card p-6 lg:flex-col lg:items-start lg:justify-center";
 
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
@@ -66,13 +67,10 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       <section className="flex flex-col gap-5 rounded-bento bg-media p-5 lg:p-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
           <h2 className="text-[25px] font-medium lg:flex-1">Товары и склад</h2>
-          <form className="flex h-[52px] items-center gap-2.5 rounded-card border border-line bg-canvas px-[18px] transition-colors focus-within:border-action lg:w-80">
-            <Search size={20} className="shrink-0 text-muted" />
-            <input name="q" defaultValue={q} placeholder="Название или SKU" aria-label="Поиск по товарам" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted" />
-          </form>
+          <AdminSearch className="lg:w-80" />
         </div>
 
-        {found.slice(0, SHOWN).map((p) => (
+        {found.slice(0, q ? 8 : SHOWN).map((p) => (
           <div key={p.id} className="flex flex-col gap-3 border-b border-line py-3 lg:flex-row lg:items-center">
             <div className="flex min-w-0 items-center gap-3.5 lg:flex-1">
               <div className="relative h-16 w-[62px] shrink-0 overflow-hidden rounded-panel bg-media">
@@ -92,7 +90,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           </div>
         ))}
         {!found.length && <p className="py-6 text-center text-sm text-muted">Ничего не найдено</p>}
-        <p className="text-xs text-muted">Показано {Math.min(SHOWN, found.length)} из {found.length}{q && ` (всего товаров: ${all.length})`} · <Link href="/admin/products" className="text-action">Весь каталог →</Link></p>
+        <p className="text-xs text-muted">Показано {Math.min(q ? 8 : SHOWN, found.length)} из {found.length}{q && ` (всего товаров: ${all.length})`} · <Link href="/admin/products" className="text-action">Весь каталог →</Link></p>
       </section>
 
       <div className="flex flex-col gap-5 lg:flex-row">

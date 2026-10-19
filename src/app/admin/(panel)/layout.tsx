@@ -14,13 +14,13 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   );
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
-      <aside className="hidden w-56 shrink-0 flex-col gap-9 border-r border-line p-7 lg:flex">
+      <aside className="hidden w-56 shrink-0 flex-col gap-9 border-r border-line p-7 lg:sticky lg:top-0 lg:flex lg:h-screen lg:self-start lg:overflow-y-auto">
         <div className="flex flex-col gap-1.5">
           <p className="text-2xl">gamma piu</p>
           <p className="text-[10px] text-muted">УПРАВЛЕНИЕ МАГАЗИНОМ</p>
         </div>
         <AdminNav />
-        <div className="flex flex-col items-start gap-4 pt-10 text-xs">{links}</div>
+        <div className="mt-auto flex flex-col items-start gap-4 text-xs">{links}</div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col gap-7 p-5 lg:p-10">
         <header className="flex items-center justify-between">

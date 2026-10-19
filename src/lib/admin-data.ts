@@ -35,11 +35,13 @@ export type VariantFormData = { id: string; sku: string; name_az: string; name_r
 export type ProductFormData = {
   id: string | null; slug: string; category_id: string; brand_id: string;
   name_az: string; name_ru: string; name_en: string; description_az: string; description_ru: string; description_en: string;
-  is_published: boolean; is_new: boolean; is_featured: boolean; variants: VariantFormData[];
+  is_published: boolean; is_new: boolean; is_featured: boolean; variants: VariantFormData[]; specs: SpecRow[];
 };
+// One characteristic: key from spec_types (or box / color) + value. ru/en empty = the same text for every language
+export type SpecRow = { id: string; key: string; az: string; ru: string; en: string };
 export const emptyProduct: ProductFormData = {
   id: null, slug: "", category_id: "", brand_id: "", name_az: "", name_ru: "", name_en: "", description_az: "", description_ru: "", description_en: "",
-  is_published: false, is_new: false, is_featured: false, variants: [],
+  is_published: false, is_new: false, is_featured: false, variants: [], specs: [],
 };
 
 const text = (v: unknown) => (typeof v === "string" ? v : "");
@@ -48,7 +50,7 @@ const text = (v: unknown) => (typeof v === "string" ? v : "");
 export async function getProductForm(db: SupabaseClient, id: string): Promise<ProductFormData | null> {
   const { data } = await db
     .from("products")
-    .select("id, slug, category_id, brand_id, name_az, name_ru, name_en, description_az, description_ru, description_en, is_published, is_new, is_featured, product_variants(id, sku, name_az, name_ru, name_en, price, stock, is_active, sort_order)")
+    .select("id, slug, category_id, brand_id, name_az, name_ru, name_en, description_az, description_ru, description_en, is_published, is_new, is_featured, specs, product_variants(id, sku, name_az, name_ru, name_en, price, stock, is_active, sort_order)")
     .eq("id", id)
     .maybeSingle();
   if (!data) return null;
@@ -59,6 +61,10 @@ export async function getProductForm(db: SupabaseClient, id: string): Promise<Pr
     name_az: text(r.name_az), name_ru: text(r.name_ru), name_en: text(r.name_en),
     description_az: text(r.description_az), description_ru: text(r.description_ru), description_en: text(r.description_en),
     is_published: r.is_published, is_new: r.is_new, is_featured: r.is_featured,
+    specs: Object.entries((r.specs ?? {}) as Record<string, unknown>).map(([key, v]) => {
+      const o = v && typeof v === "object" ? (v as Record<string, string>) : { az: String(v ?? "") }; // plain text counts as the AZ/main value
+      return { id: crypto.randomUUID(), key, az: text(o.az), ru: text(o.ru), en: text(o.en) };
+    }),
     variants: [...r.product_variants].sort((a: any, b: any) => a.sort_order - b.sort_order).map((v: any) => ({
       id: v.id, sku: v.sku, name_az: text(v.name_az), name_ru: text(v.name_ru), name_en: text(v.name_en), price: String(v.price), stock: String(v.stock), is_active: v.is_active,
     })),
@@ -68,11 +74,15 @@ export async function getProductForm(db: SupabaseClient, id: string): Promise<Pr
 
 // Lists for the category / brand dropdowns
 export async function getFormOptions(db: SupabaseClient) {
-  const [c, b] = await Promise.all([db.from("categories").select("id, name_az, name_ru, name_en").order("sort_order"), db.from("brands").select("id, name").order("name")]);
+  const [c, b, s] = await Promise.all([
+    db.from("categories").select("id, name_az, name_ru, name_en").order("sort_order"), db.from("brands").select("id, name").order("name"),
+    db.from("spec_types").select("key, label_az, label_ru, label_en").order("sort_order"),
+  ]);
   /* eslint-disable @typescript-eslint/no-explicit-any */
   return {
     categories: (c.data ?? []).map((r: any) => ({ value: r.id as string, label: pick(r, "name", "ru") })),
     brands: (b.data ?? []).map((r: any) => ({ value: r.id as string, label: r.name as string })),
+    specTypes: (s.data ?? []).map((r: any) => ({ value: r.key as string, label: pick(r, "label", "ru") })),
   };
   /* eslint-enable @typescript-eslint/no-explicit-any */
 }
@@ -84,4 +94,11 @@ export async function getProductImages(db: SupabaseClient, productId: string): P
   /* eslint-disable @typescript-eslint/no-explicit-any */
   return (data ?? []).map((i: any) => ({ id: i.id, url: db.storage.from(BUCKET).getPublicUrl(i.path).data.publicUrl, variantId: i.variant_id, isMain: i.is_main }));
   /* eslint-enable @typescript-eslint/no-explicit-any */
+}
+
+// ---- spec types page
+export type SpecTypeRow = { key: string; label_az: string; label_ru: string; label_en: string; saved: boolean };
+export async function getSpecTypeRows(db: SupabaseClient): Promise<SpecTypeRow[]> {
+  const { data } = await db.from("spec_types").select("key, label_az, label_ru, label_en").order("sort_order");
+  return (data ?? []).map((r) => ({ key: r.key, label_az: r.label_az ?? "", label_ru: r.label_ru ?? "", label_en: r.label_en ?? "", saved: true }));
 }

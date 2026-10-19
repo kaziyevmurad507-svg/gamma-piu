@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil, Plus, Search } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
+import { AdminSearch } from "@/components/admin/AdminSearch";
 import { btnClass } from "@/components/ui/Button";
 import { StockBadge } from "@/components/ui/StockBadge";
 import { requireAdmin } from "@/lib/admin";
@@ -38,12 +39,7 @@ export default async function Products({ searchParams }: { searchParams: Promise
         <Link href="/admin/products/new" className={btnClass()}><Plus size={20} />Добавить товар</Link>
       </div>
 
-      <form className="flex h-[52px] items-center gap-2.5 rounded-card border border-line bg-canvas px-[18px] transition-colors focus-within:border-action lg:max-w-md">
-        {sp.cat && <input type="hidden" name="cat" value={sp.cat} />}
-        {sp.st && <input type="hidden" name="st" value={sp.st} />}
-        <Search size={20} className="shrink-0 text-muted" />
-        <input name="q" defaultValue={sp.q ?? ""} placeholder="Название или SKU" aria-label="Поиск по товарам" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted" />
-      </form>
+      <AdminSearch className="lg:max-w-md" />
 
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 overflow-x-auto">

@@ -13,6 +13,13 @@ function validate(d: ProductFormData) {
   if (!d.name_az.trim()) return "Введите название (AZ)";
   if (!d.category_id) return "Выберите категорию";
   if (!d.id && !SLUG.test(d.slug.trim())) return "Адрес (slug): только маленькие латинские буквы, цифры и дефис";
+  const keys = new Set<string>();
+  for (const r of d.specs) {
+    const key = r.key.trim();
+    if (!key) { if (r.az.trim() || r.ru.trim() || r.en.trim()) return "У характеристики не выбран тип"; continue; }
+    if (keys.has(key)) return `Характеристика «${key}» указана дважды`;
+    keys.add(key);
+  }
   const skus = new Set<string>();
   for (const v of d.variants) {
     const sku = v.sku.trim().toLowerCase();
@@ -25,18 +32,25 @@ function validate(d: ProductFormData) {
   return null;
 }
 
-// Creates or updates a product with its variants. Specs and photos are not touched here
+// Creates or updates a product with its variants and specs. Photos are not touched here
 export async function saveProduct(d: ProductFormData): Promise<{ error: string } | { id: string }> {
   const { db } = await requireAdmin();
   const problem = validate(d);
   if (problem) return { error: problem };
 
+  // specs object: plain text when ru/en are empty, otherwise { az, ru, en } without the empty ones
+  const specs: Record<string, unknown> = {};
+  for (const r of d.specs) {
+    const v = { az: r.az.trim(), ru: r.ru.trim(), en: r.en.trim() };
+    if (!r.key.trim() || !(v.az || v.ru || v.en)) continue;
+    specs[r.key.trim()] = !v.ru && !v.en ? v.az : Object.fromEntries(Object.entries(v).filter(([, s]) => s));
+  }
   const empty = (s: string) => s.trim() || null; // optional text: empty -> NULL
   const row = {
     category_id: d.category_id, brand_id: d.brand_id || null,
     name_az: d.name_az.trim(), name_ru: empty(d.name_ru), name_en: empty(d.name_en),
     description_az: empty(d.description_az), description_ru: empty(d.description_ru), description_en: empty(d.description_en),
-    is_published: d.is_published, is_new: d.is_new, is_featured: d.is_featured,
+    is_published: d.is_published, is_new: d.is_new, is_featured: d.is_featured, specs,
   };
   const id = d.id ?? crypto.randomUUID();
   const { error } = d.id ? await db.from("products").update(row).eq("id", id) : await db.from("products").insert({ ...row, id, slug: d.slug.trim() });
