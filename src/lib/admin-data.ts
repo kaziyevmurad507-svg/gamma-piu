@@ -102,3 +102,18 @@ export async function getSpecTypeRows(db: SupabaseClient): Promise<SpecTypeRow[]
   const { data } = await db.from("spec_types").select("key, label_az, label_ru, label_en").order("sort_order");
   return (data ?? []).map((r) => ({ key: r.key, label_az: r.label_az ?? "", label_ru: r.label_ru ?? "", label_en: r.label_en ?? "", saved: true }));
 }
+
+// ---- categories page. compare_group = slug of another category this one is compared together with ("" = alone)
+export type CategoryRow = { id: string | null; slug: string; name_az: string; name_ru: string; name_en: string; is_hidden: boolean; compare_group: string; products: number };
+export async function getCategoryRows(db: SupabaseClient): Promise<CategoryRow[]> {
+  const [c, p] = await Promise.all([
+    db.from("categories").select("id, slug, name_az, name_ru, name_en, is_hidden, compare_group").order("sort_order"),
+    db.from("products").select("category_id"),
+  ]);
+  const count = new Map<string, number>();
+  for (const r of p.data ?? []) count.set(r.category_id, (count.get(r.category_id) ?? 0) + 1);
+  return (c.data ?? []).map((r) => ({
+    id: r.id, slug: r.slug, name_az: text(r.name_az), name_ru: text(r.name_ru), name_en: text(r.name_en),
+    is_hidden: !!r.is_hidden, compare_group: r.compare_group ?? "", products: count.get(r.id) ?? 0,
+  }));
+}

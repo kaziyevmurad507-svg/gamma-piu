@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ListChecks, Package } from "lucide-react";
+import { Grid2x2, LayoutDashboard, ListChecks, Package } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 // Add a line here when a new admin page appears (products, categories...)
 const ITEMS = [
   { href: "/admin", label: "Обзор", Icon: LayoutDashboard },
   { href: "/admin/products", label: "Товары", Icon: Package },
+  { href: "/admin/categories", label: "Категории", Icon: Grid2x2 },
   { href: "/admin/specs", label: "Характеристики", Icon: ListChecks },
 ];
 
