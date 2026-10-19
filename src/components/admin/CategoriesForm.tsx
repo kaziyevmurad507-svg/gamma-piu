@@ -73,7 +73,7 @@ export function CategoriesForm({ initial }: { initial: CategoryRow[] }) {
       <button type="button" onClick={() => setRows((p) => [...p, { id: null, slug: "", name_az: "", name_ru: "", name_en: "", is_hidden: false, compare_group: "", products: 0 }])} className={cn(btnClass("secondary"), "self-start")}><Plus size={18} />Добавить категорию</button>
       <StickyBar>
         <Button type="submit" disabled={pending}>{pending ? "Сохраняем…" : "Сохранить"}</Button>
-        <button type="button" disabled={!dirty || pending} onClick={reset} className={btnClass("secondary")}><Undo2 size={18} />Сбросить изменения</button>
+        <button type="button" disabled={!dirty || pending} onClick={reset} aria-label="Сбросить изменения" className={btnClass("secondary")}><Undo2 size={18} /><span className="hidden sm:inline">Сбросить изменения</span></button>
         {removed.length > 0 && <p className="text-sm text-danger">К удалению: {removed.length}</p>}
         {msg.ok && <p role="status" className="text-sm text-ok">{msg.ok}</p>}
         {msg.error && <p role="alert" className="basis-full text-center text-sm text-danger">{msg.error}</p>}

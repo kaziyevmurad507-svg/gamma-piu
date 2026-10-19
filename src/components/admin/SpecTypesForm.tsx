@@ -52,7 +52,7 @@ export function SpecTypesForm({ initial }: { initial: SpecTypeRow[] }) {
       <button type="button" onClick={() => setRows((p) => [...p, { key: "", label_az: "", label_ru: "", label_en: "", saved: false }])} className={cn(btnClass("secondary"), "self-start")}><Plus size={18} />Добавить тип</button>
       <StickyBar>
         <Button type="submit" disabled={pending}>{pending ? "Сохраняем…" : "Сохранить"}</Button>
-        <button type="button" disabled={!dirty || pending} onClick={() => { setRows(base); setMsg({}); }} className={btnClass("secondary")}><Undo2 size={18} />Сбросить изменения</button>
+        <button type="button" disabled={!dirty || pending} onClick={() => { setRows(base); setMsg({}); }} aria-label="Сбросить изменения" className={btnClass("secondary")}><Undo2 size={18} /><span className="hidden sm:inline">Сбросить изменения</span></button>
         {msg.ok && <p role="status" className="text-sm text-ok">{msg.ok}</p>}
         {msg.error && <p role="alert" className="basis-full text-center text-sm text-danger">{msg.error}</p>}
       </StickyBar>

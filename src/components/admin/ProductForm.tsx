@@ -91,7 +91,7 @@ export function ProductForm({ initial, categories, brands, specTypes }: { initia
       <section className={box}>
         <div className="flex flex-col gap-1">
           <h2 className="text-xl font-medium">Характеристики</h2>
-          <p className="text-[13px] text-muted">RU и EN можно не заполнять: тогда на всех языках покажется значение из первого поля. Новые типы добавляются на странице «Характеристики».</p>
+          <p className="text-[13px] text-muted">Значение из поля AZ показывается на всех языках. RU и EN заполняйте, только если текст должен отличаться. Новые типы добавляются на странице «Характеристики».</p>
         </div>
         {d.specs.map((s, i) => {
           const known = [...specTypes, ...EXTRA_KEYS];
@@ -101,9 +101,9 @@ export function ProductForm({ initial, categories, brands, specTypes }: { initia
               <div className="flex flex-col gap-2 lg:w-56 lg:shrink-0"><span className="text-[13px] font-medium">Тип</span>
                 <Select label="Тип" value={s.key} onChange={(v) => setS(i, { key: v })} options={options} className="[&_ul]:left-0 [&_ul]:right-auto" /></div>
               <div className="grid flex-1 gap-3 lg:grid-cols-3">
-                <Input label="Значение (AZ / основное)" value={s.az} onChange={(e) => setS(i, { az: e.target.value })} />
-                <Input label="RU (необязательно)" value={s.ru} onChange={(e) => setS(i, { ru: e.target.value })} />
-                <Input label="EN (необязательно)" value={s.en} onChange={(e) => setS(i, { en: e.target.value })} />
+                <Input label="Значение (AZ)" value={s.az} onChange={(e) => setS(i, { az: e.target.value })} />
+                <Input label="RU" value={s.ru} onChange={(e) => setS(i, { ru: e.target.value })} />
+                <Input label="EN" value={s.en} onChange={(e) => setS(i, { en: e.target.value })} />
               </div>
               <button type="button" aria-label="Удалить характеристику" onClick={() => set("specs", d.specs.filter((_, j) => j !== i))} className="grid size-11 shrink-0 place-items-center self-end text-danger transition-opacity hover:opacity-70 lg:self-auto"><Trash2 size={18} /></button>
             </div>
@@ -139,7 +139,7 @@ export function ProductForm({ initial, categories, brands, specTypes }: { initia
 
       <StickyBar>
         <Button type="submit" disabled={pending}>{pending ? "Сохраняем…" : "Сохранить"}</Button>
-        <button type="button" disabled={!dirty || pending} onClick={() => { setD(base); setMsg({}); }} className={btnClass("secondary")}><Undo2 size={18} />Сбросить изменения</button>
+        <button type="button" disabled={!dirty || pending} onClick={() => { setD(base); setMsg({}); }} aria-label="Сбросить изменения" className={btnClass("secondary")}><Undo2 size={18} /><span className="hidden sm:inline">Сбросить изменения</span></button>
         <Link href="/admin/products" className={btnClass("secondary")}>К списку</Link>
         {msg.ok && <p role="status" className="text-sm text-ok">{msg.ok}</p>}
         {d.id && (
