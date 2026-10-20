@@ -117,3 +117,13 @@ export async function getCategoryRows(db: SupabaseClient): Promise<CategoryRow[]
     is_hidden: !!r.is_hidden, compare_group: r.compare_group ?? "", products: count.get(r.id) ?? 0,
   }));
 }
+
+// ---- ambassadors (home page section)
+export type AmbassadorRow = { id: string | null; name: string; role_az: string; role_ru: string; role_en: string; instagram: string; image_path: string; image_url: string; is_published: boolean };
+export async function getAmbassadorRows(db: SupabaseClient): Promise<AmbassadorRow[]> {
+  const { data } = await db.from("ambassadors").select("id, name, role_az, role_ru, role_en, instagram, image_path, is_published").order("sort_order");
+  return (data ?? []).map((r) => ({
+    id: r.id, name: text(r.name), role_az: text(r.role_az), role_ru: text(r.role_ru), role_en: text(r.role_en), instagram: text(r.instagram),
+    image_path: text(r.image_path), image_url: r.image_path ? db.storage.from(BUCKET).getPublicUrl(r.image_path).data.publicUrl : "", is_published: !!r.is_published,
+  }));
+}
