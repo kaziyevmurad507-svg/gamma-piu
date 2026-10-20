@@ -9,6 +9,7 @@
     "cart": "Cart",
     "search": "Search",
     "menu": "Menu",
+    "theme": "Switch theme",
     "close": "Close"
   },
   "Footer": {

@@ -10,7 +10,7 @@ import { COLORS, SORTS } from "@/lib/categories";
 export type Values = { q: string; cats: string[]; min: string; max: string; avail: string[]; colors: string[]; sort: string };
 
 const SWATCH: Record<(typeof COLORS)[number], string> = {
-  black: "bg-ink", grey: "bg-[#8b8d96]", silver: "bg-[#c9cad0]", gold: "bg-[#d4af37]", rose: "bg-[#e0a899]", pink: "bg-[#f4a6c0]",
+  black: "bg-scrim", grey: "bg-[#8b8d96]", silver: "bg-[#c9cad0]", gold: "bg-[#d4af37]", rose: "bg-[#e0a899]", pink: "bg-[#f4a6c0]",
   red: "bg-[#d93a3a]", violet: "bg-[#8a5cd6]", blue: "bg-action", green: "bg-[#3fae6a]", orange: "bg-[#f28c28]",
 };
 const box = "checkbox size-[18px] shrink-0 appearance-none rounded-md border border-line bg-canvas";

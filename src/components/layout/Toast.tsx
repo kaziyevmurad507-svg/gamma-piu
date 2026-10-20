@@ -24,11 +24,11 @@ export function Toast() {
   }, []);
 
   const visible = show && !(kind === "added" && path === "/cart"); // no need to point to the cart while on it
-  const pill = "rounded-full bg-white px-3.5 py-1.5 font-semibold text-ink transition hover:bg-action-soft hover:text-action active:scale-95";
+  const pill = "rounded-full bg-canvas px-3.5 py-1.5 font-semibold text-ink transition hover:bg-action-soft hover:text-action active:scale-95";
   return (
     <div role="status" aria-live="polite"
-      className={`fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full bg-ink py-2.5 pl-4 pr-2.5 text-[13px] text-white shadow-soft transition duration-300 ease-in-out ${visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"}`}>
-      {kind === "added" ? <Check size={16} aria-hidden className="text-[#7fd6a8]" /> : <Trash2 size={16} aria-hidden />}
+      className={`fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full bg-ink py-2.5 pl-4 pr-2.5 text-[13px] text-canvas shadow-soft transition duration-300 ease-in-out ${visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"}`}>
+      {kind === "added" ? <Check size={16} aria-hidden className="text-[#7fd6a8] dark:text-ok" /> : <Trash2 size={16} aria-hidden />}
       <span>{kind === "added" ? t("Product.addedToast") : t("Cart.removedToast")}</span>
       {kind === "added"
         ? <Link href="/cart" tabIndex={visible ? 0 : -1} className={pill}>{t("Product.goToCart")}</Link>

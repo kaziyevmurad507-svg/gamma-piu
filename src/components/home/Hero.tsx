@@ -12,7 +12,7 @@ export function Hero() {
   return (
     <Container className="flex flex-col gap-6 pb-8 pt-4 lg:pb-10">
       <div className="flex flex-col gap-5 lg:flex-row">
-        <section className="relative flex flex-col gap-5 overflow-hidden rounded-bento bg-linear-to-r from-[#e1dff7] via-[#f0edf9] via-60% to-warn-soft p-7 lg:h-[586px] lg:flex-1 lg:p-10">
+        <section className="relative flex flex-col gap-5 overflow-hidden rounded-bento bg-linear-to-r from-hero-from via-hero-via via-60% to-warn-soft p-7 lg:h-[586px] lg:flex-1 lg:p-10">
           <p className="text-[11px] font-semibold">{t("eyebrow")}</p>
           <div className="flex flex-col gap-[22px]">
             <h1 className="text-[42px] font-semibold leading-[1.04] lg:w-[430px] lg:text-[64px]">{t("heroTitle")}</h1>

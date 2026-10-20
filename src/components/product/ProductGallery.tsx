@@ -63,7 +63,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
       <p className="text-[11px] text-muted">{t("imageNote")}</p>
 
       {zoom && (
-        <div role="dialog" aria-modal="true" onClick={() => setZoom(false)} className="fixed inset-0 z-50 grid place-items-center bg-ink/80 p-5">
+        <div role="dialog" aria-modal="true" onClick={() => setZoom(false)} className="fixed inset-0 z-50 grid place-items-center bg-scrim/80 p-5">
           <button type="button" aria-label={t("closeZoom")} className="photo-btn absolute right-5 top-5 grid size-11 place-items-center rounded-full bg-canvas"><X size={20} /></button>
           <div className="relative size-full max-w-5xl"><Image src={images[i]} alt={name} fill sizes="100vw" className="object-contain" /></div>
         </div>

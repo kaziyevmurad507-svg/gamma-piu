@@ -19,6 +19,9 @@
   --color-ok-soft: #edf6ef;
   --color-warn: #8a652f;
   --color-warn-soft: #faf2e4;
+  --color-hero-from: #e1dff7; /* hero gradient */
+  --color-hero-via: #f0edf9;
+  --color-scrim: #24252b; /* photo zoom overlay and the black color swatch: same in both themes */
 
   --radius-panel: 20px;
   --radius-card: 24px;
@@ -26,6 +29,32 @@
 
   --shadow-soft: 0 8px 30px #2323390a;
   --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Dark theme: <html data-theme="dark"> only changes the same tokens, so every component follows. Public site only (admin never sets it) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+:root[data-theme="dark"] {
+  color-scheme: dark; /* dark scrollbars and native controls */
+  --color-canvas: #14151a;
+  --color-ink: #ecedf2;
+  --color-muted: #9a9ca8;
+  --color-action: #4d78ff;
+  --color-action-hover: #6d8fff;
+  --color-action-pressed: #3b66ee;
+  --color-action-soft: #1a2347;
+  --color-disabled: #3a3c47;
+  --color-lavender: #232240;
+  --color-cream: #2a2620;
+  --color-media: #1e1f26;
+  --color-line: #2f313a;
+  --color-danger: #e0605f;
+  --color-ok: #5fbf92;
+  --color-ok-soft: #1b2b24;
+  --color-warn: #d9a95e;
+  --color-warn-soft: #2e271a;
+  --color-hero-from: #2a2850;
+  --color-hero-via: #232240;
+  --shadow-soft: 0 8px 30px #00000066;
 }
 
 body {

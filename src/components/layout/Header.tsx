@@ -5,6 +5,7 @@ import { Columns2, Heart, Menu, Search, ShoppingBag, Truck, X } from "lucide-rea
 import { Link, usePathname } from "@/i18n/navigation";
 import { useStore } from "@/lib/store";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [["/", "home"], ["/catalog", "catalog"], ["/about", "about"]] as const;
 const MENU = [...LINKS, ["/compare", "compare"]] as const; // mobile menu also gets Compare
@@ -42,6 +43,7 @@ export function Header() {
           <Link href="/favorites" aria-label={label(t("favorites"), fav.length)} className={`${icon} grid`}><Heart size={20} /><Badge n={fav.length} red /></Link>
           <Link href="/cart" aria-label={label(t("cart"), cartCount)} className={`${icon} grid`}><ShoppingBag size={20} /><Badge n={cartCount} /></Link>
           <Link href="/compare" aria-label={label(t("compare"), cmp.length)} className={`${icon} hidden lg:grid`}><Columns2 size={20} /><Badge n={cmp.length} /></Link>
+          <ThemeToggle className={`${icon} hidden lg:grid`} />
           <button type="button" aria-label={t("menu")} aria-expanded={open} onClick={() => setOpen(!open)} className={`${icon} grid lg:hidden`}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -50,7 +52,10 @@ export function Header() {
       {/* Mobile only: quick catalog link + language */}
       <div className="flex h-11 items-center justify-between px-5 text-xs lg:hidden">
         <Link href="/catalog" className="link-accent font-semibold">{t("catalog")} →</Link>
-        <LocaleSwitcher />
+        <div className="flex items-center gap-1">
+          <LocaleSwitcher />
+          <ThemeToggle className={`${icon} grid`} />
+        </div>
       </div>
       {open && (
         <nav className="flex animate-drop flex-col border-t border-line px-5 py-2 text-sm lg:hidden">

@@ -20,6 +20,9 @@ const inter = Inter({
   display: 'swap',
 });
 
+// Runs before the page is painted, so there is no light flash: saved choice, else the system theme
+const themeInit = `try{var t=localStorage.getItem("gp-theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}`;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -37,7 +40,8 @@ export default async function LocaleLayout({
   const [categories, specTypes] = await Promise.all([getCategories(locale), getSpecTypes(locale)]);
 
   return (
-    <html lang={locale} className={inter.variable}>
+    <html lang={locale} className={inter.variable} suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeInit }} /></head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
           <CategoriesProvider list={categories}>
