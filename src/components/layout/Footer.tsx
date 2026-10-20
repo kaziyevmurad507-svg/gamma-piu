@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Logo } from "./Logo";
 import { Info } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { WA_URL } from "@/lib/whatsapp";
@@ -14,7 +15,7 @@ export function Footer() {
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-5 pb-8 pt-12 lg:px-16">
         <div className="flex flex-col gap-7 lg:flex-row lg:gap-20">
           <div className="flex flex-col gap-3.5 lg:w-[370px]">
-            <p className="text-[28px]">gamma piu</p>
+            <Logo className="h-8 w-auto self-start" />
             <p className="text-sm text-muted">{t("Footer.tagline")}</p>
           </div>
           <div className="flex flex-1 justify-between gap-6">

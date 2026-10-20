@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Section";
 import { getProducts } from "@/lib/catalog";
 import { getCategories } from "@/lib/category-data";
 import { COLORS, SORTS } from "@/lib/categories";
+import { pageAlternates } from "@/lib/seo";
 
 type SP = Record<string, string | string[] | undefined>;
 const all = (v: SP[string]) => (Array.isArray(v) ? v : v ? [v] : []);
@@ -16,6 +17,13 @@ const one = (v: SP[string]) => all(v)[0] ?? "";
 const only = <T extends string>(v: SP[string], ok: readonly T[]) => all(v).filter((x): x is T => (ok as readonly string[]).includes(x));
 const num = (s: string) => (s !== "" && Number.isFinite(+s) ? +s : undefined);
 const chip = "flex h-11 items-center rounded-full px-4 text-[13px]";
+
+// Filtered URLs (?cat=, ?q= ...) all point to the plain /catalog as the main page
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Catalog" });
+  return { title: `${t("title")} · Gamma Piu`, description: t("intro"), alternates: pageAlternates(locale, "/catalog") };
+}
 
 export default async function CatalogPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<SP> }) {
   const { locale } = await params;

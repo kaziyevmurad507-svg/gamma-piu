@@ -5,11 +5,12 @@ import { btnClass } from "@/components/ui/Button";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { Container, SectionHead } from "@/components/ui/Section";
 import { WA_URL } from "@/lib/whatsapp";
+import { pageAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "About" });
-  return { title: `${t("title")} · Gamma Piu` };
+  return { title: `${t("title")} · Gamma Piu`, description: t("intro"), alternates: pageAlternates(locale, "/about") };
 }
 
 // Two parts: how the store works (Baku) and the story of the Gamma+ brand (facts from gammapiu.it, own wording)

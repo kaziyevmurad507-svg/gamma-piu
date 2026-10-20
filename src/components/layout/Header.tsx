@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Logo } from "./Logo";
 import { useTranslations } from "next-intl";
 import { Columns2, Heart, Menu, Search, ShoppingBag, Truck, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -29,8 +30,8 @@ export function Header() {
       <div className="flex h-[34px] items-center justify-center gap-2 bg-lavender text-xs"><Truck size={16} />{t("announcement")}</div>
       <div className="mx-auto flex h-[68px] w-full max-w-[1440px] items-center justify-between px-5 lg:h-[92px] lg:px-16">
         <Link href="/" className="flex flex-col transition-opacity duration-150 hover:opacity-70">
-          <span className="text-[22px] leading-[1.1] lg:text-[27px]">gamma piu</span>
-          <span className="text-[9px] text-muted">PROFESSIONAL · BAKU</span>
+          <Logo className="h-[22px] w-auto lg:h-[28px]" />
+          <span className="mt-1 text-[9px] text-muted">PROFESSIONAL · BAKU</span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm lg:flex">
           {LINKS.map(([href, key]) => (
