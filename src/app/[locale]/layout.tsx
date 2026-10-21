@@ -7,6 +7,7 @@ import '../globals.css';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toast } from "@/components/layout/Toast";
+import { ThemeScript } from "@/components/layout/ThemeScript";
 import { CategoriesProvider } from "@/components/layout/CategoriesProvider";
 import { SpecTypesProvider } from "@/components/layout/SpecTypesProvider";
 import { getCategories } from "@/lib/category-data";
@@ -21,9 +22,6 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
-
-// Runs before the page is painted, so there is no light flash: saved choice, else the system theme
-const themeInit = `try{var t=localStorage.getItem("gp-theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}`;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -56,8 +54,8 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={inter.variable} suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeInit }} /></head>
       <body className="flex min-h-screen flex-col">
+        <ThemeScript />
         <NextIntlClientProvider>
           <CategoriesProvider list={categories}>
             <SpecTypesProvider list={specTypes}>

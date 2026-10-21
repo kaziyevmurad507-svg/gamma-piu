@@ -19,7 +19,7 @@ async function productPages(): Promise<{ path: string; date: string }[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const pages = [{ path: "", date: "" }, { path: "/catalog", date: "" }, { path: "/about", date: "" }, ...(await productPages())];
+  const pages = [{ path: "", date: "" }, { path: "/catalog", date: "" }, { path: "/about", date: "" }, { path: "/privacy", date: "" }, ...(await productPages())];
   // One entry per page and language, each one lists all language versions (hreflang)
   return pages.flatMap(({ path, date }) => {
     const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}${path}`]));

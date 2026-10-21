@@ -22,7 +22,8 @@
     "language": "Language / Dil",
     "notice": "Sample catalog: prices, stock, variants and technical details must be confirmed by the seller.",
     "legal": "© 2026 Gamma Piu Baku · Design sample",
-    "currency": "AZN · AZ / RU / EN"
+    "currency": "AZN · AZ / RU / EN",
+    "privacy": "Privacy policy"
   },
   "Colors": {
     "black": "Black",
@@ -295,5 +296,20 @@
   "Meta": {
     "siteTitle": "Gamma Piu — professional hairdressing supplies in Baku",
     "siteDescription": "Professional tools for barbers and hairdressers in Baku: clippers, trimmers, hair dryers, scissors. Order via WhatsApp, free delivery in Baku."
+  },
+  "Privacy": {
+    "title": "Privacy policy",
+    "intro": "How this site handles your information. Short and in plain words.",
+    "s1Title": "What is saved in your browser",
+    "s1Text": "The cart, favorites, comparison list and the light or dark theme are saved only in your browser, on your device. We do not see them and they are not sent to us. You can delete them at any time in your browser settings.",
+    "s2Title": "Orders via WhatsApp",
+    "s2Text": "There is no online payment and no account on this site. An order is a WhatsApp message that you send yourself. The details you write in it (for example name, phone number and delivery address) reach us through WhatsApp and are used only to process your order. WhatsApp's own privacy policy applies to the chat.",
+    "s3Title": "Cookies and tracking",
+    "s3Text": "The site does not use advertising or analytics cookies and does not track you on other sites. A sign-in cookie is used only for the store staff in the admin panel.",
+    "s4Title": "Delivery, payment and returns",
+    "s4Text": "Delivery within Baku is free. Before you order, please confirm the delivery time, the payment method and the return or exchange terms with us on WhatsApp. Prices, stock and product details are confirmed there too.",
+    "s5Title": "Questions?",
+    "s5Text": "To ask about your data or to request deletion of your order details, write to us on WhatsApp.",
+    "cta": "Contact us on WhatsApp"
   }
 }

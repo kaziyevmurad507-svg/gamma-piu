@@ -30,6 +30,7 @@ export function Footer() {
               <Link href="/#delivery">{t("Footer.delivery")}</Link>
               <Link href="/#how-to-order">{t("Footer.howToOrder")}</Link>
               <a href={WA_URL} target="_blank" rel="noopener noreferrer">{t("Footer.whatsapp")}</a>
+              <Link href="/privacy">{t("Footer.privacy")}</Link>
             </div>
             <div className={`${col} hidden lg:flex`}>
               <p className={head}>{t("Footer.language")}</p>

@@ -22,7 +22,8 @@
     "language": "Dil / Language",
     "notice": "Nümunə kataloq: qiymət, stok, variant və texniki məlumatlar satıcı tərəfindən təsdiqlənməlidir.",
     "legal": "© 2026 Gamma Piu Baku · Dizayn nümunəsi",
-    "currency": "AZN · AZ / RU / EN"
+    "currency": "AZN · AZ / RU / EN",
+    "privacy": "Məxfilik siyasəti"
   },
   "Colors": {
     "black": "Qara",
@@ -295,5 +296,20 @@
   "Meta": {
     "siteTitle": "Gamma Piu — Bakıda peşəkar bərbər ləvazimatları",
     "siteDescription": "Bakıda peşəkar bərbər alətləri: maşınlar, trimmerlər, fenlər, qayçılar. Sifariş WhatsApp ilə, Bakı daxilində pulsuz çatdırılma."
+  },
+  "Privacy": {
+    "title": "Məxfilik siyasəti",
+    "intro": "Bu sayt məlumatlarınızla necə davranır. Qısa və sadə dillə.",
+    "s1Title": "Brauzerinizdə nələr saxlanılır",
+    "s1Text": "Səbət, sevimlilər, müqayisə siyahısı və açıq ya tünd mövzu yalnız sizin cihazınızdakı brauzerdə saxlanılır. Biz onları görmürük və onlar bizə göndərilmir. İstənilən vaxt brauzer parametrlərindən silə bilərsiniz.",
+    "s2Title": "WhatsApp ilə sifariş",
+    "s2Text": "Saytda onlayn ödəniş və hesab yoxdur. Sifariş özünüzün göndərdiyiniz WhatsApp mesajıdır. Orada yazdığınız məlumatlar (məsələn, ad, telefon nömrəsi və çatdırılma ünvanı) WhatsApp vasitəsilə bizə çatır və yalnız sifarişinizi yerinə yetirmək üçün istifadə olunur. Yazışmaya WhatsApp-ın öz məxfilik siyasəti tətbiq olunur.",
+    "s3Title": "Kukilər və izləmə",
+    "s3Text": "Saytda reklam və ya analitik kukilərdən istifadə olunmur, başqa saytlarda sizi izləmirik. Giriş kukisi yalnız idarəetmə panelində mağaza işçiləri üçün istifadə olunur.",
+    "s4Title": "Çatdırılma, ödəniş və qaytarma",
+    "s4Text": "Bakı daxilində çatdırılma pulsuzdur. Sifarişdən əvvəl çatdırılma müddətini, ödəniş üsulunu, qaytarma və dəyişdirmə şərtlərini WhatsApp-da bizimlə dəqiqləşdirin. Qiymətlər, stok və məhsul detalları da orada təsdiqlənir.",
+    "s5Title": "Sualınız var?",
+    "s5Text": "Məlumatlarınız barədə soruşmaq və ya sifariş məlumatlarının silinməsini istəmək üçün bizə WhatsApp-da yazın.",
+    "cta": "WhatsApp ilə əlaqə"
   }
 }

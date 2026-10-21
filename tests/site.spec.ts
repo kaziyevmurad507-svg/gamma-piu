@@ -27,3 +27,10 @@ test("admin sends a visitor to the login page", async ({ page }) => {
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/admin\/login/);
 });
+
+test("privacy page opens and is linked in the footer", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByRole("contentinfo").getByRole("link", { name: "Privacy policy" }).click();
+  await expect(page).toHaveURL(/\/en\/privacy/);
+  await expect(page.getByRole("heading", { name: "Privacy policy", level: 1 })).toBeVisible();
+});
