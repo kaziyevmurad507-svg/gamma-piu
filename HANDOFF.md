@@ -1,3 +1,9 @@
+# Applied database release — 2026-10-27
+
+Owner explicitly approved the live migrations after explanation. Versions20261027121312/schema_baseline,20261027121349/atomic_admin_and_visibility,20261027121406/admin_mfa are applied. Business table hashes and254Storageobjects unchanged. Actual TOTP enrollment is pending owner action in localAdmin tab at localhost3101. HostedTOTP enabled; scheduled backups and leaked-password protection unavailable on Free. Full GitHubCI passed, including Docker reset+37browser tests. ConfirmedWhatsApp994507715648. Preserve .env.local; local runtime uses process variables. See FIX-STATUS.md and supabase/README.md for current boundaries.
+
+--- Historical preparation notes ---
+
 # Current audit remediation — 2026-10-27
 
 Read `FIX-STATUS.md`, `README.md` and `supabase/README.md` first. The historical steps below describe the pre-audit implementation; current files supersede old behavior (8 MiB uploads, folder sweeps, non-atomic saves, aggregate offers, catalog limit100).

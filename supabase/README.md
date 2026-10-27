@@ -1,14 +1,22 @@
 # Database rollout and recovery
 
+## Applied release — 27 October 2026
+
+The three migration versions listed below are now recorded on the existing Gamma + project. The baseline was recorded without replaying CREATE TABLE. The RPC/visibility and MFA migrations were applied after explicit owner approval. Hashes of all eight application tables matched before and after; 31 products, 53 variants, 248 image records and 254 Storage objects were preserved. TOTP is enabled in hosted Auth; the owner must complete authenticator enrollment through the local application.
+
+The full isolated Supabase start/reset, build and 37 browser tests passed in GitHub Actions: https://github.com/kaziyevmurad507-svg/gamma-piu/actions/runs/40499063723. A separate local application-data snapshot and all Storage objects were verified, including an isolated restoration of the real catalog and both migrations. The Free plan has no scheduled project backups; full Auth/platform restoration remains untested. Leaked-password protection requires Pro and was not enabled.
+
+Do not replay this release on that project. The existing-project procedure below is retained for another verified legacy environment and for recovery planning.
+
 The canonical schema is now `supabase/migrations/`. The numbered `001_*.sql`–`006_*.sql` files are historical reference, not an installation sequence. Do not replay them after the migrations. In particular, do not re-run the original bulk product import: it deletes the existing catalog.
 
 ## Contents and verification
 
 | Migration | Purpose |
 | --- | --- |
-| `20261021131226_schema_baseline.sql` | Empty application schema for a fresh Supabase project: eight original tables, constraints, indexes, trigger, RLS, explicit grants and the 5 MiB public image bucket. No business data, Auth accounts or credentials. |
-| `20261021131228_atomic_admin_and_visibility.sql` | Transactional product/category/spec/ambassador/photo RPCs; hidden-category and active-variant visibility; durable image cleanup; normalized grants and Storage policies; missing FK indexes; fixed trigger search path. |
-| `20261021131230_admin_mfa.sql` | Membership helper in the non-exposed `private` schema; `is_admin()` requires membership and AAL2; public enrollment helper reveals only the caller's own membership. |
+| `20261027121312_schema_baseline.sql` | Empty application schema for a fresh Supabase project: eight original tables, constraints, indexes, trigger, RLS, explicit grants and the 5 MiB public image bucket. No business data, Auth accounts or credentials. |
+| `20261027121349_atomic_admin_and_visibility.sql` | Transactional product/category/spec/ambassador/photo RPCs; hidden-category and active-variant visibility; durable image cleanup; normalized grants and Storage policies; missing FK indexes; fixed trigger search path. |
+| `20261027121406_admin_mfa.sql` | Membership helper in the non-exposed `private` schema; `is_admin()` requires membership and AAL2; public enrollment helper reveals only the caller's own membership. |
 
 The baseline was derived from read-only catalog metadata of the existing project on 21 October 2026. It deliberately normalizes table grants and function search paths rather than reproducing broad historical defaults. The application has no service-role key requirement.
 
@@ -42,7 +50,7 @@ This is a coordinated application/database release. The new actions need the RPC
 3. Compare the current remote schema to the baseline. Confirm the original eight tables, constraints, trigger and bucket configuration. Check for any new policies or functions added since capture. Do not mark a genuinely different schema as matching without reviewing the difference.
 4. Record the baseline as already applied **without executing its CREATE TABLE statements against the existing database**. With the CLI explicitly linked to the verified project, the reviewed command is:
    ```sh
-   npx supabase@2.121.0 migration repair 20261021131226 --status applied --linked
+   npx supabase@2.121.0 migration repair 20261027121312 --status applied --linked
    ```
    This changes migration history, not catalog rows. It is an operational release step, not a command that was run during the code changes.
 5. Preview pending migrations:
@@ -56,7 +64,7 @@ This is a coordinated application/database release. The new actions need the RPC
 
 The core migration replaces the exact policy names captured remotely: `admin all`, `public read`, `public read spec_types`, `public read published`, `public read variants`, `public read images`; Storage policies `admin write images`, `admin upload photos`, `admin update photos`, `admin delete photos`. If another permissive policy is present, it must be reviewed before rollout, because PostgreSQL permissive policies combine with OR.
 
-No production migrations, product edits, file deletions, backup jobs or Auth settings changes were performed as part of preparing these files.
+For the applied release above, schema migrations and history were updated; business rows and Storage objects were preserved. No product edits, physical file deletions, paid backup jobs or hosted Auth configuration changes were performed.
 
 ## Post-deployment read-only checks
 
