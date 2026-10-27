@@ -7,6 +7,7 @@ import { Ordering } from "@/components/home/Ordering";
 import { ProductSection } from "@/components/home/ProductSection";
 import { getAmbassadors } from "@/lib/ambassadors";
 import { getFeatured, getNew } from "@/lib/catalog";
+import { getProduct } from "@/lib/product";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_URL, pageAlternates } from "@/lib/seo";
 
@@ -19,11 +20,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const t = await getTranslations("Home");
   // Load product lists and ambassadors in parallel
-  const [featured, fresh, people] = await Promise.all([getFeatured(locale), getNew(locale), getAmbassadors(locale)]);
+  const [featured, fresh, people, boosted, dryer] = await Promise.all([
+    getFeatured(locale), getNew(locale), getAmbassadors(locale),
+    getProduct(locale, "clipper-boosted-up"), getProduct(locale, "5555"),
+  ]);
   return (
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Store", name: "Gamma Piu", url: `${SITE_URL}/${locale}`, areaServed: "Baku", currenciesAccepted: "AZN" }} />
-      <Hero />
+      <Hero boosted={boosted} dryer={dryer} />
       <Categories />
       <ProductSection eyebrow={t("featuredEyebrow")} title={t("featuredTitle")} products={featured} />
       <Editorial />

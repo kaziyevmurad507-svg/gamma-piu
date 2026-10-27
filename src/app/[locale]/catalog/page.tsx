@@ -5,7 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { CatalogForm } from "@/components/catalog/CatalogForm";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { Container } from "@/components/ui/Section";
-import { getProducts } from "@/lib/catalog";
+import { PageIntro } from "@/components/ui/PageIntro";
+import { CATALOG_PAGE_SIZE, getCatalogPage } from "@/lib/catalog";
 import { getCategories } from "@/lib/category-data";
 import { COLORS, SORTS } from "@/lib/categories";
 import { pageAlternates } from "@/lib/seo";
@@ -35,20 +36,19 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
     q: one(sp.q).slice(0, 80), cats: only(sp.cat, cats.map((c) => c.slug)), min: one(sp.min), max: one(sp.max),
     avail: only(sp.avail, ["stock", "order"] as const), colors: only(sp.color, COLORS), sort: only(sp.sort, SORTS)[0] ?? "recommended",
   };
-  const products = await getProducts(locale, { q: v.q, cats: v.cats, min: num(v.min), max: num(v.max), avail: v.avail, colors: v.colors, sort: v.sort });
+  const { products, total, page, pages } = await getCatalogPage(locale, { q: v.q, cats: v.cats, min: num(v.min), max: num(v.max), avail: v.avail, colors: v.colors, sort: v.sort }, Number(one(sp.page)) || 1);
+  const pageHref = (target: number) => {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(sp)) if (key !== "page") for (const item of all(value)) query.append(key, item);
+    if (target > 1) query.set("page", String(target));
+    return `/catalog${query.size ? `?${query}` : ""}`;
+  };
 
   return (
     <Container id="catalog-top" className="flex flex-col gap-8 pb-16 pt-8">
-      <div className="flex flex-col gap-3.5">
-        <p className="text-xs text-muted"><Link href="/" className="link-text">{t("Nav.home")}</Link> / {t("Nav.catalog")}</p>
-        <div className="flex items-center justify-between gap-4">
-          <h1 className="text-[34px] font-semibold leading-[1.12] lg:text-5xl">{t("Catalog.title")}</h1>
-          <span className={`${chip} shrink-0 bg-action-soft font-semibold text-action`}>{t("Catalog.count", { count: products.length })}</span>
-        </div>
-        <p className="text-sm text-muted lg:text-base">{t("Catalog.intro")}</p>
-      </div>
+      <PageIntro home={t("Nav.home")} crumb={t("Nav.catalog")} title={t("Catalog.title")} chip={t("Catalog.count", { count: total })} text={t("Catalog.intro")} />
 
-      <CatalogForm v={v} count={products.length}>
+      <CatalogForm v={v} count={total}>
         <div className="flex flex-wrap gap-2">
           {(v.cats.length ? v.cats : [""]).map((s) => (
             <span key={s} className={`${chip} bg-action-soft font-semibold text-action`}>{s ? cats.find((c) => c.slug === s)?.name : t("Catalog.allCategories")}</span>
@@ -59,7 +59,12 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
           <>
             <ProductGrid products={products} className="lg:grid-cols-3" />
             <div className="flex flex-col items-center gap-3.5 pt-6">
-              <p className="text-xs text-muted">{t("Catalog.shown", { shown: products.length, total: products.length })}</p>
+              <p className="text-xs text-muted">{t("Catalog.shown", { shown: Math.min(page * CATALOG_PAGE_SIZE, total), total })}</p>
+              {pages > 1 && <nav aria-label={t("Catalog.page", { page, pages })} className="flex flex-wrap items-center justify-center gap-3">
+                {page > 1 && <Link href={pageHref(page - 1)} rel="prev" className={btnClass("secondary")}>{t("Catalog.previous")}</Link>}
+                <span className="text-sm" aria-current="page">{t("Catalog.page", { page, pages })}</span>
+                {page < pages && <Link href={pageHref(page + 1)} rel="next" className={btnClass("secondary")}>{t("Catalog.next")}</Link>}
+              </nav>}
               <a href="#catalog-top" className={btnClass("secondary")}><ArrowUp size={18} />{t("Catalog.backToTop")}</a>
             </div>
           </>

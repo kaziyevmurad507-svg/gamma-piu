@@ -1,75 +1,120 @@
-import { createClient } from "@/lib/supabase/server"; // ASSUMED path: change to your server client
+import { createPublicClient } from "@/lib/supabase/public";
 import { colorOf, type Sort } from "./categories";
+import { selectCatalogVariant, selectVariantImage, type CatalogVariant } from "./catalog-selection";
 import { pick } from "./i18n-field";
 
 export type Product = {
   id: string; slug: string; name: string; category: string; categoryName: string; group: string; color: string | null;
   price: number; stock: number; image: string | null; featured: boolean;
-  variantId: string; specs: Record<string, unknown>; // cheapest variant (the one whose price the card shows)
+  variantId: string; specs: Record<string, unknown>;
 };
 export type Filters = { q?: string; cats?: string[]; min?: number; max?: number; avail?: string[]; colors?: string[]; sort?: Sort; ids?: string[] };
+export const CATALOG_PAGE_SIZE = 24;
+const BATCH_SIZE = 200;
+const BUCKET = "product-images";
+type IndexRow = { id: string; is_featured: boolean; categories: { slug: string }; product_variants: CatalogVariant[] };
+type Selected = { id: string; featured: boolean; category: string; variant: CatalogVariant };
+type Translations = { name_az: string; name_ru: string | null; name_en: string | null };
+type CardRow = Translations & {
+  id: string; slug: string; specs?: Record<string, unknown>;
+  categories: Translations & { slug: string; compare_group: string | null };
+  product_images: { path: string; sort_order: number; is_main: boolean; variant_id: string | null }[];
+};
 
-const BUCKET = "product-images"; // ASSUMED Storage bucket name (must be public)
-const SELECT =
-  "id, slug, name_az, name_ru, name_en, specs, is_featured, categories!inner(slug, name_az, name_ru, name_en, compare_group, is_hidden), product_variants(id, name_en, price, stock, is_active), product_images(path, sort_order, is_main, variant_id)";
-
-// flag = only featured / only new products (used on the home page)
-export async function getProducts(locale: string, f: Filters = {}, limit = 100, flag?: "is_featured" | "is_new") {
-  const db = await createClient();
-  let q = db.from("products").select(SELECT).eq("is_published", true).eq("categories.is_hidden", false).order("created_at", { ascending: false });
-  if (flag) q = q.eq(flag, true);
-  if (f.ids) q = q.in("id", f.ids);
-  if (f.cats?.length) q = q.in("categories.slug", f.cats);
-  const term = f.q?.replace(/[%,()]/g, " ").trim();
-  if (term) q = q.or(["az", "ru", "en"].map((l) => `name_${l}.ilike.%${term}%`).join(","));
-  const { data, error } = await q;
-  if (error) throw error;
-
-  // Price and stock live on variants, so we sum them up per product here
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let list = (data ?? []).flatMap((r: any): Product[] => {
-    const vs = r.product_variants.filter((v: { is_active: boolean }) => v.is_active);
-    if (!vs.length) return []; // hide products without active variants
-    // With a color filter, only variants of the chosen colors count (price, stock, photo)
-    const want = f.colors ?? [];
-    const pool = want.length ? vs.filter((v: { name_en: string }) => want.includes(colorOf(v.name_en) ?? "")) : vs;
-    if (!pool.length) return [];
-    const cheapest = pool.reduce((a: { price: number }, b: { price: number }) => (Number(b.price) < Number(a.price) ? b : a));
-    const imgs = [...r.product_images].sort((a, b) => Number(b.is_main) - Number(a.is_main) || a.sort_order - b.sort_order);
-    // the main photo (star in the admin) wins, if it is common or belongs to a color that is shown;
-    // otherwise the card shows the photo of the variant whose price it shows
-    const shown = new Set(pool.map((v: { id: string }) => v.id));
-    const img = imgs.find((i) => i.is_main && (!i.variant_id || shown.has(i.variant_id))) ?? imgs.find((i) => i.variant_id === cheapest.id) ?? imgs.find((i) => !i.variant_id) ?? imgs[0];
-    return [{
-      id: r.id, variantId: cheapest.id, specs: r.specs ?? {}, slug: r.slug, name: r[`name_${locale}`] ?? r.name_az, category: r.categories.slug, categoryName: pick(r.categories, "name", locale), group: r.categories.compare_group ?? r.categories.slug,
-      color: r.specs?.color ?? null,
-      price: Math.min(...pool.map((v: { price: number }) => Number(v.price))), // "from" price
-      stock: pool.reduce((n: number, v: { stock: number }) => n + v.stock, 0),
-      image: img ? db.storage.from(BUCKET).getPublicUrl(img.path).data.publicUrl : null,
-      featured: r.is_featured,
-    }];
+// Only the small pricing index is scanned. Descriptions, specs and image lists are
+// fetched for the visible page, and explicit ranges avoid the API's row limit.
+async function getIndex(f: Filters = {}, flag?: "is_featured" | "is_new"): Promise<Selected[]> {
+  if (f.ids && !f.ids.length) return [];
+  const db = createPublicClient();
+  const rows: IndexRow[] = [];
+  for (let offset = 0; ; offset += BATCH_SIZE) {
+    let query = db.from("products")
+      .select("id, is_featured, categories!inner(slug,is_hidden), product_variants(id,name_en,price,stock,is_active)")
+      .eq("is_published", true).eq("categories.is_hidden", false)
+      .order("created_at", { ascending: false }).order("id")
+      .range(offset, offset + BATCH_SIZE - 1);
+    if (flag) query = query.eq(flag, true);
+    if (f.ids) query = query.in("id", f.ids);
+    if (f.cats?.length) query = query.in("categories.slug", f.cats);
+    const term = f.q?.replace(/[%,()]/g, " ").trim().slice(0, 80);
+    if (term) query = query.or(["az", "ru", "en"].map((lang) => `name_${lang}.ilike.%${term}%`).join(","));
+    const { data, error } = await query;
+    if (error) throw error;
+    rows.push(...(data ?? []) as unknown as IndexRow[]);
+    if (!data || data.length < BATCH_SIZE) break;
+  }
+  const list = rows.flatMap((row): Selected[] => {
+    const variant = selectCatalogVariant(row.product_variants, f.colors, f.avail);
+    if (!variant || (f.min != null && Number(variant.price) < f.min) || (f.max != null && Number(variant.price) > f.max)) return [];
+    return [{ id: row.id, featured: row.is_featured, category: row.categories.slug, variant }];
   });
-
-  // Price and availability filters work after variants are merged
-  if (f.min != null) list = list.filter((p) => p.price >= f.min!);
-  if (f.max != null) list = list.filter((p) => p.price <= f.max!);
-  // Only one availability box checked = filter. Both or none = show all.
-  const inStock = f.avail?.includes("stock"), onOrder = f.avail?.includes("order");
-  if (inStock && !onOrder) list = list.filter((p) => p.stock > 0);
-  if (onOrder && !inStock) list = list.filter((p) => p.stock === 0);
-
-  if (f.sort === "price-asc") list.sort((a, b) => a.price - b.price);
-  else if (f.sort === "price-desc") list.sort((a, b) => b.price - a.price);
-  else if (!f.sort || f.sort === "recommended") list.sort((a, b) => Number(b.featured) - Number(a.featured)); // stable: keeps newest first
-  return list.slice(0, limit);
+  if (f.sort === "price-asc") list.sort((a, b) => Number(a.variant.price) - Number(b.variant.price));
+  else if (f.sort === "price-desc") list.sort((a, b) => Number(b.variant.price) - Number(a.variant.price));
+  else if (!f.sort || f.sort === "recommended") list.sort((a, b) => Number(b.featured) - Number(a.featured));
+  return list;
 }
 
+async function loadCards(locale: string, selected: Selected[], includeSpecs = false): Promise<Product[]> {
+  if (!selected.length) return [];
+  const db = createPublicClient();
+  const rows: CardRow[] = [];
+  for (let offset = 0; offset < selected.length; offset += 50) {
+    const { data, error } = await db.from("products")
+      .select(`id,slug,name_az,name_ru,name_en,${includeSpecs ? "specs," : ""}categories!inner(slug,name_az,name_ru,name_en,compare_group,is_hidden),product_images(path,sort_order,is_main,variant_id)`)
+      .eq("is_published", true).eq("categories.is_hidden", false)
+      .in("id", selected.slice(offset, offset + 50).map((row) => row.id));
+    if (error) throw error;
+    rows.push(...(data ?? []) as unknown as CardRow[]);
+  }
+  return selected.flatMap(({ id, featured, variant }): Product[] => {
+    const row = rows.find((candidate) => candidate.id === id);
+    if (!row) return [];
+    const image = selectVariantImage(row.product_images, variant.id);
+    return [{
+      id, slug: row.slug, name: pick(row, "name", locale), category: row.categories.slug,
+      categoryName: pick(row.categories, "name", locale), group: row.categories.compare_group ?? row.categories.slug,
+      variantId: variant.id, color: colorOf(variant.name_en) ?? null, price: Number(variant.price), stock: Math.max(0, variant.stock),
+      image: image ? db.storage.from(BUCKET).getPublicUrl(image.path).data.publicUrl : null,
+      featured, specs: row.specs ?? {},
+    }];
+  });
+}
+
+export async function getCatalogPage(locale: string, filters: Filters = {}, requestedPage = 1) {
+  const index = await getIndex(filters);
+  const pages = Math.max(1, Math.ceil(index.length / CATALOG_PAGE_SIZE));
+  const page = Math.max(1, Math.min(Number.isFinite(requestedPage) ? Math.floor(requestedPage) : 1, pages));
+  return { products: await loadCards(locale, index.slice((page - 1) * CATALOG_PAGE_SIZE, page * CATALOG_PAGE_SIZE)), total: index.length, page, pages };
+}
+
+export async function getProducts(locale: string, filters: Filters = {}, limit?: number, flag?: "is_featured" | "is_new") {
+  const index = await getIndex(filters, flag);
+  return loadCards(locale, limit == null ? index : index.slice(0, limit));
+}
 export const getFeatured = (locale: string) => getProducts(locale, {}, 4, "is_featured");
 export const getNew = (locale: string) => getProducts(locale, {}, 4, "is_new");
 
-// Products by id, in the order of the ids (used by favorites and compare)
+export async function getRelatedProducts(locale: string, currentId: string) {
+  const index = (await getIndex()).filter((product) => product.id !== currentId);
+  const selected: Selected[] = [];
+  const categories = new Set<string>();
+  for (const product of index) {
+    if (!categories.has(product.category)) {
+      selected.push(product);
+      categories.add(product.category);
+    }
+    if (selected.length === 4) break;
+  }
+  for (const product of index) {
+    if (selected.length === 4) break;
+    if (!selected.includes(product)) selected.push(product);
+  }
+  return loadCards(locale, selected);
+}
+
 export async function getProductsByIds(locale: string, ids: string[]) {
-  if (!ids.length) return [];
-  const list = await getProducts(locale, { ids }, 100);
-  return ids.flatMap((id) => list.find((p) => p.id === id) ?? []);
+  const index: Selected[] = [];
+  for (let offset = 0; offset < ids.length; offset += 50) index.push(...await getIndex({ ids: ids.slice(offset, offset + 50) }));
+  const list = await loadCards(locale, index, true);
+  return ids.flatMap((id) => list.find((product) => product.id === id) ?? []);
 }

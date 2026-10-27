@@ -8,10 +8,10 @@ export const btnClass = (variant: Variant = 'primary') =>
   cn(
     'inline-flex h-12 items-center justify-center gap-2.5 rounded-full px-[22px] text-sm font-semibold transition duration-150 active:scale-[0.97] disabled:cursor-not-allowed',
     variant === 'primary' &&
-      'bg-action text-white hover:bg-action-hover hover:shadow-[0_6px_18px_#2454f545] active:bg-action-pressed disabled:bg-disabled disabled:shadow-none',
+      'bg-action-fill text-white hover:bg-action-fill-hover hover:shadow-[0_6px_18px_#2454f545] active:bg-action-fill-pressed disabled:bg-disabled disabled:shadow-none',
     variant === 'secondary' &&
       'border border-line bg-canvas text-ink hover:border-action hover:bg-action-soft hover:text-action active:bg-action-soft disabled:text-muted disabled:hover:border-line disabled:hover:bg-canvas disabled:hover:text-muted',
-    variant === 'success' && 'bg-ok text-white',
+    variant === 'success' && 'bg-ok-fill text-white',
     variant === 'bare' && 'border',
   );
 

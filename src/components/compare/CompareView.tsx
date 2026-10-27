@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Columns2, Info, MessageCircle, Plus, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { btnClass, Button } from "@/components/ui/Button";
+import { btnClass } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { PageIntro, Skeleton } from "@/components/ui/PageIntro";
 import { StockBadge } from "@/components/ui/StockBadge";
@@ -15,9 +15,11 @@ import { useCategories } from "@/components/layout/CategoriesProvider";
 import { useSpecTypes } from "@/components/layout/SpecTypesProvider";
 import { groupSlugs } from "@/lib/categories";
 import { specLabel, specOrder } from "@/lib/specs";
-import { addToCart, COMPARE_MAX, removeCompare, useStore } from "@/lib/store";
+import { COMPARE_MAX, removeCompare, useStore } from "@/lib/store";
 import { useLoaded } from "@/lib/use-loaded";
 import { WA_URL } from "@/lib/whatsapp";
+import { AddToCartButton } from "@/components/product/ProductActions";
+import { LoadError } from "@/components/ui/LoadError";
 
 // A spec value can be plain text or { az, ru, en }
 const text = (v: unknown, locale: string): string => {
@@ -30,14 +32,13 @@ const text = (v: unknown, locale: string): string => {
 
 export function CompareView() {
   const t = useTranslations("Compare");
-  const p = useTranslations("Product");
   const n = useTranslations();
   const locale = useLocale();
   const cats = useCategories();
   const types = useSpecTypes();
   const { cmp, cmpGroup, ready } = useStore();
   const [onlyDiff, setOnlyDiff] = useState(false);
-  const rows = useLoaded(cmp, (ids) => loadProducts(locale, ids));
+  const { rows, error, retry } = useLoaded(cmp, (ids) => loadProducts(locale, ids), locale);
 
   const items = (rows ?? []).filter((x) => cmp.includes(x.id));
   const loading = !ready || rows === null;
@@ -57,7 +58,7 @@ export function CompareView() {
     <div className="flex flex-col gap-7">
       <PageIntro home={n("Nav.home")} crumb={n("Nav.compare")} title={t("title")} chip={items.length ? `${items.length} / ${COMPARE_MAX}` : undefined} text={t("intro")} />
 
-      {loading ? (
+      {error ? <LoadError retry={retry} /> : loading ? (
         <Skeleton className="h-[272px]" />
       ) : !items.length ? (
         <div className="flex flex-col items-center gap-4 rounded-bento bg-media p-10 text-center">
@@ -71,7 +72,7 @@ export function CompareView() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
             <div className="flex items-center gap-2.5 lg:flex-1">
               <button type="button" role="switch" aria-checked={onlyDiff} aria-label={t("onlyDiff")} onClick={() => setOnlyDiff(!onlyDiff)}
-                className={`flex h-[26px] w-[42px] shrink-0 items-center rounded-full p-[3px] transition-colors duration-200 ease-in-out ${onlyDiff ? "bg-action" : "bg-line"}`}>
+                className={`flex h-[26px] w-[42px] shrink-0 items-center rounded-full p-[3px] transition-colors duration-200 ease-in-out ${onlyDiff ? "bg-action-fill" : "bg-line"}`}>
                 <span className={`size-5 rounded-full bg-canvas shadow-soft transition-transform duration-200 ease-in-out ${onlyDiff ? "translate-x-4" : ""}`} />
               </button>
               <span className="text-[13px]">{t("onlyDiff")}</span>
@@ -79,7 +80,8 @@ export function CompareView() {
             {items.length < COMPARE_MAX && <LinkButton href={`/catalog?${groupSlugs(cats, cmpGroup).map((c) => `cat=${c}`).join("&")}`} variant="secondary" className="w-full lg:w-auto"><Plus size={20} />{t("addProduct")}</LinkButton>}
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div role="region" aria-label={t("matrixTitle")} tabIndex={0} className="min-w-0 overflow-x-auto pb-2">
+          <div className={`flex flex-col gap-2 ${items.length > 1 ? "min-w-[560px] lg:min-w-0" : ""}`}>
             <div className="flex gap-3 lg:gap-5">
               <div className="hidden w-[260px] shrink-0 flex-col gap-5 pr-6 pt-[42px] lg:flex">
                 <Columns2 size={32} aria-hidden />
@@ -96,12 +98,10 @@ export function CompareView() {
                         <X size={16} />
                       </button>
                     </div>
-                    <Link href={`/product/${x.slug}`} className="link-text text-base font-semibold lg:text-2xl">{x.name}</Link>
+                    <Link href={`/product/${x.slug}?variant=${x.variantId}`} className="link-text max-w-full break-words text-base font-semibold lg:text-2xl">{x.name}</Link>
                     <StockBadge status={status} label={n(`Stock.${status}`)} />
                     <p className="text-[21px] font-semibold lg:text-[28px]">{money(x.price)}</p>
-                    <Button className="w-full" onClick={() => addToCart(x.variantId)}>
-                      <span className="hidden lg:inline">{t("addToCart")}</span><span className="lg:hidden">{p("addToCart")}</span>
-                    </Button>
+                    <AddToCartButton id={x.variantId} stock={x.stock} className="w-full" />
                   </div>
                 );
               })}
@@ -115,11 +115,13 @@ export function CompareView() {
                 </div>
                 <div className="flex min-w-0 flex-1 gap-3 lg:gap-5">
                   {r.values.map((v, i) => (
-                    <p key={items[i].id} className={`flex min-h-[58px] min-w-0 flex-1 items-center rounded-panel px-3 py-2 text-xs font-medium lg:min-h-[52px] lg:rounded-card lg:px-6 lg:text-sm ${items.length < 2 ? "bg-media" : r.diff ? "bg-cream" : "bg-ok-soft text-ok"}`}>{v}</p>
+                    <p key={items[i].id} className={`flex min-h-[58px] min-w-0 flex-1 items-center break-words rounded-panel px-3 py-2 text-xs font-medium [overflow-wrap:anywhere] lg:min-h-[52px] lg:rounded-card lg:px-6 lg:text-sm ${items.length < 2 ? "bg-media" : r.diff ? "bg-cream" : "bg-ok-soft text-ok"}`}>{v}</p>
                   ))}
                 </div>
               </div>
             ))}
+          </div>
+
           </div>
 
           <p className="flex gap-2.5 rounded-panel bg-cream p-4 text-xs text-warn"><Info size={18} className="shrink-0" aria-hidden />{n("Footer.notice")}</p>

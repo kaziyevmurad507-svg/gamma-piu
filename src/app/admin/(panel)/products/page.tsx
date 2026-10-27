@@ -5,8 +5,7 @@ import { AdminSearch } from "@/components/admin/AdminSearch";
 import { btnClass } from "@/components/ui/Button";
 import { StockBadge } from "@/components/ui/StockBadge";
 import { requireAdmin } from "@/lib/admin";
-import { getAdminProducts } from "@/lib/admin-data";
-import { getCategories } from "@/lib/category-data";
+import { getAdminProducts, getCategoryRows } from "@/lib/admin-data";
 import { cn } from "@/lib/cn";
 import { money } from "@/lib/money";
 
@@ -18,7 +17,8 @@ export default async function Products({ searchParams }: { searchParams: Promise
   const { db } = await requireAdmin();
   const sp = await searchParams;
   const q = (sp.q ?? "").trim().toLowerCase().slice(0, 80);
-  const [all, cats] = await Promise.all([getAdminProducts(db), getCategories("ru")]);
+  const [all, categoryRows] = await Promise.all([getAdminProducts(db), getCategoryRows(db)]);
+  const cats = categoryRows.map((category) => ({ slug: category.slug, name: category.name_ru || category.name_az }));
 
   const list = all.filter((p) =>
     (!q || p.name.toLowerCase().includes(q) || p.skus.some((s) => s.includes(q))) &&

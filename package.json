@@ -4,22 +4,29 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/validate-env.mjs",
     "build": "next build",
+    "build:production": "node scripts/validate-env.mjs --production && next build",
+    "check:env": "node scripts/validate-env.mjs --production",
     "start": "next start",
     "lint": "eslint",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:unit": "node --test tests/*.test.*",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.117.3",
+    "@next/env": "16.4.3",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.3",
     "lucide-react": "^1.56.0",
-    "next": "16.4.0",
+    "next": "16.4.3",
     "next-intl": "^4.14.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "zod": "^4.6.6"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.10",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/turbopack": "^4",
@@ -27,7 +34,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "^16.4.0",
+    "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

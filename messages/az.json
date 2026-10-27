@@ -23,7 +23,9 @@
     "notice": "Nümunə kataloq: qiymət, stok, variant və texniki məlumatlar satıcı tərəfindən təsdiqlənməlidir.",
     "legal": "© 2026 Gamma Piu Baku · Dizayn nümunəsi",
     "currency": "AZN · AZ / RU / EN",
-    "privacy": "Məxfilik siyasəti"
+    "privacy": "Məxfilik siyasəti",
+    "terms": "Sifariş və çatdırılma",
+    "email": "Müraciətlər üçün e-poçt"
   },
   "Colors": {
     "black": "Qara",
@@ -81,7 +83,9 @@
     "replace": "Əvəz et",
     "cancel": "Ləğv et",
     "addedToast": "Məhsul səbətə əlavə edildi",
-    "goToCart": "Səbətə keç"
+    "goToCart": "Səbətə keç",
+    "cartLimit": "Maksimum say artıq səbətdədir",
+    "preorder": "Sifarişlə"
   },
   "Home": {
     "eyebrow": "GAMMA PIU · PEŞƏKAR SEÇİM",
@@ -192,7 +196,10 @@
     "shown": "{total} məhsuldan {shown}-i göstərilir",
     "backToTop": "Yuxarı qayıt",
     "empty": "Heç nə tapılmadı. Filtrləri dəyişməyi sınayın.",
-    "showResults": "{count} məhsulu göstər"
+    "showResults": "{count} məhsulu göstər",
+    "previous": "Əvvəlki",
+    "next": "Növbəti",
+    "page": "Səhifə {page} / {pages}"
   },
   "Stock": {
     "in_stock": "Stokda",
@@ -241,7 +248,10 @@
     "removedToast": "Məhsul səbətdən silindi",
     "undo": "Geri qaytar",
     "waHead": "Salam! Gamma Piu saytından sifariş vermək istəyirəm:",
-    "waTotal": "Cəmi"
+    "waTotal": "Cəmi",
+    "validating": "Mövcudluq yoxlanılır…",
+    "updated": "Qiymət və ya mövcudluq dəyişib. Yenilənmiş səbəti yoxlayın və davam edin.",
+    "orderError": "Sorğunu yoxlamaq mümkün olmadı. Yenidən cəhd edin."
   },
   "Compare": {
     "title": "Yan-yana seçim.",
@@ -301,15 +311,32 @@
     "title": "Məxfilik siyasəti",
     "intro": "Bu sayt məlumatlarınızla necə davranır. Qısa və sadə dillə.",
     "s1Title": "Brauzerinizdə nələr saxlanılır",
-    "s1Text": "Səbət, sevimlilər, müqayisə siyahısı və açıq ya tünd mövzu yalnız sizin cihazınızdakı brauzerdə saxlanılır. Biz onları görmürük və onlar bizə göndərilmir. İstənilən vaxt brauzer parametrlərindən silə bilərsiniz.",
+    "s1Text": "Səbət, sevimlilər, müqayisə siyahısı və mövzu brauzerinizdə saxlanılır. Məhsul identifikatorları aktual məlumat, qiymət və mövcudluq üçün saytın serverinə göndərilir. Saxlanmış siyahıları brauzer ayarlarından silə bilərsiniz.",
     "s2Title": "WhatsApp ilə sifariş",
-    "s2Text": "Saytda onlayn ödəniş və hesab yoxdur. Sifariş özünüzün göndərdiyiniz WhatsApp mesajıdır. Orada yazdığınız məlumatlar (məsələn, ad, telefon nömrəsi və çatdırılma ünvanı) WhatsApp vasitəsilə bizə çatır və yalnız sifarişinizi yerinə yetirmək üçün istifadə olunur. Yazışmaya WhatsApp-ın öz məxfilik siyasəti tətbiq olunur.",
+    "s2Text": "Sayt məhsullarla tanışlıq üçün kataloqdur. Saytda onlayn ödəniş və alıcı kabineti yoxdur. WhatsApp düyməsi özünüzün göndərəcəyiniz sorğunu hazırlayır. Mesajınız və bildirdiyiniz ad, telefon və ya çatdırılma ünvanı sorğunu müzakirə etmək və yerinə yetirmək üçün WhatsApp vasitəsilə satıcıya çatır. WhatsApp məlumatları öz məxfilik siyasətinə uyğun da emal edir.",
     "s3Title": "Kukilər və izləmə",
-    "s3Text": "Saytda reklam və ya analitik kukilərdən istifadə olunmur, başqa saytlarda sizi izləmirik. Giriş kukisi yalnız idarəetmə panelində mağaza işçiləri üçün istifadə olunur.",
+    "s3Text": "Saytda reklam və analitika izləyiciləri yoxdur. Hostinq və Supabase kataloqun işləməsi və xidmətin qorunması üçün lazım olan texniki sorğuları emal edir. Əməkdaşların girişi üçün avtorizasiya kukiləri və Supabase Auth istifadə olunur. Bu xidmətlər və WhatsApp məlumatları Azərbaycan hüdudlarından kənarda emal edə bilər.",
     "s4Title": "Çatdırılma, ödəniş və qaytarma",
-    "s4Text": "Bakı daxilində çatdırılma pulsuzdur. Sifarişdən əvvəl çatdırılma müddətini, ödəniş üsulunu, qaytarma və dəyişdirmə şərtlərini WhatsApp-da bizimlə dəqiqləşdirin. Qiymətlər, stok və məhsul detalları da orada təsdiqlənir.",
+    "s4Text": "Çatdırılma pulsuzdur. Yekun qiymət, mövcudluq, çatdırılma vaxtı, ödəniş üsulu və alış şərtləri təsdiqdən əvvəl WhatsApp-da satıcı ilə razılaşdırılır. “Sifarişlə” işarəli məhsul anbarda yoxdur; gətirilmə imkanı və vaxtı dəqiqləşdirilməlidir.",
     "s5Title": "Sualınız var?",
-    "s5Text": "Məlumatlarınız barədə soruşmaq və ya sifariş məlumatlarının silinməsini istəmək üçün bizə WhatsApp-da yazın.",
+    "s5Text": "Məlumatlarınız, onların düzəldilməsi və ya silinməsi barədə satıcıya WhatsApp-da və ya kaziyevmurad507@gmail.com ünvanına yazın. Saxlanma müddətləri və müraciətin icrası üçün lazım olan məlumatlar satıcı ilə dəqiqləşdirilir.",
     "cta": "WhatsApp ilə əlaqə"
+  },
+  "Common": {
+    "loadError": "Məhsulları yükləmək mümkün olmadı. Yenidən cəhd edin.",
+    "retry": "Yenidən cəhd et"
+  },
+  "Terms": {
+    "title": "Sifariş və çatdırılma",
+    "intro": "Məhsullarla tanışlıq üçün kataloq. Sorğu və alış şərtləri WhatsApp-da birbaşa satıcı ilə razılaşdırılır.",
+    "s1Title": "Sorğu necə göndərilir",
+    "s1Text": "Məhsulu və variantı seçin, səbətə əlavə edin və WhatsApp-ı açın. Sayt mesajı hazırlayır; onu özünüz yoxlayıb göndərirsiniz. Səbətə əlavə etmək məhsulu rezerv etmir və alışı təsdiqləmir.",
+    "s2Title": "Qiymət və ödəniş",
+    "s2Text": "Qiymətlər AZN ilə göstərilir. Alışı təsdiqləməzdən əvvəl yekun məbləği və ödəniş üsulunu satıcı ilə razılaşdırın. Sayt ödəniş və bank kartı məlumatlarını qəbul etmir.",
+    "s3Title": "Çatdırılma və sifarişlə məhsullar",
+    "s3Text": "Çatdırılma pulsuzdur. Ünvanınıza çatdırılma imkanı və vaxtı WhatsApp-da razılaşdırılır. “Sifarişlə” məhsulun anbarda olmadığını bildirir: gətirilmə imkanı və gözlənilən vaxtı satıcıdan dəqiqləşdirin.",
+    "s4Title": "Məhsul məlumatları və müraciətlər",
+    "s4Text": "Xüsusiyyətlər, komplektasiya, zəmanət, qaytarma və ya əvvəlki alış barədə WhatsApp-da satıcıya müraciət edin. Alışdan əvvəl tətbiq olunan şərtləri dəqiqləşdirin. kaziyevmurad507@gmail.com ünvanına da yaza bilərsiniz. Bu təsvirlər tətbiq olunan qanunvericiliklə nəzərdə tutulmuş hüquqları məhdudlaşdırmır.",
+    "cta": "WhatsApp-da yaz"
   }
 }

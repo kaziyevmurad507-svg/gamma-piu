@@ -10,11 +10,11 @@ import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [["/", "home"], ["/catalog", "catalog"], ["/about", "about"]] as const;
 const MENU = [...LINKS, ["/compare", "compare"]] as const; // mobile menu also gets Compare
-const icon = "relative size-11 place-items-center rounded-full transition duration-150 hover:bg-action-soft hover:text-action active:scale-90";
+const icon = "relative size-10 place-items-center rounded-full transition duration-150 hover:bg-action-soft hover:text-action active:scale-90 min-[390px]:size-11";
 
 // Small counter on top of an icon, hidden when 0
 const Badge = ({ n, red = false }: { n: number; red?: boolean }) =>
-  n > 0 ? <span key={n} aria-hidden className={`absolute right-0 top-0 grid h-[18px] min-w-[18px] animate-bump place-items-center rounded-full px-1 text-[10px] font-semibold text-white ${red ? "bg-danger" : "bg-action"}`}>{n > 99 ? "99+" : n}</span> : null;
+  n > 0 ? <span key={n} aria-hidden className={`absolute right-0 top-0 grid h-[18px] min-w-[18px] animate-bump place-items-center rounded-full px-1 text-[10px] font-semibold text-white ${red ? "bg-danger-fill" : "bg-action-fill"}`}>{n > 99 ? "99+" : n}</span> : null;
 const label = (name: string, n: number) => (n > 0 ? `${name} (${n})` : name);
 
 export function Header() {
@@ -30,8 +30,8 @@ export function Header() {
       <div className="flex h-[34px] items-center justify-center gap-2 bg-lavender text-xs"><Truck size={16} />{t("announcement")}</div>
       <div className="mx-auto flex h-[68px] w-full max-w-[1440px] items-center justify-between px-5 lg:h-[92px] lg:px-16">
         <Link href="/" className="flex flex-col transition-opacity duration-150 hover:opacity-70">
-          <Logo className="h-[22px] w-auto lg:h-[28px]" />
-          <span className="mt-1 text-[9px] text-muted">PROFESSIONAL · BAKU</span>
+          <Logo className="h-auto w-[100px] min-[390px]:h-[22px] min-[390px]:w-auto lg:h-[28px]" />
+          <span className="mt-1 text-[8px] text-muted min-[390px]:text-[9px]">PROFESSIONAL · BAKU</span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm lg:flex">
           {LINKS.map(([href, key]) => (

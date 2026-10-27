@@ -42,4 +42,7 @@ next-env.d.ts
 
 # playwright
 /test-results/
+/test-results-ui/
 /playwright-report/
+/.audit-npm-cache/
+/supabase/.temp/

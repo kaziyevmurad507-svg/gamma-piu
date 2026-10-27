@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
 import { getCategoryRows, type CategoryRow } from "@/lib/admin-data";
 import { removeFiles } from "@/lib/admin-storage";
@@ -29,32 +29,17 @@ export async function saveCategories(rows: CategoryRow[], removedIds: string[]):
   const problem = validate(rows);
   if (problem) return { error: problem };
 
-  if (removedIds.length) {
-    const { data: prods } = await db.from("products").select("id").in("category_id", removedIds);
-    const ids = (prods ?? []).map((p) => p.id);
-    if (ids.length) {
-      const { data: pics } = await db.from("product_images").select("path").in("product_id", ids);
-      await db.from("product_images").delete().in("product_id", ids);
-      await db.from("product_variants").delete().in("product_id", ids);
-      const { error } = await db.from("products").delete().in("id", ids);
-      if (error) return { error: error.message };
-      await removeFiles(db, (pics ?? []).map((p) => p.path));
-    }
-    const { error } = await db.from("categories").delete().in("id", removedIds);
-    if (error) return { error: error.message };
-  }
-
   const empty = (s: string) => s.trim() || null;
-  // 1) add new / update existing (by slug); 2) compare groups, after every slug exists
-  const { error } = await db.from("categories").upsert(
-    rows.map((r, i) => ({ slug: r.slug.trim(), name_az: r.name_az.trim(), name_ru: empty(r.name_ru), name_en: empty(r.name_en), is_hidden: r.is_hidden, sort_order: i })),
-    { onConflict: "slug" },
-  );
+  const { error } = await db.rpc("admin_save_categories", {
+    p_removed_ids: removedIds,
+    p_rows: rows.map((r) => ({
+      id: r.id, slug: r.slug.trim(), name_az: r.name_az.trim(), name_ru: empty(r.name_ru),
+      name_en: empty(r.name_en), is_hidden: r.is_hidden, compare_group: r.compare_group || null,
+    })),
+  });
   if (error) return { error: error.message };
-  for (const r of rows) {
-    const { error: e } = await db.from("categories").update({ compare_group: r.compare_group || null }).eq("slug", r.slug.trim());
-    if (e) return { error: e.message };
-  }
+  await removeFiles(db);
+  updateTag("storefront");
   revalidatePath("/", "layout");
   return { rows: await getCategoryRows(db) };
 }

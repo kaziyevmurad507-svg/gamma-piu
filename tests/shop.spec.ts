@@ -10,7 +10,7 @@ test("catalog search with no match shows the empty message", async ({ page }) =>
   await expect(page.getByText(en.Catalog.empty)).toBeVisible();
 });
 
-test("add to cart, then the cart has the product and a WhatsApp link", async ({ page }) => {
+test("add to cart, then validate fresh data before preparing WhatsApp", async ({ page, context }) => {
   await open(page, "/en/catalog");
   const name = await firstCard(page).getByRole("link").first().innerText();
   await firstCard(page).getByRole("button", { name: en.Product.addToCart }).click();
@@ -20,9 +20,14 @@ test("add to cart, then the cart has the product and a WhatsApp link", async ({ 
   await expect(page.getByRole("heading", { name: en.Cart.title })).toBeVisible();
   await expect(page.getByRole("link", { name }).first()).toBeVisible();
 
-  const href = (await page.getByRole("link", { name: en.Cart.order }).getAttribute("href")) ?? "";
-  expect(href).toContain("https://wa.me/");
-  expect(decodeURIComponent(href)).toContain(name); // order text has the product name
+  // Fulfil locally: verify the prepared order without contacting WhatsApp.
+  await context.route("https://wa.me/**", (route) => route.fulfill({ status: 200, body: "Order preview" }));
+  const request = context.waitForEvent("request", { predicate: (request) => request.url().startsWith("https://wa.me/") });
+  await page.getByRole("button", { name: en.Cart.order, exact: true }).click();
+  const href = (await request).url();
+  expect(new URL(href).pathname).toMatch(/^\/994\d{9}$/);
+  if (process.env.NEXT_PUBLIC_WHATSAPP) expect(new URL(href).pathname).toBe(`/${process.env.NEXT_PUBLIC_WHATSAPP}`);
+  expect(decodeURIComponent(href)).toContain(name);
 });
 
 test("cart line can be removed", async ({ page }) => {

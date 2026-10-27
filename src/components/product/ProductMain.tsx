@@ -4,11 +4,11 @@ import { ProductGallery } from "./ProductGallery";
 import { ProductPurchase } from "./ProductPurchase";
 import type { ProductImage, Variant } from "@/lib/product";
 
-type Props = { productId: string; group: string; eyebrow: string; name: string; description: string; variants: Variant[]; images: ProductImage[] };
+type Props = { productId: string; group: string; eyebrow: string; name: string; description: string; variants: Variant[]; images: ProductImage[]; initialVariantId?: string };
 
 // Holds the chosen variant, so the photos change together with the color
-export function ProductMain({ images, name, ...rest }: Props) {
-  const [id, setId] = useState(rest.variants[0].id);
+export function ProductMain({ images, name, initialVariantId, ...rest }: Props) {
+  const [id, setId] = useState(initialVariantId ?? rest.variants[0].id);
   // Photos of the chosen color first, then the common photos (they are shown with every color)
   const shown = [...images.filter((i) => i.variantId === id), ...images.filter((i) => !i.variantId)].map((i) => i.url);
 

@@ -19,7 +19,7 @@ export function Editorial() {
           <h2 className="text-[34px] font-medium leading-[1.1] lg:text-[44px]">{t("craftTitle")}</h2>
           <p className="text-[15px] text-muted">{t("craftText")}</p>
           {/* after:inset-0 makes the whole banner clickable */}
-          <Link href="/catalog" className={`${btnClass("bare")} w-fit border-line bg-canvas text-ink after:absolute after:inset-0 group-hover:border-action group-hover:bg-action group-hover:text-white group-hover:shadow-[0_6px_18px_#2454f545]`}>
+          <Link href="/catalog" className={`${btnClass("bare")} w-fit border-line bg-canvas text-ink after:absolute after:inset-0 group-hover:border-action group-hover:bg-action-fill group-hover:text-white group-hover:shadow-[0_6px_18px_#2454f545]`}>
             {t("craftCta")}<ArrowUpRight size={18} className="transition-transform duration-200 ease-in-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         </div>

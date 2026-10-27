@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { BUCKET } from "./admin-storage";
 import { pick } from "./i18n-field";
 
@@ -8,10 +8,11 @@ export type Ambassador = { id: string; name: string; role: string; url: string |
 export const INSTAGRAM = /^(https:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+\/?|@?[A-Za-z0-9._]{1,30})$/;
 const handleOf = (v: string) => v.replace(/^https:\/\/(www\.)?instagram\.com\//, "").replace(/^@/, "").replace(/\/$/, "");
 
-// Published ambassadors in the admin's order. If the table is missing, the section is simply empty
+// Published ambassadors in the admin's order.
 export async function getAmbassadors(locale: string): Promise<Ambassador[]> {
-  const db = await createClient();
-  const { data } = await db.from("ambassadors").select("id, name, role_az, role_ru, role_en, instagram, image_path").eq("is_published", true).order("sort_order");
+  const db = createPublicClient();
+  const { data, error } = await db.from("ambassadors").select("id, name, role_az, role_ru, role_en, instagram, image_path").eq("is_published", true).order("sort_order");
+  if (error) throw error;
   return (data ?? []).map((r) => ({
     id: r.id, name: r.name, role: pick(r, "role", locale),
     url: r.instagram ? `https://instagram.com/${handleOf(r.instagram)}` : null,
