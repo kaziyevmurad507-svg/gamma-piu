@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gamma Piu
 
-## Getting Started
+Каталог товаров AZ/RU/EN. Заявки и окончательные условия согласуются в WhatsApp. Оплаты и резервирования товара на сайте нет.
 
-First, run the development server:
+## Запуск
 
-```bash
+Node.js 24 и npm:
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Используйте существующий `.env.local`; не заменяйте его выводом Supabase CLI. Переменные:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Переменная | Значение |
+| --- | --- |
+| NEXT_PUBLIC_SUPABASE_URL | HTTPS-адрес Supabase-проекта |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key или legacy anon JWT; никогда secret/service-role |
+| NEXT_PUBLIC_WHATSAPP | Номер продавца: 994 и ещё 9 цифр, без плюса и пробелов |
+| NEXT_PUBLIC_SITE_URL | Локально http://localhost:3000; на хостинге собственный HTTPS-домен |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Эти переменные встраиваются в сборку. После изменения нужна новая сборка. Автоматическая проверка формата номера не подтверждает, что номер принадлежит продавцу.
 
-## Learn More
+## Исправления аудита
 
-To learn more about Next.js, take a look at the following resources:
+Изменения подготовлены относительно `0c715b8b725e1eb9c70a569b82af434ac8538f04`. Архив содержит изменённые и новые файлы с путями от корня репозитория. Сначала сохраните свои локальные правки и сравните их с архивом.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Новая админка зависит от SQL-функций. Прочитайте [порядок установки Supabase](supabase/README.md) до обновления: существующей базе нельзя повторно выполнять baseline или старый импорт товаров. Приложение и миграции выпускаются согласованно. Администратор подключает TOTP сам. Статус каждого пункта — в [FIX-STATUS.md](FIX-STATUS.md).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Проверки
 
-## Deploy on Vercel
+```sh
+npm run lint
+npm run test:unit
+npm run build
+npm run typecheck
+npx playwright install chromium
+npm test
+npm audit --omit=dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Unit-тесты исполняют фактический SQL в PGlite с тестовыми платформенными схемами Auth/Storage. GitHub Actions дополнительно подготовлен для полного Supabase reset в Docker с синтетическим каталогом. Инструкция локального стека — в `supabase/README.md`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Playwright собирает и запускает приложение на порту 3000. Для другой уже запущенной копии задайте `PLAYWRIGHT_BASE_URL`; для отдельной команды запуска — `PLAYWRIGHT_SERVER_COMMAND`. WhatsApp-переход перехватывается, сообщения не отправляются. Админские изменения проверяйте на тестовых данных.
+
+Если Windows блокирует загрузку SWC, задайте доступный каталог через `SWC_NATIVE_BINDING_CACHE` (на рабочем стенде использовался `C:/swc-cache`).
+
+## Production
+
+```sh
+npm run build:production
+npm run start
+```
+
+Если хостинг запускает обычный `npm run build`, задайте `APP_ENV=production`; на Vercel используется автоматический `VERCEL_ENV=production`. Это включает строгую проверку номера и HTTPS-домена. Preview с `APP_ENV=preview` либо Vercel preview получает noindex. `SUPABASE_LOCAL_TESTS=1` предназначен только для изолированных тестов.
+
+После выпуска проверьте настоящий WhatsApp-номер, canonical-домен, HTTPS и заголовки, TOTP, резервное восстановление БД вместе с файлами Storage. Миграции рабочей базы применены 27 октября 2026 с сохранением данных; hosted TOTP уже включён. Владелец завершает подключение своего аутентификатора. Публичного деплоя пока нет.

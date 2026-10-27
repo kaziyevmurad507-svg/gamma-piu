@@ -10,7 +10,7 @@ import { getSpecTypes } from "@/lib/spec-data";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_URL, openGraph, pageAlternates } from "@/lib/seo";
 
-type Props = { params: Promise<{ locale: string; slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<{ variant?: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { locale, slug } = await params;
@@ -21,20 +21,35 @@ export async function generateMetadata({ params }: Props) {
   return { title: `${p.name} · Gamma Piu`, description, alternates: pageAlternates(locale, `/product/${slug}`), openGraph: openGraph(locale, { title: p.name, description, images }) };
 }
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductPage({ params, searchParams }: Props) {
   const { locale, slug } = await params;
   const p = await getProduct(locale, slug);
   if (!p) notFound();
   const [t, related, types] = await Promise.all([getTranslations(), getRelated(locale, p.id), getSpecTypes(locale)]);
   const category = p.categoryName;
   const eyebrow = [p.brand ?? "Gamma Piu", category].filter(Boolean).join(" · ").toLocaleUpperCase(locale);
+  const requested = (await searchParams).variant;
+  const chosen = p.variants.find((variant) => variant.id === requested)
+    ?? [...p.variants].sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0) || a.price - b.price)[0];
 
-  // Structured data for Google: price range over the variants, in stock if any variant is
-  const prices = p.variants.map((v) => v.price);
+  // Each offer describes its own SKU and stock; a cheap preorder must never be
+  // advertised as available merely because a different variant is in stock.
+  const productUrl = `${SITE_URL}/${locale}/product/${p.slug}`;
   const jsonLd = {
-    "@context": "https://schema.org", "@type": "Product", name: p.name, sku: p.variants[0].sku, url: `${SITE_URL}/${locale}/product/${p.slug}`,
+    "@context": "https://schema.org", "@type": "ProductGroup", name: p.name, productGroupID: p.id, url: productUrl,
     ...(p.description && { description: p.description }), ...(p.images[0] && { image: p.images.slice(0, 5).map((i) => i.url) }), ...(p.brand && { brand: { "@type": "Brand", name: p.brand } }),
-    offers: { "@type": "AggregateOffer", priceCurrency: "AZN", lowPrice: Math.min(...prices), highPrice: Math.max(...prices), offerCount: p.variants.length, availability: p.variants.some((v) => v.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
+    ...(p.variants.every((variant) => variant.color) && { variesBy: ["https://schema.org/color"] }),
+    hasVariant: p.variants.map((variant) => ({
+      "@type": "Product", name: `${p.name} ${variant.name}`, sku: variant.sku,
+      ...(variant.color && { color: variant.color }),
+      url: `${productUrl}?variant=${variant.id}`,
+      image: p.images.filter((image) => image.variantId === variant.id || !image.variantId).slice(0, 5).map((image) => image.url),
+      offers: {
+        "@type": "Offer", priceCurrency: "AZN", price: variant.price,
+        availability: variant.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
+        itemCondition: "https://schema.org/NewCondition", url: `${productUrl}?variant=${variant.id}`,
+      },
+    })),
   };
 
   return (
@@ -45,7 +60,7 @@ export default async function ProductPage({ params }: Props) {
         {category && <> / <Link href={`/catalog?cat=${p.category}`} className="link-text">{category}</Link></>} / {p.name}
       </nav>
 
-      <ProductMain productId={p.id} group={p.group} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} images={p.images} />
+      <ProductMain key={chosen.id} initialVariantId={chosen.id} productId={p.id} group={p.group} eyebrow={eyebrow} name={p.name} description={p.description} variants={p.variants} images={p.images} />
 
       <ProductInfo name={p.name} specs={p.specs} types={types} />
 

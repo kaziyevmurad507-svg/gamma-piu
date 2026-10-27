@@ -12,6 +12,7 @@ import { ReplaceNotice, useCompare } from "./ProductActions";
 import { addToCart, toggleFav, useStore } from "@/lib/store";
 import type { Variant } from "@/lib/product";
 import { getStockStatus } from "@/lib/stock";
+import { quantityLimit } from "@/lib/cart-policy";
 
 // Whole numbers without decimals: 390 AZN, but 12.5 -> 12.50 AZN
 const money = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(2)} AZN`;
@@ -21,13 +22,15 @@ export function ProductPurchase({ productId, group, eyebrow, name, description, 
   const s = useTranslations("Stock");
   const [qty, setQty] = useState(1);
   const [added, flash] = useFlash();
-  const { fav } = useStore();
+  const { fav, cart } = useStore();
   const isFav = fav.includes(productId);
   const cmp = useCompare(productId, group);
   const isCmp = cmp.on;
   const v = variants.find((x) => x.id === id) ?? variants[0];
   const status = getStockStatus(v.stock);
-  const max = v.stock > 0 ? v.stock : 10; // out of stock = order on request, allow a few
+  const remaining = Math.max(0, quantityLimit(v.stock) - (cart.find((line) => line.id === v.id)?.qty ?? 0));
+  const max = Math.max(1, remaining);
+  const shownQty = Math.min(qty, max);
 
   return (
     <div className="flex flex-col gap-6">
@@ -53,9 +56,9 @@ export function ProductPurchase({ productId, group, eyebrow, name, description, 
       )}
 
       <div className="flex gap-3">
-        <Quantity value={qty} max={max} onChange={setQty} decreaseLabel={t("decrease")} increaseLabel={t("increase")} />
-        <Button variant={added ? "success" : "primary"} className="flex-1" onClick={() => { addToCart(v.id, qty); flash(); }}>
-          <span key={String(added)} className="inline-flex animate-drop items-center gap-2.5">{added ? <><Check size={20} />{t("added")}</> : <><Plus size={20} />{t("addToCartFull")}</>}</span>
+        <Quantity value={shownQty} max={max} onChange={setQty} decreaseLabel={t("decrease")} increaseLabel={t("increase")} />
+        <Button variant={added ? "success" : "primary"} className="flex-1" disabled={!remaining} title={!remaining ? t("cartLimit") : undefined} onClick={() => { if (addToCart(v.id, shownQty, v.stock)) flash(); }}>
+          <span key={String(added)} className="inline-flex animate-drop items-center gap-2.5">{added ? <><Check size={20} />{t("added")}</> : <><Plus size={20} />{v.stock > 0 ? t("addToCartFull") : t("preorder")}</>}</span>
         </Button>
       </div>
       <div className="flex gap-3">

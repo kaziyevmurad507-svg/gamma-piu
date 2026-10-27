@@ -23,7 +23,9 @@
     "notice": "Sample catalog: prices, stock, variants and technical details must be confirmed by the seller.",
     "legal": "© 2026 Gamma Piu Baku · Design sample",
     "currency": "AZN · AZ / RU / EN",
-    "privacy": "Privacy policy"
+    "privacy": "Privacy policy",
+    "terms": "Ordering and delivery",
+    "email": "Email for enquiries"
   },
   "Colors": {
     "black": "Black",
@@ -81,7 +83,9 @@
     "replace": "Replace",
     "cancel": "Cancel",
     "addedToast": "Added to your cart",
-    "goToCart": "Go to cart"
+    "goToCart": "Go to cart",
+    "cartLimit": "Maximum quantity already in cart",
+    "preorder": "Pre-order"
   },
   "Home": {
     "eyebrow": "GAMMA PIU · PROFESSIONAL CHOICE",
@@ -192,7 +196,10 @@
     "shown": "Showing {shown} of {total}",
     "backToTop": "Back to top",
     "empty": "Nothing found. Try changing the filters.",
-    "showResults": "Show {count}"
+    "showResults": "Show {count}",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}"
   },
   "Stock": {
     "in_stock": "In stock",
@@ -241,7 +248,10 @@
     "removedToast": "Removed from your cart",
     "undo": "Undo",
     "waHead": "Hello! I would like to place an order from the Gamma Piu site:",
-    "waTotal": "Total"
+    "waTotal": "Total",
+    "validating": "Checking availability…",
+    "updated": "Prices or availability changed. Review your updated cart, then continue.",
+    "orderError": "Could not check your request. Please try again."
   },
   "Compare": {
     "title": "Side by side.",
@@ -301,15 +311,32 @@
     "title": "Privacy policy",
     "intro": "How this site handles your information. Short and in plain words.",
     "s1Title": "What is saved in your browser",
-    "s1Text": "The cart, favorites, comparison list and the light or dark theme are saved only in your browser, on your device. We do not see them and they are not sent to us. You can delete them at any time in your browser settings.",
+    "s1Text": "Your cart, favorites, comparison list and theme are saved in your browser. Product identifiers are sent to the site server to retrieve current product details, prices and availability. You can clear the saved lists in your browser settings.",
     "s2Title": "Orders via WhatsApp",
-    "s2Text": "There is no online payment and no account on this site. An order is a WhatsApp message that you send yourself. The details you write in it (for example name, phone number and delivery address) reach us through WhatsApp and are used only to process your order. WhatsApp's own privacy policy applies to the chat.",
+    "s2Text": "This site is an informational product catalog. There is no online payment or customer account. The WhatsApp button prepares a request that you send yourself. Your message and any name, phone number or delivery address you provide are received by the seller through WhatsApp to discuss and fulfil the request. WhatsApp also processes information under its own privacy policy.",
     "s3Title": "Cookies and tracking",
-    "s3Text": "The site does not use advertising or analytics cookies and does not track you on other sites. A sign-in cookie is used only for the store staff in the admin panel.",
+    "s3Text": "The site has no advertising or analytics trackers. The hosting and Supabase services process technical requests needed to load the catalog and protect the service. Staff sign-in uses authentication cookies and Supabase Auth. These services and WhatsApp may process data outside Azerbaijan.",
     "s4Title": "Delivery, payment and returns",
-    "s4Text": "Delivery within Baku is free. Before you order, please confirm the delivery time, the payment method and the return or exchange terms with us on WhatsApp. Prices, stock and product details are confirmed there too.",
+    "s4Text": "Delivery is free. The final price, availability, delivery time, payment method and purchase conditions are agreed with the seller in WhatsApp before confirmation. Items marked “Pre-order” are not currently in stock; availability and lead time must be confirmed.",
     "s5Title": "Questions?",
-    "s5Text": "To ask about your data or to request deletion of your order details, write to us on WhatsApp.",
+    "s5Text": "For questions about your information or a request to correct or delete it, contact the seller on WhatsApp or at kaziyevmurad507@gmail.com. Retention periods and the information needed to handle your request are confirmed by the seller.",
     "cta": "Contact us on WhatsApp"
+  },
+  "Common": {
+    "loadError": "Could not load products. Please try again.",
+    "retry": "Try again"
+  },
+  "Terms": {
+    "title": "Ordering and delivery",
+    "intro": "An informational catalog. Requests and purchase conditions are discussed directly with the seller on WhatsApp.",
+    "s1Title": "How to request a product",
+    "s1Text": "Choose a product and variant, add them to the cart, then open WhatsApp. The site prepares a message; you review and send it yourself. Adding products to the cart does not reserve stock or confirm a purchase.",
+    "s2Title": "Price and payment",
+    "s2Text": "Prices are shown in AZN. Confirm the final total and payment method with the seller before agreeing to the purchase. The site does not collect payments or bank card details.",
+    "s3Title": "Delivery and pre-orders",
+    "s3Text": "Delivery is free. Delivery to your address and its timing are agreed on WhatsApp. “Pre-order” means the item is not currently in stock; ask the seller about availability and the expected delivery time.",
+    "s4Title": "Product information and enquiries",
+    "s4Text": "Ask the seller on WhatsApp about specifications, included accessories, warranty, returns or an existing purchase. Confirm the applicable conditions before purchasing. You can also write to kaziyevmurad507@gmail.com. These descriptions do not limit rights provided by applicable law.",
+    "cta": "Contact on WhatsApp"
   }
 }

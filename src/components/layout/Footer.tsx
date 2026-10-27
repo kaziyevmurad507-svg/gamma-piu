@@ -31,6 +31,8 @@ export function Footer() {
               <Link href="/#how-to-order">{t("Footer.howToOrder")}</Link>
               <a href={WA_URL} target="_blank" rel="noopener noreferrer">{t("Footer.whatsapp")}</a>
               <Link href="/privacy">{t("Footer.privacy")}</Link>
+              <Link href="/terms">{t("Footer.terms")}</Link>
+              <a href="mailto:kaziyevmurad507@gmail.com" className="break-all">{t("Footer.email")}</a>
             </div>
             <div className={`${col} hidden lg:flex`}>
               <p className={head}>{t("Footer.language")}</p>

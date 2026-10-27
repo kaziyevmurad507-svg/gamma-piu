@@ -1,28 +1,31 @@
 import type { MetadataRoute } from "next";
-import { createClient } from "@supabase/supabase-js";
+import { createPublicClient } from "@/lib/supabase/public";
 import { routing } from "@/i18n/routing";
 import { SITE_URL } from "@/lib/seo";
 
-export const revalidate = 3600; // rebuild at most once an hour
+export const revalidate = 60;
 
-type Row = { slug: string; updated_at: string; product_variants: { is_active: boolean }[] };
-
-// Same rule as the site: published, category not hidden, at least one active variant
+// Same visibility rule as the catalog; paginate instead of silently truncating
+// at the Data API's default row limit. Let transient errors be retried by Next.
 async function productPages(): Promise<{ path: string; date: string }[]> {
-  try {
-    const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!);
-    const { data } = await db.from("products").select("slug, updated_at, categories!inner(is_hidden), product_variants(is_active)").eq("is_published", true).eq("categories.is_hidden", false);
-    return ((data ?? []) as unknown as Row[]).filter((r) => r.product_variants.some((v) => v.is_active)).map((r) => ({ path: `/product/${r.slug}`, date: r.updated_at }));
-  } catch {
-    return []; // no database: the sitemap still lists the static pages
+  const db = createPublicClient();
+  const result: { path: string; date: string }[] = [];
+  for (let offset = 0; ; offset += 200) {
+    const { data, error } = await db.from("products")
+      .select("slug,updated_at,categories!inner(is_hidden),product_variants!inner(is_active)")
+      .eq("is_published", true).eq("categories.is_hidden", false).eq("product_variants.is_active", true)
+      .order("id").range(offset, offset + 199);
+    if (error) throw error;
+    result.push(...(data ?? []).map((row) => ({ path: `/product/${row.slug}`, date: row.updated_at })));
+    if (!data || data.length < 200) break;
   }
+  return result;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const pages = [{ path: "", date: "" }, { path: "/catalog", date: "" }, { path: "/about", date: "" }, { path: "/privacy", date: "" }, ...(await productPages())];
-  // One entry per page and language, each one lists all language versions (hreflang)
+  const pages = [{ path: "", date: "" }, { path: "/catalog", date: "" }, { path: "/about", date: "" }, { path: "/privacy", date: "" }, { path: "/terms", date: "" }, ...(await productPages())];
   return pages.flatMap(({ path, date }) => {
-    const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}${path}`]));
-    return routing.locales.map((l) => ({ url: `${SITE_URL}/${l}${path}`, ...(date && { lastModified: date }), alternates: { languages } }));
+    const languages = Object.fromEntries(routing.locales.map((locale) => [locale, `${SITE_URL}/${locale}${path}`]));
+    return routing.locales.map((locale) => ({ url: `${SITE_URL}/${locale}${path}`, ...(date && { lastModified: date }), alternates: { languages } }));
   });
 }

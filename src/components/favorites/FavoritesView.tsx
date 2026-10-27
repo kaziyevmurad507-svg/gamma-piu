@@ -12,6 +12,7 @@ import { loadProducts } from "@/lib/actions";
 import { money } from "@/lib/money";
 import { addManyToCart, useStore } from "@/lib/store";
 import { useLoaded } from "@/lib/use-loaded";
+import { LoadError } from "@/components/ui/LoadError";
 
 type Sort = "recent" | "price-asc" | "price-desc";
 
@@ -21,7 +22,7 @@ export function FavoritesView() {
   const locale = useLocale();
   const { fav, ready } = useStore();
   const [sort, setSort] = useState<Sort>("recent");
-  const rows = useLoaded(fav, (ids) => loadProducts(locale, ids));
+  const { rows, error, retry } = useLoaded(fav, (ids) => loadProducts(locale, ids), locale);
 
   // Removed favorites disappear at once, without waiting for a new request
   const list = (rows ?? []).filter((p) => fav.includes(p.id));
@@ -34,7 +35,7 @@ export function FavoritesView() {
     <div className="flex flex-col gap-8">
       <PageIntro home={n("Nav.home")} crumb={n("Nav.favorites")} title={t("title")} chip={list.length ? String(list.length) : undefined} text={t("intro")} />
 
-      {loading ? (
+      {error ? <LoadError retry={retry} /> : loading ? (
         <Skeleton className="h-[268px]" />
       ) : !list.length ? (
         <div className="flex flex-col items-center gap-4 rounded-bento bg-media p-10 text-center">
@@ -61,7 +62,7 @@ export function FavoritesView() {
               <p className="text-[25px] font-medium lg:text-[30px]">{t("readyTitle")}</p>
               <p className="text-sm text-muted">{t("readyText", { count: list.length, total: money(total) })}</p>
             </div>
-            <Button onClick={() => addManyToCart(list.map((p) => p.variantId))}><Plus size={20} />{t("addAll")}</Button>
+            <Button onClick={() => addManyToCart(list)}><Plus size={20} />{t("addAll")}</Button>
           </div>
 
           <div className="flex flex-col gap-6 lg:flex-row">

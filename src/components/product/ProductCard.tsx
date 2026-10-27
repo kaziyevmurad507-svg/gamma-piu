@@ -12,7 +12,7 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
   // Show color only if we have a translation for it
   const color = p.color && t.has(`Colors.${p.color}`) ? ` · ${t(`Colors.${p.color}`)}` : "";
   const status = getStockStatus(p.stock);
-  const href = `/product/${p.slug}`; // product page comes in step 5
+  const href = `/product/${p.slug}?variant=${p.variantId}`;
   return (
     <article className="group flex min-w-0 animate-rise flex-col gap-3">
       <div className="relative">
@@ -28,7 +28,7 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
         <StockBadge status={status} label={t(`Stock.${status}`)} />
         <div className={`mt-1.5 flex w-full gap-2.5 ${wide ? "items-center" : "flex-col lg:flex-row lg:items-center"}`}>
           <p className={`font-semibold lg:flex-1 lg:text-[22px] ${wide ? "flex-1 text-[22px]" : "text-[19px]"}`}>{p.price} AZN</p>
-          <AddToCartButton id={p.variantId} className={wide ? "w-auto" : undefined} />
+          <AddToCartButton id={p.variantId} stock={p.stock} className={wide ? "w-auto" : undefined} />
         </div>
       </div>
     </article>

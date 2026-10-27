@@ -11,7 +11,7 @@ import { addImages, deleteImage, reorderImages, setMainImage } from "@/app/admin
 
 type Group = { id: string | null; label: string; file: string }; // file = word used in the file name (Latin, from the SKU)
 const TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
-const MAX_MB = 8;
+const MAX_MB = 5; // Matches the product-images bucket limit (5 MiB).
 const key = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "photo";
 
 // Photos of a product: a "common" group and one group per variant (color). Each group has its own upload button

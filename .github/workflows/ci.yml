@@ -1,0 +1,60 @@
+name: Checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_WHATSAPP: '994501234567'
+      NEXT_TELEMETRY_DISABLED: '1'
+      SUPABASE_LOCAL_TESTS: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts --no-fund
+      - run: npm run lint
+      - run: npm run test:unit
+      - run: npm audit --omit=dev --audit-level=high
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 2.121.0
+      - name: Start isolated database and restore schema
+        run: |
+          supabase start
+          supabase db reset --local
+          supabase status -o json > "$RUNNER_TEMP/supabase-local.json"
+          node scripts/prepare-ci.mjs "$RUNNER_TEMP/supabase-local.json"
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test -- --workers=2
+        env:
+          PLAYWRIGHT_SERVER_COMMAND: npm run start
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-failure
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+      - name: Stop isolated database
+        if: always()
+        run: supabase stop --no-backup

@@ -5,8 +5,8 @@ export function PageIntro({ home, crumb, title, chip, text }: { home: string; cr
   return (
     <div className="flex flex-col gap-3.5">
       <p className="text-xs text-muted"><Link href="/" className="link-text">{home}</Link> / {crumb}</p>
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="min-w-0 flex-1 hyphens-auto break-words text-[34px] font-semibold leading-[1.12] lg:text-5xl">{title}</h1>
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="min-w-0 hyphens-auto break-words text-[34px] font-semibold leading-[1.12] sm:flex-1 lg:text-5xl">{title}</h1>
         {chip && <span className="flex h-11 shrink-0 items-center rounded-full bg-action-soft px-4 text-[13px] font-semibold text-action">{chip}</span>}
       </div>
       <p className="text-sm text-muted lg:text-base">{text}</p>

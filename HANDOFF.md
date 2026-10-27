@@ -1,3 +1,21 @@
+# Applied database release — 2026-10-27
+
+Owner explicitly approved the live migrations after explanation. Versions20261027121312/schema_baseline,20261027121349/atomic_admin_and_visibility,20261027121406/admin_mfa are applied. Business table hashes and254Storageobjects unchanged. Actual TOTP enrollment is pending owner action in localAdmin tab at localhost3101. HostedTOTP enabled; scheduled backups and leaked-password protection unavailable on Free. Full GitHubCI passed, including Docker reset+37browser tests. ConfirmedWhatsApp994507715648. Preserve .env.local; local runtime uses process variables. See FIX-STATUS.md and supabase/README.md for current boundaries.
+
+--- Historical preparation notes ---
+
+# Current audit remediation — 2026-10-27
+
+Read `FIX-STATUS.md`, `README.md` and `supabase/README.md` first. The historical steps below describe the pre-audit implementation; current files supersede old behavior (8 MiB uploads, folder sweeps, non-atomic saves, aggregate offers, catalog limit100).
+
+- Base commit: `0c715b8b725e1eb9c70a569b82af434ac8538f04`. Deliver one ZIP of every changed/new file relative to it, with repository-relative paths. Owner transfers/pushes; no deployment or live DB changes performed.
+- Owner confirmed informational catalog, no online payment, WhatsApp agreement of final price/conditions, free delivery, zero stock allowed with explicit preorder label, max10 request units. Public email: kaziyevmurad507@gmail.com. Do not invent missing seller/registration/warranty/returns facts or repeatedly ask the same questions.
+- Do not edit `.env.local`. Tests use process environment; wa.me navigation is intercepted, no messages sent. Real catalog mutations and authenticator enrollment were not performed.
+- New app needs atomic RPC and MFA migrations. Existing remote schema must be compared and baseline marked applied without replaying CREATE TABLE. Follow the coordinated rollout/recovery guide, including separate Storage object backup.
+- Unit tests execute exact migrations in PGlite; Auth/Storage platform scaffolding does not prove hosted runtime. CI is prepared for full Docker Supabase reset but has not run on GitHub.
+- Pending external work remains listed by audit ID in FIX-STATUS: real stock/photos/content, owner MFA/settings, hosted configuration, backup restore and unconfirmed business facts.
+
+---
 # Gamma Piu: project handoff (read first)
 
 Online store for professional barber/hairdresser supplies, Baku. Orders are completed via WhatsApp (no online payment). Currency AZN, free delivery in Baku. Languages: AZ (default), RU, EN.
@@ -125,4 +143,3 @@ Do 1 and 2 first (no UI), then the admin. Ask him: Figma admin frame link (or bu
 ## Step 10c theme script (2026-10-21)
 - Dev console error "Encountered a script tag while rendering React component" (React 19) pointed at the theme-init script in `src/app/[locale]/layout.tsx`. `next/script` (beforeInteractive) did NOT help (same error, he confirmed). Final fix: new client component `src/components/layout/ThemeScript.tsx` renders the `<script>` only on the server (`typeof window === "undefined"`), on the client it renders `null`, so React never creates a script element in the browser. The layout renders `<ThemeScript />` as the first child of `<body>` (the old `<head><script>` is gone). Checked in sandbox: script is in the server HTML, `data-theme` is already `dark` at DOMContentLoaded (no flash), no hydration errors, 14/14 tests pass. The error itself could NOT be reproduced in the sandbox (not on load, navigation, router.refresh or hot reload), so he must confirm in his own `npm run dev` (restart the dev server, hard reload). If it still shows, ask for what he did right before it appeared. JSON-LD scripts (`application/ld+json`) are not affected and were left as they are.
 - Unrelated dev warning seen in the sandbox, not fixed: Next/Image on the hero (`/images/hero-clipper.png`) says width or height is modified but not the other.
-

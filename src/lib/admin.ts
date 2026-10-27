@@ -1,12 +1,22 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-// Call at the top of every admin page/layout: sends visitors to the login page, lets only users from table admins in
-export async function requireAdmin() {
+// Membership is separate from MFA so an administrator can enroll a factor.
+export async function requireAdminMember() {
   const db = await createClient();
-  const { data: { user } } = await db.auth.getUser();
-  if (!user) redirect("/admin/login");
-  const { data: ok } = await db.rpc("is_admin");
-  if (!ok) redirect("/admin/login?e=denied");
+  const { data: { user }, error } = await db.auth.getUser();
+  if (error || !user) redirect("/admin/login");
+  const { data: ok, error: accessError } = await db.rpc("is_admin_member");
+  if (accessError || !ok) redirect("/admin/login?e=denied");
   return { db, user };
+}
+
+// Every protected page and mutation checks the second factor; RLS checks it too.
+export async function requireAdmin() {
+  const admin = await requireAdminMember();
+  const { data, error } = await admin.db.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (error || data?.currentLevel !== "aal2") redirect("/admin/mfa");
+  const { data: allowed, error: accessError } = await admin.db.rpc("is_admin");
+  if (accessError || !allowed) redirect("/admin/login?e=denied");
+  return admin;
 }
