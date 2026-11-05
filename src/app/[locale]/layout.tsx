@@ -14,6 +14,7 @@ import { getCategories } from "@/lib/category-data";
 import { getSpecTypes } from "@/lib/spec-data";
 import { getTranslations } from "next-intl/server";
 import { SITE_URL, openGraph } from "@/lib/seo";
+import { Analytics } from '@vercel/analytics/next';
 
 
 // latin-ext is needed for Azerbaijani letters (ə ğ ı ş ö ü), cyrillic for Russian
@@ -66,6 +67,7 @@ export default async function LocaleLayout({
             </SpecTypesProvider>
           </CategoriesProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
