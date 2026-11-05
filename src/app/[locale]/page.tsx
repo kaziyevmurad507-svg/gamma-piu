@@ -1,4 +1,7 @@
-import { getTranslations } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 import { Ambassadors } from "@/components/home/Ambassadors";
 import { Categories } from "@/components/home/Categories";
 import { Editorial } from "@/components/home/Editorial";
@@ -13,11 +16,15 @@ import { SITE_URL, pageAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   return { alternates: pageAlternates(locale) };
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  // Pages can render alongside layouts; validate before reading request headers.
+  if (!hasLocale(routing.locales, locale)) notFound();
+  setRequestLocale(locale);
   const t = await getTranslations("Home");
   // Load product lists and ambassadors in parallel
   const [featured, fresh, people, boosted, dryer] = await Promise.all([

@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+test("missing root assets return 404 instead of a rendering error", async ({ request }) => {
+  for (const path of ["/favicon.png", "/missing-asset.svg"]) {
+    expect((await request.get(path)).status()).toBe(404);
+  }
+});
+
 // Pages that must open in every language
 for (const lang of ["az", "ru", "en"]) {
   test(`home opens in ${lang}`, async ({ page }) => {
