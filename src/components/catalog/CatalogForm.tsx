@@ -7,6 +7,7 @@ import { Select } from "@/components/ui/Select";
 import { useCategories } from "@/components/layout/CategoriesProvider";
 import { COLORS, SORTS } from "@/lib/categories";
 import { useModalFocus } from "@/lib/use-modal-focus";
+import { useHydrated } from "@/lib/use-hydrated";
 
 export type Values = { q: string; cats: string[]; min: string; max: string; avail: string[]; colors: string[]; sort: string };
 
@@ -37,6 +38,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [open, setOpen] = useState(false); // mobile filter sheet
   const [pending, startTransition] = useTransition();
+  const hydrated = useHydrated();
   const source = JSON.stringify(v);
   const [state, setState] = useState({ source, submitted: "", values: v, navigation: 0 });
   // Preserve newer typing when our own request completes. External navigation restores the URL's values.
@@ -95,9 +97,9 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
 
   return (
     <form
-      className="flex flex-col gap-8"
       onSubmit={(e) => { e.preventDefault(); submit(draft); }}
     >
+      <fieldset disabled={!hydrated} className="flex min-w-0 flex-col gap-8">
       <div className="relative">
         <Search size={20} className="pointer-events-none absolute left-[18px] top-1/2 -translate-y-1/2 text-muted" />
         <input type="search" name="q" value={draft.q} maxLength={80} onChange={(event) => change({ q: event.target.value }, 400)} placeholder={c("searchPlaceholder")} aria-label={c("searchPlaceholder")} className={`${field} pl-12`} />
@@ -168,6 +170,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
         </div>
       </div>
       {!open && active && resetBtn}
+      </fieldset>
     </form>
   );
 }
