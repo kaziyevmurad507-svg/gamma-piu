@@ -2,13 +2,14 @@ import { routing } from "@/i18n/routing";
 
 // Public address of the site (set NEXT_PUBLIC_SITE_URL in .env.local and in Vercel, no trailing slash)
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+export const IS_NON_PRODUCTION = (process.env.VERCEL_ENV !== undefined && process.env.VERCEL_ENV !== "production") || ["preview", "pre-prod"].includes(process.env.APP_ENV ?? "");
 
 // Open Graph language codes
 export const OG_LOCALE: Record<string, string> = { az: "az_AZ", ru: "ru_RU", en: "en_US" };
 
 // Share card (WhatsApp, Telegram, Facebook): a page that sets its own openGraph replaces the layout one, so use this to keep siteName/locale
 export const openGraph = (locale: string, extra: { title?: string; description?: string; images?: string[] } = {}) => ({
-  type: "website" as const, siteName: "Gamma Piu", locale: OG_LOCALE[locale], ...extra,
+  type: "website" as const, siteName: "Gamma Piu", locale: OG_LOCALE[locale], images: [`${SITE_URL}/images/share-card.png`], ...extra,
 });
 
 // Canonical link + hreflang links for one page (path is without the language, e.g. "/catalog")

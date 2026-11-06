@@ -87,7 +87,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
   // Any filter set? (sorting is not a filter)
   const active = Boolean(draft.q || draft.min || draft.max || draft.cats.length || draft.avail.length || draft.colors.length);
   const resetBtn = (
-    <button type="button" onClick={reset} className="group inline-flex h-10 w-fit items-center gap-2 rounded-full border border-action bg-action-soft px-4 text-[13px] font-semibold text-action transition duration-150 hover:bg-action-fill hover:text-white active:scale-95">
+    <button type="button" onClick={reset} className={`group fixed right-4 z-50 inline-flex min-h-12 max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-line bg-canvas px-5 text-[13px] font-semibold text-action shadow-lg transition duration-150 hover:border-action hover:bg-action-soft active:scale-95 lg:right-8 ${open ? "bottom-[calc(6rem+env(safe-area-inset-bottom))]" : "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]"}`}>
       <RotateCcw size={16} className="transition-transform duration-300 group-hover:-rotate-180" />{c("reset")}
     </button>
   );
@@ -104,13 +104,12 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
         {/* Sidebar on desktop, full-screen sheet on mobile */}
-        <aside ref={sheet} id={sheetId} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-labelledby={`${sheetId}-title`} tabIndex={-1} className={`${open ? "fixed inset-0 z-50 flex animate-rise" : "hidden"} flex-col gap-6 overflow-y-auto overscroll-contain bg-canvas p-5 lg:static lg:flex lg:w-60 lg:shrink-0 lg:gap-[26px] lg:rounded-card lg:bg-media lg:p-6`}>
+        <aside ref={sheet} id={sheetId} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-labelledby={`${sheetId}-title`} tabIndex={open ? -1 : undefined} className={`${open ? "fixed inset-0 z-50 flex" : "hidden"} flex-col gap-6 overflow-y-auto overscroll-contain bg-canvas p-5 outline-none lg:static lg:flex lg:w-60 lg:shrink-0 lg:gap-[26px] lg:rounded-card lg:bg-media lg:p-6`}>
           <div className="flex items-center justify-between">
             <h2 id={`${sheetId}-title`} className="text-xl font-semibold">{c("filters")}</h2>
             <SlidersHorizontal size={20} className="hidden lg:block" />
             <button type="button" aria-label={t("Nav.close")} onClick={closeSheet} className="photo-btn grid size-11 place-items-center lg:hidden"><X size={24} /></button>
           </div>
-          {active && resetBtn}
 
           <div className="flex flex-col gap-4">
             <p className="text-[13px] font-semibold">{c("category")}</p>
@@ -147,7 +146,8 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
             </div>
           </div>
 
-          <button type="button" onClick={closeSheet} className="sticky bottom-0 mt-auto min-h-12 shrink-0 rounded-full bg-action-fill px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-action-fill-hover active:scale-[0.98] lg:hidden">
+          {open && active && resetBtn}
+          <button type="button" onClick={closeSheet} className={`sticky bottom-0 min-h-12 shrink-0 rounded-full bg-action-fill px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-action-fill-hover active:scale-[0.98] lg:hidden ${active ? "mt-20" : "mt-auto"}`}>
             {c("showResults", { count })}
           </button>
         </aside>
@@ -158,13 +158,13 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
               <SlidersHorizontal size={20} />{c("filters")}
             </button>
             <p className="hidden text-[13px] text-muted lg:block">{c("showing", { count })}</p>
-            {active && <span className="hidden lg:block">{resetBtn}</span>}
             <input type="hidden" name="sort" value={draft.sort} />
             <Select value={draft.sort} onChange={(sort) => change({ sort })} label={c("sortBy")} options={SORTS.map((s) => ({ value: s, label: c(`sort.${s}`) }))} />
           </div>
           {children}
         </div>
       </div>
+      {!open && active && resetBtn}
     </form>
   );
 }

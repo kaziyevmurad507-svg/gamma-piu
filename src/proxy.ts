@@ -2,6 +2,7 @@ import createMiddleware from 'next-intl/middleware';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
+import { IS_READ_ONLY_STAGING } from './lib/environment';
 
 const intl = createMiddleware(routing);
 
@@ -23,6 +24,7 @@ async function refreshSession(req: NextRequest) {
 }
 
 export function proxy(req: NextRequest) {
+  if (IS_READ_ONLY_STAGING && req.nextUrl.pathname.startsWith('/admin')) return new NextResponse('Not available in pre-prod', { status: 404 });
   return req.nextUrl.pathname.startsWith('/admin') ? refreshSession(req) : intl(req);
 }
 

@@ -1,0 +1,6 @@
+{
+  "slug": "pre-prod",
+  "description": "Protected release candidate checks. Shared production data: never use for test writes.",
+  "branchMatcher": { "type": "equals", "pattern": "pre-prod" },
+  "copyEnvVarsFrom": "production"
+}

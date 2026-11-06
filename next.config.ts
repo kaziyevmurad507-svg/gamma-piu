@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
       { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
       { key: 'Content-Security-Policy', value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" },
-      ...(process.env.VERCEL_ENV === 'preview' || process.env.APP_ENV === 'preview'
+      ...((process.env.VERCEL_ENV !== undefined && process.env.VERCEL_ENV !== 'production') || ['preview', 'pre-prod'].includes(process.env.APP_ENV ?? '')
         ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] : []),
     ] }];
   },
