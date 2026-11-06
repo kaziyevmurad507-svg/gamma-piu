@@ -1,0 +1,13 @@
+{
+  "type": "built-in",
+  "name": "Gamma Piu server errors and usage",
+  "triggers": {
+    "mode": "selected",
+    "items": [
+      { "type": "error_anomaly", "filter": "statusGroup:5xx" },
+      { "type": "usage_anomaly" }
+    ]
+  },
+  "matchMinimumSeverityLevel": "low",
+  "notificationSettings": { "enableTeamOwnerNotifications": true }
+}

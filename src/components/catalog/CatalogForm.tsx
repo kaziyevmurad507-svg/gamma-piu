@@ -1,7 +1,7 @@
 "use client";
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
+import { LoaderCircle, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { Select } from "@/components/ui/Select";
 import { useCategories } from "@/components/layout/CategoriesProvider";
@@ -36,6 +36,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
   const pathname = usePathname();
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [open, setOpen] = useState(false); // mobile filter sheet
+  const [pending, startTransition] = useTransition();
   const source = JSON.stringify(v);
   const [state, setState] = useState({ source, submitted: "", values: v, navigation: 0 });
   // Preserve newer typing when our own request completes. External navigation restores the URL's values.
@@ -70,7 +71,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
       }
       if (values.sort !== "recommended") p.set("sort", values.sort);
       setState((current) => ({ ...current, submitted: JSON.stringify(values) }));
-      router.replace(p.size ? `${pathname}?${p}` : pathname, { scroll: false });
+      startTransition(() => router.replace(p.size ? `${pathname}?${p}` : pathname, { scroll: false }));
     }, delay);
   };
 
@@ -87,7 +88,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
   // Any filter set? (sorting is not a filter)
   const active = Boolean(draft.q || draft.min || draft.max || draft.cats.length || draft.avail.length || draft.colors.length);
   const resetBtn = (
-    <button type="button" onClick={reset} className="group inline-flex h-10 w-fit items-center gap-2 rounded-full border border-action bg-action-soft px-4 text-[13px] font-semibold text-action transition duration-150 hover:bg-action-fill hover:text-white active:scale-95">
+    <button type="button" onClick={reset} className={`group fixed right-4 z-50 inline-flex min-h-12 max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-line bg-canvas px-5 text-[13px] font-semibold text-action shadow-lg transition duration-150 hover:border-action hover:bg-action-soft active:scale-95 lg:right-8 ${open ? "bottom-[calc(6rem+env(safe-area-inset-bottom))]" : "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]"}`}>
       <RotateCcw size={16} className="transition-transform duration-300 group-hover:-rotate-180" />{c("reset")}
     </button>
   );
@@ -104,13 +105,12 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
         {/* Sidebar on desktop, full-screen sheet on mobile */}
-        <aside ref={sheet} id={sheetId} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-labelledby={`${sheetId}-title`} tabIndex={-1} className={`${open ? "fixed inset-0 z-50 flex animate-rise" : "hidden"} flex-col gap-6 overflow-y-auto overscroll-contain bg-canvas p-5 lg:static lg:flex lg:w-60 lg:shrink-0 lg:gap-[26px] lg:rounded-card lg:bg-media lg:p-6`}>
+        <aside ref={sheet} id={sheetId} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-labelledby={`${sheetId}-title`} tabIndex={open ? -1 : undefined} className={`${open ? "fixed inset-0 z-50 flex" : "hidden"} flex-col gap-6 overflow-y-auto overscroll-contain bg-canvas p-5 outline-none lg:static lg:flex lg:w-60 lg:shrink-0 lg:gap-[26px] lg:rounded-card lg:bg-media lg:p-6`}>
           <div className="flex items-center justify-between">
             <h2 id={`${sheetId}-title`} className="text-xl font-semibold">{c("filters")}</h2>
             <SlidersHorizontal size={20} className="hidden lg:block" />
             <button type="button" aria-label={t("Nav.close")} onClick={closeSheet} className="photo-btn grid size-11 place-items-center lg:hidden"><X size={24} /></button>
           </div>
-          {active && resetBtn}
 
           <div className="flex flex-col gap-4">
             <p className="text-[13px] font-semibold">{c("category")}</p>
@@ -147,7 +147,8 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
             </div>
           </div>
 
-          <button type="button" onClick={closeSheet} className="sticky bottom-0 mt-auto min-h-12 shrink-0 rounded-full bg-action-fill px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-action-fill-hover active:scale-[0.98] lg:hidden">
+          {open && active && resetBtn}
+          <button type="button" onClick={closeSheet} className={`sticky bottom-0 min-h-12 shrink-0 rounded-full bg-action-fill px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-action-fill-hover active:scale-[0.98] lg:hidden ${active ? "mt-20" : "mt-auto"}`}>
             {c("showResults", { count })}
           </button>
         </aside>
@@ -157,14 +158,16 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
             <button type="button" aria-haspopup="dialog" aria-expanded={open} aria-controls={sheetId} onClick={() => setOpen(true)} className="flex h-12 items-center gap-2.5 rounded-full border border-line px-[22px] text-sm font-semibold transition duration-150 hover:border-action hover:text-action active:scale-95 lg:hidden">
               <SlidersHorizontal size={20} />{c("filters")}
             </button>
-            <p className="hidden text-[13px] text-muted lg:block">{c("showing", { count })}</p>
-            {active && <span className="hidden lg:block">{resetBtn}</span>}
+            <p role="status" className={`items-center gap-2 text-[13px] text-muted ${pending ? "flex" : "hidden lg:flex"}`}>
+              {pending ? <><LoaderCircle size={14} className="animate-spin" aria-hidden />{c("updating")}</> : c("showing", { count })}
+            </p>
             <input type="hidden" name="sort" value={draft.sort} />
             <Select value={draft.sort} onChange={(sort) => change({ sort })} label={c("sortBy")} options={SORTS.map((s) => ({ value: s, label: c(`sort.${s}`) }))} />
           </div>
-          {children}
+          <div aria-busy={pending} className="flex min-w-0 flex-col gap-6">{children}</div>
         </div>
       </div>
+      {!open && active && resetBtn}
     </form>
   );
 }

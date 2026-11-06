@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { IS_READ_ONLY_STAGING } from "@/lib/environment";
 
 // Membership is separate from MFA so an administrator can enroll a factor.
 export async function requireAdminMember() {
+  if (IS_READ_ONLY_STAGING) redirect("/az");
   const db = await createClient();
   const { data: { user }, error } = await db.auth.getUser();
   if (error || !user) redirect("/admin/login");

@@ -13,7 +13,7 @@ import { SpecTypesProvider } from "@/components/layout/SpecTypesProvider";
 import { getCategories } from "@/lib/category-data";
 import { getSpecTypes } from "@/lib/spec-data";
 import { getTranslations } from "next-intl/server";
-import { SITE_URL, openGraph } from "@/lib/seo";
+import { IS_NON_PRODUCTION, SITE_URL, openGraph } from "@/lib/seo";
 
 
 // latin-ext is needed for Azerbaijani letters (ə ğ ı ş ö ü), cyrillic for Russian
@@ -37,6 +37,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: t("siteTitle"),
     description: t("siteDescription"),
     openGraph: openGraph(locale),
+    twitter: { card: 'summary_large_image', images: [`${SITE_URL}/images/share-card.png`] },
+    ...(IS_NON_PRODUCTION ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

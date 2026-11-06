@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import ts from 'typescript';
 import vm from 'node:vm';
 
-function loadAdmin({ member = true, aal = 'aal2', user = { id: 'fixture-admin' }, authError = null } = {}) {
+function loadAdmin({ member = true, aal = 'aal2', user = { id: 'fixture-admin' }, authError = null, staging = false } = {}) {
   const calls = [];
   const db = {
     auth: { getUser: async () => ({ data: { user }, error: authError }), mfa: { getAuthenticatorAssuranceLevel: async () => ({ data: { currentLevel: aal } }) } },
@@ -15,6 +15,7 @@ function loadAdmin({ member = true, aal = 'aal2', user = { id: 'fixture-admin' }
   vm.runInNewContext(code, { exports: moduleState.exports, module: moduleState, require: (name) => {
     if (name === 'next/navigation') return { redirect: (path) => { throw new Error(`redirect:${path}`); } };
     if (name === '@/lib/supabase/server') return { createClient: async () => db };
+    if (name === '@/lib/environment') return { IS_READ_ONLY_STAGING: staging };
     throw new Error(`Unexpected dependency ${name}`);
   } });
   return { ...moduleState.exports, calls };
@@ -23,6 +24,13 @@ test('a password-only administrator cannot reach protected actions', async () =>
   const admin = loadAdmin({ aal: 'aal1' });
   await assert.rejects(admin.requireAdmin(), /redirect:\/admin\/mfa/);
   assert.deepEqual(admin.calls, ['is_admin_member']);
+});
+
+test('pre-prod rejects admin pages and mutations before accessing the shared database', async () => {
+  const admin = loadAdmin({ staging: true });
+  await assert.rejects(admin.requireAdmin(), /redirect:\/az/);
+  await assert.rejects(admin.requireAdminMember(), /redirect:\/az/);
+  assert.deepEqual(admin.calls, []);
 });
 test('membership gate allows MFA setup but rejects non-administrators', async () => {
   await loadAdmin({ aal: 'aal1' }).requireAdminMember();
