@@ -1,5 +1,26 @@
 import { expect, test } from '@playwright/test';
 import en from '../messages/en.json';
+import ru from '../messages/ru.json';
+
+test('catalog cannot lose the first mobile tap while JavaScript is loading', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let releaseScripts!: () => void;
+  const scriptsReady = new Promise<void>(resolve => { releaseScripts = resolve; });
+  await page.route('**/_next/static/chunks/*.js', async route => {
+    await scriptsReady;
+    await route.continue();
+  });
+  try {
+    await page.goto('/ru/catalog', { waitUntil: 'domcontentloaded' });
+    const trigger = page.getByRole('button', { name: ru.Catalog.filters, exact: true });
+    await expect(trigger).toBeDisabled();
+    releaseScripts();
+    await trigger.click();
+    await expect(page.getByRole('dialog', { name: ru.Catalog.filters, exact: true })).toBeVisible();
+  } finally {
+    releaseScripts();
+  }
+});
 
 test('desktop filter panel does not take focus; reset floats and clears every filter', async ({ page }) => {
   await page.goto('/en/catalog?cat=dryers&min=1&color=black', { waitUntil: 'networkidle' });
