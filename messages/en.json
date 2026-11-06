@@ -184,6 +184,7 @@
     "onOrder": "On order",
     "color": "Color",
     "reset": "Reset filters",
+    "updating": "Updating products…",
     "showing": "Showing {count, plural, one {# product} other {# products}}",
     "sortBy": "Sort by",
     "sort": {

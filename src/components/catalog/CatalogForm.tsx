@@ -1,7 +1,7 @@
 "use client";
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
+import { LoaderCircle, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { Select } from "@/components/ui/Select";
 import { useCategories } from "@/components/layout/CategoriesProvider";
@@ -36,6 +36,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
   const pathname = usePathname();
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [open, setOpen] = useState(false); // mobile filter sheet
+  const [pending, startTransition] = useTransition();
   const source = JSON.stringify(v);
   const [state, setState] = useState({ source, submitted: "", values: v, navigation: 0 });
   // Preserve newer typing when our own request completes. External navigation restores the URL's values.
@@ -70,7 +71,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
       }
       if (values.sort !== "recommended") p.set("sort", values.sort);
       setState((current) => ({ ...current, submitted: JSON.stringify(values) }));
-      router.replace(p.size ? `${pathname}?${p}` : pathname, { scroll: false });
+      startTransition(() => router.replace(p.size ? `${pathname}?${p}` : pathname, { scroll: false }));
     }, delay);
   };
 
@@ -157,11 +158,13 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
             <button type="button" aria-haspopup="dialog" aria-expanded={open} aria-controls={sheetId} onClick={() => setOpen(true)} className="flex h-12 items-center gap-2.5 rounded-full border border-line px-[22px] text-sm font-semibold transition duration-150 hover:border-action hover:text-action active:scale-95 lg:hidden">
               <SlidersHorizontal size={20} />{c("filters")}
             </button>
-            <p className="hidden text-[13px] text-muted lg:block">{c("showing", { count })}</p>
+            <p role="status" className={`items-center gap-2 text-[13px] text-muted ${pending ? "flex" : "hidden lg:flex"}`}>
+              {pending ? <><LoaderCircle size={14} className="animate-spin" aria-hidden />{c("updating")}</> : c("showing", { count })}
+            </p>
             <input type="hidden" name="sort" value={draft.sort} />
             <Select value={draft.sort} onChange={(sort) => change({ sort })} label={c("sortBy")} options={SORTS.map((s) => ({ value: s, label: c(`sort.${s}`) }))} />
           </div>
-          {children}
+          <div aria-busy={pending} className="flex min-w-0 flex-col gap-6">{children}</div>
         </div>
       </div>
       {!open && active && resetBtn}

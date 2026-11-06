@@ -32,9 +32,10 @@ test('mobile reset remains accessible in the filter dialog and after closing it'
   await expect(page).toHaveURL(/\/en\/catalog$/);
 });
 
-test('cards contain very long names and align purchase buttons on narrow screens', async ({ page }) => {
+test('cards contain very long names and align purchase buttons on narrow screens', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('/en/catalog', { waitUntil: 'networkidle' });
+  await page.screenshot({ path: testInfo.outputPath('mobile-catalog.png'), fullPage: true, animations: 'disabled' });
   const cards = page.locator('article');
   // Stress only the rendered test DOM; never modify catalog records.
   await cards.first().locator('a[title]').evaluate(e => { e.textContent = 'Professional '.repeat(30) + 'LongUnbrokenModelName'.repeat(6); });
