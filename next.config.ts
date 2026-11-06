@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'qvgccxrcktcqoghfjgfl.supabase.co' },
+      { protocol: 'https', hostname: 'gdytsgxxojtbsrhmlzlu.supabase.co', pathname: '/storage/v1/object/public/product-images/**' },
       ...(localTests ? [{ protocol: 'http' as const, hostname: '127.0.0.1', port: '54321', pathname: '/storage/v1/object/public/product-images/**' }] : []),
     ],
     // The CI database is isolated on the runner; production never enables local IP image fetches.
