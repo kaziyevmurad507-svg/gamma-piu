@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 import { Logo } from "./Logo";
-import { Info } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { WA_URL } from "@/lib/whatsapp";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -40,7 +39,6 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <p className="flex gap-2.5 rounded-panel bg-cream p-4 text-xs text-warn"><Info size={18} className="shrink-0" />{t("Footer.notice")}</p>
         <div className="flex flex-col gap-3 text-[11px] text-muted lg:flex-row lg:justify-between">
           <p>{t("Footer.legal")}</p>
           <p>{t("Footer.currency")}</p>

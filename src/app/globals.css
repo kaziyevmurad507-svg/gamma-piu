@@ -68,7 +68,10 @@
 body {
   background: var(--color-canvas);
   color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
 }
+
+:focus:not(:focus-visible) { outline: none; }
 
 /* Visible keyboard focus: 2px blue ring with 3px gap (as in Figma) */
 :focus-visible {

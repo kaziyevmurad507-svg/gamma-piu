@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Info, MessageCircle, Package } from "lucide-react";
+import { MessageCircle, Package } from "lucide-react";
 import { specLabel, type SpecType } from "@/lib/specs";
 import { WA_URL } from "@/lib/whatsapp";
 
@@ -28,12 +28,10 @@ export function ProductInfo({ name, specs, types }: { name: string; specs: Recor
         <a href="#box" className={tab}>{t("Product.tabBox")}</a>
         <a href="#delivery-info" className={tab}>{t("Product.tabDelivery")}</a>
       </div>
-
       <div className="flex flex-col gap-8 lg:flex-row">
         {rows.length > 0 && (
           <section id="specs" className="flex scroll-mt-6 flex-col gap-5 rounded-bento bg-media p-6 lg:flex-1 lg:p-8">
             <h2 className="text-2xl font-medium">{t("Product.specsTitle")}</h2>
-            <p className="text-xs text-muted">{t("Product.specsNote")}</p>
             <dl className="flex flex-col gap-3.5">
               {rows.map(([k, v]) => (
                 <div key={k} className="flex gap-5 border-b border-line pb-3 text-[13px]">
@@ -56,7 +54,6 @@ export function ProductInfo({ name, specs, types }: { name: string; specs: Recor
         </section>
       </div>
 
-      <p className="flex gap-2.5 rounded-panel bg-cream p-4 text-xs text-warn"><Info size={18} className="shrink-0" />{t("Footer.notice")}</p>
     </>
   );
 }

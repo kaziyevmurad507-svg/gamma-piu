@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { LoaderCircle, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -87,10 +88,9 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
 
   const reset = () => change({ q: "", cats: [], min: "", max: "", avail: [], colors: [], sort: "recommended" });
 
-  // Any filter set? (sorting is not a filter)
-  const active = Boolean(draft.q || draft.min || draft.max || draft.cats.length || draft.avail.length || draft.colors.length);
+  const active = Boolean(draft.q || draft.min || draft.max || draft.cats.length || draft.avail.length || draft.colors.length || draft.sort !== "recommended");
   const resetBtn = (
-    <button type="button" onClick={reset} className={`group fixed right-4 z-50 inline-flex min-h-12 max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-line bg-canvas px-5 text-[13px] font-semibold text-action shadow-lg transition duration-150 hover:border-action hover:bg-action-soft active:scale-95 lg:right-8 ${open ? "bottom-[calc(6rem+env(safe-area-inset-bottom))]" : "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]"}`}>
+    <button type="button" onClick={reset} disabled={!hydrated} className={`group fixed left-1/2 z-50 inline-flex min-h-12 max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center justify-center gap-2 rounded-full border border-line bg-canvas px-5 text-[13px] font-semibold text-action shadow-[0_10px_40px_#23233933] transition duration-150 hover:border-action hover:bg-action-soft active:scale-95 ${open ? "bottom-[calc(6rem+env(safe-area-inset-bottom))]" : "bottom-[calc(1.5rem+env(safe-area-inset-bottom))]"}`}>
       <RotateCcw size={16} className="transition-transform duration-300 group-hover:-rotate-180" />{c("reset")}
     </button>
   );
@@ -107,7 +107,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
         {/* Sidebar on desktop, full-screen sheet on mobile */}
-        <aside ref={sheet} id={sheetId} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-labelledby={`${sheetId}-title`} tabIndex={open ? -1 : undefined} className={`${open ? "fixed inset-0 z-50 flex" : "hidden"} flex-col gap-6 overflow-y-auto overscroll-contain bg-canvas p-5 outline-none lg:static lg:flex lg:w-60 lg:shrink-0 lg:gap-[26px] lg:rounded-card lg:bg-media lg:p-6`}>
+        <aside ref={sheet} id={sheetId} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-labelledby={`${sheetId}-title`} tabIndex={open ? -1 : undefined} className={`${open ? "fixed inset-0 z-50 flex" : "hidden"} flex-col gap-6 overflow-y-auto overscroll-contain bg-canvas p-5 outline-none lg:sticky lg:top-6 lg:flex lg:max-h-[calc(100dvh-3rem)] lg:w-60 lg:shrink-0 lg:gap-[26px] lg:rounded-card lg:bg-media lg:p-6`}>
           <div className="flex items-center justify-between">
             <h2 id={`${sheetId}-title`} className="text-xl font-semibold">{c("filters")}</h2>
             <SlidersHorizontal size={20} className="hidden lg:block" />
@@ -169,7 +169,7 @@ export function CatalogForm({ v, count, children }: { v: Values; count: number; 
           <div aria-busy={pending} className="flex min-w-0 flex-col gap-6">{children}</div>
         </div>
       </div>
-      {!open && active && resetBtn}
+      {!open && active && hydrated && createPortal(resetBtn, document.body)}
       </fieldset>
     </form>
   );

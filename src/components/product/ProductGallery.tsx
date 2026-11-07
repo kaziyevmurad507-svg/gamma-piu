@@ -68,7 +68,6 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           ))}
         </div>
       )}
-      <p className="text-[11px] text-muted">{t("imageNote")}</p>
 
       {zoom && images[current] && (
         <div ref={dialog} role="dialog" aria-modal="true" aria-label={`${name} — ${t("imageN", { n: current + 1 })}`} tabIndex={-1} onClick={(event) => { if (event.target === event.currentTarget) closeZoom(); }} className="fixed inset-0 z-50 grid place-items-center bg-scrim/80 p-5">

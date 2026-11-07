@@ -51,7 +51,6 @@ export function ProductPurchase({ productId, group, eyebrow, name, description, 
               <Chip key={x.id} selected={x.id === id} onClick={() => { onVariant(x.id); setQty(1); }}>{x.name}</Chip>
             ))}
           </div>
-          <p className="text-[11px] text-muted">{t("variantNote")}</p>
         </div>
       )}
 

@@ -33,7 +33,7 @@ export function CartView() {
     const lines = await loadCartLines(locale, ids);
     if (syncCart(lines, ids)) setOrderMessage("updated");
     return lines;
-  }, locale);
+  }, locale, true);
 
   // Fade the line out, remove it, and offer Undo
   const remove = (id: string, qty: number, stock: number) => {
