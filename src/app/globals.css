@@ -79,6 +79,16 @@ body {
   outline-offset: 3px;
 }
 
+/* Text navigation uses an underline, never a rectangular focus frame. */
+header nav a:focus {
+  outline: none;
+}
+header nav a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 2px;
+}
+
 /* Tailwind 4 resets buttons to the arrow cursor: bring the hand back on everything clickable */
 button:not(:disabled), [role="button"], [role="switch"], select, summary, label[for] { cursor: pointer; }
 
