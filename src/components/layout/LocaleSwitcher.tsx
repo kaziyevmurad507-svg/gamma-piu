@@ -9,7 +9,7 @@ export function LocaleSwitcher({ className = "" }: { className?: string }) {
   const current = useLocale();
   const path = usePathname();
   return (
-    <div className={`flex gap-1.5 text-xs font-semibold ${className}`}>
+    <div className={`locale-switcher flex gap-1.5 text-xs font-semibold ${className}`}>
       {LOCALES.map((l, i) => (
         <Fragment key={l}>
           {i > 0 && <span className="text-muted">·</span>}

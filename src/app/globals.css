@@ -80,10 +80,10 @@ body {
 }
 
 /* Text navigation uses an underline, never a rectangular focus frame. */
-header nav a:focus {
+header nav a:focus, .locale-switcher a:focus {
   outline: none;
 }
-header nav a:focus-visible {
+header nav a:focus-visible, .locale-switcher a:focus-visible {
   text-decoration: underline;
   text-underline-offset: 5px;
   text-decoration-thickness: 2px;
