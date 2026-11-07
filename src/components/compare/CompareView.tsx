@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Columns2, Info, MessageCircle, Plus, X } from "lucide-react";
+import { Columns2, MessageCircle, Plus, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { btnClass } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
@@ -123,9 +123,6 @@ export function CompareView() {
           </div>
 
           </div>
-
-          <p className="flex gap-2.5 rounded-panel bg-cream p-4 text-xs text-warn"><Info size={18} className="shrink-0" aria-hidden />{n("Footer.notice")}</p>
-
           <div className="flex flex-col gap-6 rounded-bento bg-lavender p-8 lg:flex-row lg:items-center">
             <div className="flex flex-1 flex-col gap-2">
               <p className="text-[26px] font-medium">{t("supportTitle")}</p>
