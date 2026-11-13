@@ -1,6 +1,12 @@
 # Public deployment
 
-Public URL: https://gamma-piu.vercel.app
+Public URL: https://gammapiu.az
+
+`www.gammapiu.az`, `gammapiu.store`, `www.gammapiu.store`, and
+`gamma-piu.vercel.app` redirect permanently (308) to this domain, preserving
+paths and query strings. HTTP redirects to HTTPS. Vercel manages the TLS
+certificate and its renewal. DNS uses `ns1.vercel-dns.com` and
+`ns2.vercel-dns.com`; registration remains at online.az.
 
 Vercel project: `gamma-piu` in `kaziyevmurad507-svg`.
 Dashboard: https://vercel.com/kaziyevmurad507-svg/gamma-piu
@@ -15,26 +21,25 @@ public URL after a push; a pushed commit alone does not prove a successful relea
 - The prebuild validator uses `VERCEL_ENV=production` for strict checks.
 - Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
   `NEXT_PUBLIC_WHATSAPP`, and `NEXT_PUBLIC_SITE_URL` in the Vercel project.
-- `NEXT_PUBLIC_SITE_URL=https://gamma-piu.vercel.app` until a custom domain is attached.
-- Fluid Compute is enabled. Functions use `syd1`, beside the existing Supabase
-  database in `ap-southeast-2`. Public data is cached for 60 seconds, with
+- `NEXT_PUBLIC_SITE_URL=https://gammapiu.az`; Supabase Auth Site URL uses the same origin.
+- Fluid Compute is enabled. Functions use `fra1`, beside the Supabase
+  database in `eu-central-1`. Public data is cached for 60 seconds, with
   invalidation from admin changes. Cart validation fetches fresh data.
-- Supabase remains the existing project; deploying the website does not migrate
-  the database, Storage, or administrator accounts.
+- Production uses Supabase project `gdytsgxxojtbsrhmlzlu` (Gamma Piu Frankfurt).
+  The previous Sydney project is retained for rollback; see `POLISH-PLAN.md`.
 
 ## Billing
 
-Vercel Pro was selected by the owner at $20/month base price. Activation requires
-the owner's billing details in Vercel. Verify the current plan in Billing;
-deployment success does not confirm the subscription. Extra usage and taxes may
-increase the charge. Supabase has its own plan and limits.
+Vercel Pro is active. Extra-usage notifications are set at $10/month,
+with alerts at 50/75/100% and automatic pausing disabled. This threshold
+does not include the subscription. Supabase has its own plan and limits.
 
 ## Release checks
 
 Run the browser suite against the public deployment:
 
 ```powershell
-$env:PLAYWRIGHT_BASE_URL = 'https://gamma-piu.vercel.app'
+$env:PLAYWRIGHT_BASE_URL = 'https://gammapiu.az'
 npx playwright test --workers=3
 ```
 
