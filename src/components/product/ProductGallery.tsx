@@ -41,8 +41,8 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative h-[360px] rounded-card border border-line bg-canvas lg:h-[580px]">
-        {images[current] && <Image src={images[current]} alt={name} fill preload sizes="(min-width:1024px) 624px, 100vw" className="object-contain p-3" />}
+      <div className="relative h-[360px] overflow-hidden rounded-card border border-line bg-white lg:h-[580px]">
+        {images[current] && <Image src={images[current]} alt={name} fill preload sizes="(min-width:1024px) 624px, 100vw" className="object-contain" />}
         {many && ([-1, 1] as const).map((d) => (
           <button key={d} type="button" aria-label={t(d < 0 ? "prevImage" : "nextImage")} onClick={() => go(d)}
             className={cn("photo-btn absolute top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-action-soft text-action", d < 0 ? "left-5" : "right-5")}>
@@ -61,7 +61,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           {images.map((src, n) => (
             <button key={src} type="button" aria-label={t("imageN", { n: n + 1 })} aria-current={n === current} onClick={() => setI(n)}
               className={cn("w-[calc((100%-36px)/4)] shrink-0 rounded-card border-2 p-1 transition-colors duration-150 hover:border-action", n === current ? "border-action" : "border-transparent")}>
-              <span className="relative block h-[82px] rounded-panel border border-line bg-canvas lg:h-[122px]">
+              <span className="relative block h-[82px] overflow-hidden rounded-panel border border-line bg-white lg:h-[122px]">
                 <Image src={src} alt="" fill sizes="150px" className="object-contain p-1" />
               </span>
             </button>
