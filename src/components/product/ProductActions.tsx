@@ -1,6 +1,6 @@
 "use client";
 import { Check, Columns2, Heart } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { useTranslations } from "next-intl";
 import { btnClass } from "@/components/ui/Button";
 import { useCategories } from "@/components/layout/CategoriesProvider";
@@ -12,13 +12,18 @@ import { useFlash } from "@/lib/use-flash";
 
 const round = "photo-btn grid size-11 place-items-center rounded-full shadow-soft";
 
+// Mouse/touch clicks release focus; keyboard activation keeps its focus indicator.
+function releasePointerFocus(event: ReactMouseEvent<HTMLButtonElement>) {
+  if (event.detail > 0) event.currentTarget.blur();
+}
+
 // Heart on a product card: id = product id. Red when the product is a favorite
 export function FavoriteButton({ id }: { id: string }) {
   const t = useTranslations("Product");
   const on = useStore().fav.includes(id);
   const [clicks, setClicks] = useState(0); // new key = heart "beats" after every click
   return (
-    <button type="button" aria-pressed={on} aria-label={on ? t("removeFavorite") : t("addFavorite")} onClick={() => { setClicks(clicks + 1); toggleFav(id); }} className={`absolute right-3 top-3 bg-action-soft text-action ${round}`}>
+    <button type="button" aria-pressed={on} aria-label={on ? t("removeFavorite") : t("addFavorite")} onClick={(event) => { setClicks(clicks + 1); toggleFav(id); releasePointerFocus(event); }} className={`absolute right-3 top-3 bg-action-soft text-action ${round}`}>
       <Heart key={clicks} size={18} className={cn("transition-colors", clicks > 0 && "animate-heart", on ? "fill-danger text-danger" : "hover:text-danger")} />
     </button>
   );
@@ -71,7 +76,7 @@ export function CompareButton({ id, group }: { id: string; group: string }) {
   return (
     <>
       <button type="button" aria-pressed={c.on} aria-label={c.on ? t("compareOn") : t("compare")} title={c.on ? t("compareOn") : t("compare")}
-        onClick={c.toggle} className={cn("absolute right-3 top-[60px]", round, c.on ? "bg-action-fill text-white" : "bg-action-soft text-action")}>
+        onClick={(event) => { c.toggle(); releasePointerFocus(event); }} className={cn("absolute right-3 top-[60px]", round, c.on ? "bg-action-fill text-white" : "bg-action-soft text-action")}>
         <Columns2 size={18} />
       </button>
       {c.full && <p role="status" className="absolute animate-drop right-3 top-[108px] z-10 max-w-[180px] rounded-panel bg-ink px-3 py-2 text-xs text-canvas">{t("compareFull")}</p>}
