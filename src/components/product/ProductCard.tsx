@@ -14,7 +14,7 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
   const status = getStockStatus(p.stock);
   const href = `/product/${p.slug}?variant=${p.variantId}`;
   return (
-    <article className="@container group flex h-full min-w-0 animate-rise flex-col gap-3">
+    <article className="@container group flex min-w-0 animate-rise flex-col gap-2.5 self-start">
       <div className="relative">
         <Link href={href} tabIndex={-1} aria-hidden className={`relative block overflow-hidden rounded-card border border-line bg-white ${wide ? "h-[268px]" : "aspect-square lg:aspect-auto lg:h-[268px]"}`}>
           {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain p-2 transition-transform duration-300 group-hover:scale-105" />}
@@ -22,14 +22,16 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
         <FavoriteButton id={p.id} />
         <CompareButton id={p.id} group={p.group} />
       </div>
-      <div className="flex min-w-0 flex-1 flex-col items-start gap-1.5 px-1">
-        <p className="line-clamp-2 min-h-8 text-xs leading-4 text-muted" title={`${p.categoryName}${color}`}>{p.categoryName}{color}</p>
-        <Link href={href} title={p.name} className="line-clamp-3 min-h-[60px] w-full wrap-anywhere text-[15px] leading-5 font-semibold transition-colors hover:text-action lg:line-clamp-2 lg:min-h-14 lg:text-lg lg:leading-7">{p.name}</Link>
-        <StockBadge status={status} label={t(`Stock.${status}`)} />
-        <div className="mt-auto flex w-full flex-col items-start gap-2 pt-1.5 @min-[240px]:flex-row @min-[240px]:items-center @min-[240px]:gap-3">
-          <p className="shrink-0 whitespace-nowrap text-[19px] leading-tight font-semibold @min-[240px]:text-[22px]">{p.price} AZN</p>
-          <AddToCartButton id={p.variantId} stock={p.stock} className="w-full min-w-0 @min-[240px]:w-auto [&>span]:min-w-0 [&>span]:justify-center [&>span]:leading-tight [&>span>svg]:shrink-0" />
+      <div className="flex min-w-0 flex-col gap-2 px-1">
+        <div className="flex min-w-0 flex-col gap-1">
+          <p className="truncate text-[11px] leading-4 text-muted" title={`${p.categoryName}${color}`}>{p.categoryName}{color}</p>
+          <Link href={href} title={p.name} className="line-clamp-3 w-full wrap-anywhere text-[15px] leading-5 font-semibold transition-colors hover:text-action lg:text-lg lg:leading-6">{p.name}</Link>
         </div>
+        <div className="flex min-w-0 items-center justify-between gap-1.5">
+          <StockBadge status={status} label={t(`Stock.${status}`)} compact />
+          <p className="shrink-0 whitespace-nowrap text-base leading-6 font-semibold @min-[200px]:text-xl">{p.price} AZN</p>
+        </div>
+        <AddToCartButton id={p.variantId} stock={p.stock} className="w-full min-w-0 [&>span]:min-w-0 [&>span]:justify-center [&>span]:leading-tight [&>span>svg]:shrink-0" />
       </div>
     </article>
   );
