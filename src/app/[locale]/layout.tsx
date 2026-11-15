@@ -57,7 +57,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={inter.variable} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <ThemeScript />
+        <ThemeScript locale={locale} />
         <NextIntlClientProvider>
           <CategoriesProvider list={categories}>
             <SpecTypesProvider list={specTypes}>

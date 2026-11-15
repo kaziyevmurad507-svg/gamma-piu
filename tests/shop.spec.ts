@@ -70,3 +70,25 @@ test("dark theme is saved and survives a reload", async ({ page }) => {
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
+
+for (const width of [390, 1280]) {
+  test(`theme survives language navigation at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, "/en/catalog");
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.getByRole("button", { name: en.Nav.theme }).filter({ visible: true }).click();
+    for (const theme of ["dark", "light"]) {
+      for (const locale of ["ru", "az", "en"]) {
+        await page.getByRole("banner").locator(".locale-switcher:visible").getByRole("link", { name: locale.toUpperCase(), exact: true }).click();
+        await expect(page.locator("html")).toHaveAttribute("lang", locale);
+        await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+        expect(await page.evaluate(() => localStorage.getItem("gp-theme"))).toBe(theme);
+      }
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+      if (theme === "dark") await page.getByRole("button", { name: en.Nav.theme }).filter({ visible: true }).click();
+    }
+    expect(errors).toEqual([]);
+  });
+}
