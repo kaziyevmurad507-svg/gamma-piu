@@ -6,7 +6,7 @@ import { getStockStatus } from "@/lib/stock";
 import type { Product } from "@/lib/catalog";
 import { AddToCartButton, CompareButton, FavoriteButton } from "./ProductActions";
 
-// wide = one card per row on mobile (favorites): taller photo, price and button on one line
+// wide = one card per row on mobile (favorites), with a taller photo.
 export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean }) {
   const t = useTranslations();
   // Show color only if we have a translation for it
@@ -14,7 +14,7 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
   const status = getStockStatus(p.stock);
   const href = `/product/${p.slug}?variant=${p.variantId}`;
   return (
-    <article className="group flex h-full min-w-0 animate-rise flex-col gap-3">
+    <article className="@container group flex h-full min-w-0 animate-rise flex-col gap-3">
       <div className="relative">
         <Link href={href} tabIndex={-1} aria-hidden className={`relative block overflow-hidden rounded-card border border-line bg-white ${wide ? "h-[268px]" : "aspect-square lg:aspect-auto lg:h-[268px]"}`}>
           {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain p-2 transition-transform duration-300 group-hover:scale-105" />}
@@ -26,9 +26,9 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
         <p className="line-clamp-2 min-h-8 text-xs leading-4 text-muted" title={`${p.categoryName}${color}`}>{p.categoryName}{color}</p>
         <Link href={href} title={p.name} className="line-clamp-3 min-h-[60px] w-full wrap-anywhere text-[15px] leading-5 font-semibold transition-colors hover:text-action lg:line-clamp-2 lg:min-h-14 lg:text-lg lg:leading-7">{p.name}</Link>
         <StockBadge status={status} label={t(`Stock.${status}`)} />
-        <div className={`mt-auto flex w-full gap-2.5 pt-1.5 ${wide ? "items-center" : "flex-col lg:flex-row lg:items-center"}`}>
-          <p className={`font-semibold lg:flex-1 lg:text-[22px] ${wide ? "flex-1 text-[22px]" : "text-[19px]"}`}>{p.price} AZN</p>
-          <AddToCartButton id={p.variantId} stock={p.stock} className={wide ? "w-auto" : undefined} />
+        <div className="mt-auto flex w-full flex-col items-start gap-2 pt-1.5 @min-[240px]:flex-row @min-[240px]:items-center @min-[240px]:gap-3">
+          <p className="shrink-0 whitespace-nowrap text-[19px] leading-tight font-semibold @min-[240px]:text-[22px]">{p.price} AZN</p>
+          <AddToCartButton id={p.variantId} stock={p.stock} className="w-full min-w-0 @min-[240px]:w-auto [&>span]:min-w-0 [&>span]:justify-center [&>span]:leading-tight [&>span>svg]:shrink-0" />
         </div>
       </div>
     </article>
