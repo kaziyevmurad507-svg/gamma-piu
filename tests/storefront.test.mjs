@@ -42,6 +42,29 @@ test('card selects one available variant; price, availability and color filters 
   assert.equal(selectCatalogVariant([{ ...variants[0], is_active: false }]), undefined);
 });
 
+test('starred photo selects the card variant while explicit filters and active status take precedence', () => {
+  const variants = [variant(1, 90, 3, 'Silver'), variant(2, 120, 0, 'Black')];
+  const images = [{ variant_id: id(2), is_main: true, sort_order: 0, path: 'black.jpg' }];
+  const selected = selectCatalogVariant(variants, [], [], images);
+  assert.equal(selected.id, id(2));
+  assert.equal(selected.price, 120);
+  assert.equal(selected.stock, 0);
+  assert.equal(selectVariantImage(images, selected.id).path, 'black.jpg');
+  assert.equal(selectCatalogVariant(variants, ['silver'], [], images).id, id(1));
+  assert.equal(selectCatalogVariant(variants, [], ['stock'], images).id, id(1));
+  assert.equal(selectCatalogVariant(variants, [], ['order'], images).id, id(2));
+  assert.equal(selectCatalogVariant([variants[0], { ...variants[1], is_active: false }], [], [], images).id, id(1));
+  assert.equal(selectCatalogVariant(variants, [], [], [{ ...images[0], variant_id: null }]).id, id(1));
+});
+
+test('a common starred photo is used by cards', () => {
+  const images = [
+    { variant_id: id(1), is_main: false, sort_order: 0, path: 'silver.jpg' },
+    { variant_id: null, is_main: true, sort_order: 1, path: 'common.jpg' },
+  ];
+  assert.equal(selectVariantImage(images, id(1)).path, 'common.jpg');
+});
+
 test('a main photo from another variant cannot misrepresent the purchased variant', () => {
   const images = [
     { variant_id: id(1), is_main: true, sort_order: 0, path: 'silver.jpg' },

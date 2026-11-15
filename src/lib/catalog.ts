@@ -12,7 +12,7 @@ export type Filters = { q?: string; cats?: string[]; min?: number; max?: number;
 export const CATALOG_PAGE_SIZE = 24;
 const BATCH_SIZE = 200;
 const BUCKET = "product-images";
-type IndexRow = { id: string; is_featured: boolean; categories: { slug: string }; product_variants: CatalogVariant[] };
+type IndexRow = { id: string; is_featured: boolean; categories: { slug: string }; product_variants: CatalogVariant[]; product_images: { variant_id: string | null; is_main: boolean; sort_order: number }[] };
 type Selected = { id: string; featured: boolean; category: string; variant: CatalogVariant };
 type Translations = { name_az: string; name_ru: string | null; name_en: string | null };
 type CardRow = Translations & {
@@ -21,7 +21,7 @@ type CardRow = Translations & {
   product_images: { path: string; sort_order: number; is_main: boolean; variant_id: string | null }[];
 };
 
-// Only the small pricing index is scanned. Descriptions, specs and image lists are
+// Only pricing and photo selection metadata are scanned. Descriptions, specs and image paths are
 // fetched for the visible page, and explicit ranges avoid the API's row limit.
 async function getIndex(f: Filters = {}, flag?: "is_featured" | "is_new"): Promise<Selected[]> {
   if (f.ids && !f.ids.length) return [];
@@ -29,7 +29,7 @@ async function getIndex(f: Filters = {}, flag?: "is_featured" | "is_new"): Promi
   const rows: IndexRow[] = [];
   for (let offset = 0; ; offset += BATCH_SIZE) {
     let query = db.from("products")
-      .select("id, is_featured, categories!inner(slug,is_hidden), product_variants(id,name_en,price,stock,is_active)")
+      .select("id, is_featured, categories!inner(slug,is_hidden), product_variants(id,name_en,price,stock,is_active), product_images(variant_id,is_main,sort_order)")
       .eq("is_published", true).eq("categories.is_hidden", false)
       .order("created_at", { ascending: false }).order("id")
       .range(offset, offset + BATCH_SIZE - 1);
@@ -44,7 +44,7 @@ async function getIndex(f: Filters = {}, flag?: "is_featured" | "is_new"): Promi
     if (!data || data.length < BATCH_SIZE) break;
   }
   const list = rows.flatMap((row): Selected[] => {
-    const variant = selectCatalogVariant(row.product_variants, f.colors, f.avail);
+    const variant = selectCatalogVariant(row.product_variants, f.colors, f.avail, row.product_images);
     if (!variant || (f.min != null && Number(variant.price) < f.min) || (f.max != null && Number(variant.price) > f.max)) return [];
     return [{ id: row.id, featured: row.is_featured, category: row.categories.slug, variant }];
   });
