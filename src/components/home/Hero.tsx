@@ -36,7 +36,7 @@ export function Hero({ boosted, dryer }: { boosted: ProductDetail | null; dryer:
           <Link href={dryer ? `/product/${dryer.slug}` : "/catalog?cat=dryers"} className="group relative h-[228px] overflow-hidden rounded-bento bg-media p-6 tile-hover lg:h-[326px]">
             <p className="text-[11px] text-muted">{t("dryerEyebrow")}</p>
             <p className="mt-2 text-[26px] font-semibold transition-colors duration-300 group-hover:text-action">{dryer?.name ?? t("cat.dryers.title")}</p>
-            {dryer?.images[0] && <div className="absolute right-12 top-[68px] aspect-square w-[132px] transition-transform duration-500 ease-in-out group-hover:-rotate-6 group-hover:scale-110 lg:right-20 lg:top-[100px] lg:w-[180px]"><Image src={dryer.images[0].url} alt="" fill sizes="(min-width:1024px) 180px, 132px" className="object-contain" /></div>}
+            {dryer && <div className="absolute right-12 top-[68px] aspect-square w-[132px] transition-transform duration-500 ease-in-out group-hover:-rotate-6 group-hover:scale-110 lg:right-20 lg:top-[100px] lg:w-[180px]"><Image src="/images/dryer-5555.png" alt="" fill sizes="(min-width:1024px) 180px, 132px" className="object-contain" /></div>}
             <span className="absolute bottom-6 left-6 flex items-center gap-2 text-[13px] font-medium transition-colors duration-300 group-hover:text-action">{dryer ? price(dryer) : t("shopNow")}<ArrowUpRight size={17} className="transition-transform duration-200 ease-in-out group-hover:-translate-y-0.5 group-hover:translate-x-1" /></span>
           </Link>
           <div className="flex h-[186px] flex-col gap-3 rounded-bento bg-cream p-7 lg:h-[240px]">
