@@ -17,7 +17,9 @@ export function ProductCard({ p, wide = false }: { p: Product; wide?: boolean })
     <article className="@container group flex min-w-0 animate-rise flex-col gap-2.5 self-start">
       <div className="relative">
         <Link href={href} tabIndex={-1} aria-hidden className={`relative block overflow-hidden rounded-card border border-line bg-white ${wide ? "h-[268px]" : "aspect-square lg:aspect-auto lg:h-[268px]"}`}>
-          {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain p-2 transition-transform duration-300 group-hover:scale-105" />}
+          <span className="absolute inset-y-3 left-3 right-16">
+            {p.image && <Image src={p.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-contain" />}
+          </span>
         </Link>
         <FavoriteButton id={p.id} />
         <CompareButton id={p.id} group={p.group} />

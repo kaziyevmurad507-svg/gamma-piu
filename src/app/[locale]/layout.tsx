@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Toast } from "@/components/layout/Toast";
 import { ThemeScript } from "@/components/layout/ThemeScript";
+import { FocusMode } from "@/components/layout/FocusMode";
 import { CategoriesProvider } from "@/components/layout/CategoriesProvider";
 import { SpecTypesProvider } from "@/components/layout/SpecTypesProvider";
 import { getCategories } from "@/lib/category-data";
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
     <html lang={locale} className={inter.variable} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <ThemeScript locale={locale} />
+        <FocusMode />
         <NextIntlClientProvider>
           <CategoriesProvider list={categories}>
             <SpecTypesProvider list={specTypes}>

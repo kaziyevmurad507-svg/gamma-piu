@@ -42,7 +42,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   return (
     <div className="flex flex-col gap-4">
       <div className="relative h-[360px] overflow-hidden rounded-card border border-line bg-white lg:h-[580px]">
-        {images[current] && <Image src={images[current]} alt={name} fill preload sizes="(min-width:1024px) 624px, 100vw" className="object-contain" />}
+        {images[current] && <Image src={images[current]} alt={name} fill preload sizes="(min-width:1024px) 624px, 100vw" className="object-contain p-5 lg:p-6" />}
         {many && ([-1, 1] as const).map((d) => (
           <button key={d} type="button" aria-label={t(d < 0 ? "prevImage" : "nextImage")} onClick={() => go(d)}
             className={cn("photo-btn absolute top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-action-soft text-action", d < 0 ? "left-5" : "right-5")}>

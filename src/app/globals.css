@@ -79,6 +79,11 @@ body {
   outline-offset: 3px;
 }
 
+/* Browsers may retain :focus-visible after a click or programmatic focus restore. */
+html[data-focus-mode="pointer"] :focus {
+  outline: none;
+}
+
 /* Text navigation uses an underline, never a rectangular focus frame. */
 header nav a:focus, .locale-switcher a:focus {
   outline: none;
