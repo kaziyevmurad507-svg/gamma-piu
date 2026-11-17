@@ -53,7 +53,7 @@ test('mobile reset remains accessible in the filter dialog and after closing it'
   await expect(page).toHaveURL(/\/en\/catalog$/);
 });
 
-test('cards contain very long names and align purchase buttons on narrow screens', async ({ page }, testInfo) => {
+test('cards contain long names and keep price and purchase action compact on narrow screens', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('/en/catalog', { waitUntil: 'networkidle' });
   await page.screenshot({ path: testInfo.outputPath('mobile-catalog.png'), fullPage: true, animations: 'disabled' });
@@ -63,10 +63,29 @@ test('cards contain very long names and align purchase buttons on narrow screens
   const geometry = await cards.evaluateAll(elements => elements.slice(0, 2).map(e => {
     const title = e.querySelector('a[title]')!;
     const button = [...e.querySelectorAll('button')].at(-1)!;
-    return { titleHeight: title.getBoundingClientRect().height, bottom: button.getBoundingClientRect().bottom, right: e.getBoundingClientRect().right };
+    const cardRect = e.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    const priceRow = button.previousElementSibling!.getBoundingClientRect();
+    return {
+      titleHeight: title.getBoundingClientRect().height,
+      priceToButton: buttonRect.top - priceRow.bottom,
+      trailingSpace: cardRect.bottom - buttonRect.bottom,
+      left: buttonRect.left - cardRect.left,
+      right: cardRect.right - buttonRect.right,
+    };
   }));
   expect(geometry[0].titleHeight).toBeLessThanOrEqual(61);
-  expect(Math.abs(geometry[0].bottom - geometry[1].bottom)).toBeLessThanOrEqual(1);
+  // Cards intentionally follow their content height. Check each purchase area,
+  // rather than requiring empty space below a shorter neighboring title.
+  expect(geometry).toHaveLength(2);
+  for (const card of geometry) {
+    expect(card.priceToButton).toBeGreaterThanOrEqual(0);
+    expect(card.priceToButton).toBeLessThanOrEqual(9);
+    expect(Math.abs(card.trailingSpace)).toBeLessThanOrEqual(1);
+    expect(card.left).toBeGreaterThanOrEqual(0);
+    expect(card.right).toBeGreaterThanOrEqual(0);
+    expect(card.left + card.right).toBeLessThanOrEqual(9);
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
 });
 
