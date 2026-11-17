@@ -13,7 +13,7 @@
     "close": "Bağla"
   },
   "Footer": {
-    "tagline": "Peşəkar alətlər. Dəqiq nəticə. Bakıdakı barber və saç ustaları üçün seçilmiş kolleksiya.",
+    "tagline": "Gamma+ (Gamma Plus, Gamma Piu) — Bakıda bərbər və salon alətlərinin onlayn mağazası. WhatsApp ilə sifariş.",
     "shop": "Mağaza",
     "support": "Dəstək",
     "delivery": "Çatdırılma",
@@ -84,9 +84,9 @@
     "preorder": "Sifarişlə"
   },
   "Home": {
-    "eyebrow": "GAMMA PIU · PEŞƏKAR SEÇİM",
+    "eyebrow": "GAMMA+ · BAKI, AZƏRBAYCAN",
     "heroTitle": "Ustalığınızın yeni gücü.",
-    "heroText": "Hər kəsimdə dəqiqlik. Hər detalda peşəkarlıq. Gamma Piu alətlərini Bakıda kəşf edin.",
+    "heroText": "Gamma+ ilə hər kəsimdə dəqiqlik. Bakıda bərbər və saç ustaları üçün saçqırxanlar, trimmerlər və fenlər.",
     "shopNow": "İndi alış-veriş et",
     "heroNote": "Boosted · Saçqırxan · 350 AZN",
     "dryerEyebrow": "YÜNGÜL FORMA. BÖYÜK İMKAN.",
@@ -272,7 +272,7 @@
   },
   "About": {
     "title": "Haqqımızda",
-    "intro": "Gamma Piu — Bakıda peşəkar bərbər ləvazimatlarının onlayn mağazasıdır. Sifarişlər WhatsApp vasitəsilə qəbul olunur.",
+    "intro": "Gamma+ (Gamma Plus, Gamma Piu) — Bakıda peşəkar bərbər və salon alətlərinin onlayn mağazasıdır. gammapiu.az saytında saçqırxanlar, trimmerlər, fenlər və aksesuarları seçin, sifarişi WhatsApp vasitəsilə dəqiqləşdirin.",
     "storeEyebrow": "MAĞAZA HAQQINDA",
     "storeTitle": "Üç addımda sifariş",
     "brandEyebrow": "BREND HAQQINDA",
@@ -298,11 +298,12 @@
     "v3c": "Hər modeli fərqləndirən ifadəli xətlər",
     "eventsTitle": "Ustaların yanında",
     "eventsText": "Gamma+ İtaliyada və bütün Avropada şoularda, master-klaslarda, müsabiqələrdə və sərgilərdə iştirak edir: Boloniyada Cosmoprof, Düsseldorfda Top Hair, Dubayda Beauty World. Brendin ambassadorları ən yaxşı peşəkarlardır, ustaların rəyləri isə alətləri təkmilləşdirməyə kömək edir.",
-    "cta": "WhatsApp-da yazın"
+    "cta": "WhatsApp-da yazın",
+    "metaTitle": "Gamma+ haqqında — Bakıda onlayn mağaza | Gamma Piu"
   },
   "Meta": {
-    "siteTitle": "Gamma Piu — Bakıda peşəkar bərbər ləvazimatları",
-    "siteDescription": "Bakıda peşəkar bərbər alətləri: maşınlar, trimmerlər, fenlər, qayçılar. Sifariş WhatsApp ilə, Bakı daxilində pulsuz çatdırılma."
+    "siteTitle": "Gamma+ Bakı — peşəkar bərbər və salon alətləri",
+    "siteDescription": "Gamma+ (Gamma Plus, Gamma Piu) Bakıda: saçqırxanlar, trimmerlər, fenlər və salon aksesuarları. WhatsApp ilə sifariş, Bakı daxilində pulsuz çatdırılma."
   },
   "Privacy": {
     "title": "Məxfilik siyasəti",

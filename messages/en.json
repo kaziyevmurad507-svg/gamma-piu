@@ -13,7 +13,7 @@
     "close": "Close"
   },
   "Footer": {
-    "tagline": "Professional tools. Precise results. A curated collection for barbers and hair stylists in Baku.",
+    "tagline": "Gamma+ (Gamma Plus, Gamma Piu) — an online store for barber and salon tools in Baku, Azerbaijan. Order via WhatsApp.",
     "shop": "Shop",
     "support": "Support",
     "delivery": "Delivery",
@@ -84,9 +84,9 @@
     "preorder": "Pre-order"
   },
   "Home": {
-    "eyebrow": "GAMMA PIU · PROFESSIONAL CHOICE",
+    "eyebrow": "GAMMA+ · BAKU, AZERBAIJAN",
     "heroTitle": "A new edge for your craft.",
-    "heroText": "Precision in every cut. Professionalism in every detail. Discover Gamma Piu tools in Baku.",
+    "heroText": "Precision in every cut with Gamma+. Discover clippers, trimmers and hair dryers for barbers and hairdressers in Baku.",
     "shopNow": "Shop now",
     "heroNote": "Boosted · Clipper · 350 AZN",
     "dryerEyebrow": "LIGHT BODY. BIG POWER.",
@@ -272,7 +272,7 @@
   },
   "About": {
     "title": "About us",
-    "intro": "Gamma Piu is an online store of professional hairdressing supplies in Baku. Orders are taken through WhatsApp.",
+    "intro": "Gamma+ (Gamma Plus, also known as Gamma Piu) is an online store for professional barber and salon tools in Baku, Azerbaijan. Browse clippers, trimmers, hair dryers and accessories at gammapiu.az, then confirm your order via WhatsApp.",
     "storeEyebrow": "ABOUT THE STORE",
     "storeTitle": "Ordering in three steps",
     "brandEyebrow": "ABOUT THE BRAND",
@@ -298,11 +298,12 @@
     "v3c": "Distinctive lines that set each model apart",
     "eventsTitle": "Side by side with stylists",
     "eventsText": "Gamma+ takes part in shows, workshops, competitions and trade fairs in Italy and across Europe: Cosmoprof in Bologna, Top Hair in Düsseldorf, Beauty World in Dubai. The brand's ambassadors are top professionals, and stylists' feedback helps improve the tools.",
-    "cta": "Write on WhatsApp"
+    "cta": "Write on WhatsApp",
+    "metaTitle": "About Gamma+ Baku — Online Store | Gamma Piu"
   },
   "Meta": {
-    "siteTitle": "Gamma Piu — professional hairdressing supplies in Baku",
-    "siteDescription": "Professional tools for barbers and hairdressers in Baku: clippers, trimmers, hair dryers, scissors. Order via WhatsApp, free delivery in Baku."
+    "siteTitle": "Gamma+ Baku — Professional Barber & Hairdressing Tools",
+    "siteDescription": "Gamma+ (Gamma Plus, Gamma Piu) in Baku, Azerbaijan: clippers, trimmers, hair dryers and salon accessories. Order via WhatsApp. Free delivery in Baku."
   },
   "Privacy": {
     "title": "Privacy policy",

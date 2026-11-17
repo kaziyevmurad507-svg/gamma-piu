@@ -12,12 +12,17 @@ import { getAmbassadors } from "@/lib/ambassadors";
 import { getFeatured, getNew } from "@/lib/catalog";
 import { getProduct } from "@/lib/product";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SITE_URL, pageAlternates } from "@/lib/seo";
+import { SITE_URL, homeStructuredData, openGraph, pageAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
-  return { alternates: pageAlternates(locale) };
+  const t = await getTranslations({ locale, namespace: "Meta" });
+  return {
+    alternates: pageAlternates(locale),
+    openGraph: openGraph(locale, { title: t("siteTitle"), description: t("siteDescription") }),
+    twitter: { card: "summary_large_image", title: t("siteTitle"), description: t("siteDescription"), images: [`${SITE_URL}/images/share-card.png`] },
+  };
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -26,6 +31,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations("Home");
+  const meta = await getTranslations("Meta");
   // Load product lists and ambassadors in parallel
   const [featured, fresh, people, boosted, dryer] = await Promise.all([
     getFeatured(locale), getNew(locale), getAmbassadors(locale),
@@ -33,7 +39,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   ]);
   return (
     <>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "Store", name: "Gamma Piu", url: `${SITE_URL}/${locale}`, areaServed: "Baku", currenciesAccepted: "AZN" }} />
+      <JsonLd data={homeStructuredData(locale, meta("siteDescription"))} />
       <Hero boosted={boosted} dryer={dryer} />
       <Categories />
       <ProductSection eyebrow={t("featuredEyebrow")} title={t("featuredTitle")} products={featured} />
