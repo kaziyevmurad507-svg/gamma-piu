@@ -73,5 +73,15 @@ export function pageAlternates(locale: string, path = "") {
   };
 }
 
+export function breadcrumbData(locale: string, items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem", position: index + 1, name: item.name, item: `${SITE_URL}/${locale}${item.path}`,
+    })),
+  };
+}
+
 // For pages that should not be in Google (cart, favorites, compare are personal)
 export const NO_INDEX = { index: false, follow: true } as const;

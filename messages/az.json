@@ -81,7 +81,8 @@
     "addedToast": "Məhsul səbətə əlavə edildi",
     "goToCart": "Səbətə keç",
     "cartLimit": "Maksimum say artıq səbətdədir",
-    "preorder": "Sifarişlə"
+    "preorder": "Sifarişlə",
+    "metaTitle": "{name} — {category}, Bakı | Gamma+"
   },
   "Home": {
     "eyebrow": "GAMMA+ · BAKI, AZƏRBAYCAN",
@@ -196,7 +197,8 @@
     "showResults": "{count} məhsulu göstər",
     "previous": "Əvvəlki",
     "next": "Növbəti",
-    "page": "Səhifə {page} / {pages}"
+    "page": "Səhifə {page} / {pages}",
+    "metaTitle": "Gamma+ kataloqu — Bakıda bərbər və salon alətləri"
   },
   "Stock": {
     "in_stock": "Stokda",
@@ -336,5 +338,26 @@
     "s4Title": "Məhsul məlumatları və müraciətlər",
     "s4Text": "Xüsusiyyətlər, komplektasiya, zəmanət, qaytarma və ya əvvəlki alış barədə WhatsApp-da satıcıya müraciət edin. Alışdan əvvəl tətbiq olunan şərtləri dəqiqləşdirin. kaziyevmurad507@gmail.com ünvanına da yaza bilərsiniz. Bu təsvirlər tətbiq olunan qanunvericiliklə nəzərdə tutulmuş hüquqları məhdudlaşdırmır.",
     "cta": "WhatsApp-da yaz"
+  },
+  "Category": {
+    "title": "{category} Gamma+ — Bakı",
+    "intro": "Gamma+ kataloqunda {category}: modelləri, qiymətləri və mövcud variantları müqayisə edin. Bakıda sifarişi WhatsApp vasitəsilə dəqiqləşdirin.",
+    "explore": "Gamma+ kateqoriyaları",
+    "guideTitle": "Seçim zamanı nələrə baxmalı?",
+    "guideDefault": "Aləti gördüyünüz işə uyğun seçin. Modellərin xüsusiyyətlərini, ölçüsünü və dəstə daxil olan aksesuarları məhsul səhifəsində müqayisə edin.",
+    "ordering": "Məhsul səhifəsində qiymət, mövcud rənglər və stok vəziyyəti göstərilir. Komplektasiyanı, uyğunluğu və çatdırılmanı sifarişdən əvvəl WhatsApp-da dəqiqləşdirin. Bakı daxilində çatdırılma pulsuzdur.",
+    "filters": "Filtrlərlə seçim edin",
+    "help": "WhatsApp-da məsləhət alın",
+    "empty": "Bu kateqoriyada hələ məhsul yoxdur. Mövcud seçimləri WhatsApp-da dəqiqləşdirə bilərsiniz.",
+    "guides": {
+      "clippers": "Saçqırxan seçərkən istifadə məqsədini, bıçağın növünü, kəsim uzunluğu tənzimləməsini və dəstdəki daraq başlıqlarını yoxlayın. Kabelsiz model üçün iş və doldurulma müddətini məhsulun xüsusiyyətlərindən dəqiqləşdirin.",
+      "trimmers": "Trimmer əsasən kontur və detallı iş üçün seçilir. Bıçağın formasını, cihazın çəkisini və tutuş rahatlığını müqayisə edin. Saçqırxanla trimmerin işini ayırmaq uyğun aləti seçməyə kömək edir.",
+      "dryers": "Fen seçərkən güclə yanaşı çəkiyə, hava axını və temperatur rejimlərinə, başlıqlara baxın. Uzunmüddətli salon işi üçün rahat tutuş da vacibdir. Hər modelin xüsusiyyətlərini ayrıca yoxlayın.",
+      "irons": "Saç düzləşdiricisi və ya buran alət seçərkən lövhə və ya işçi səthin ölçüsünü, temperatur tənzimləməsini və istifadə məqsədini müqayisə edin. Temperaturu saçın vəziyyətinə və cihazın təlimatına uyğun seçin.",
+      "scissors": "Qayçı seçimi iş texnikasından asılıdır: düz kəsim və filirovka üçün fərqli modellər istifadə olunur. Uzunluğu, halqaların rahatlığını və sağ və ya sol əl üçün uyğunluğunu yoxlayın.",
+      "shavers": "Şeyver qısa tüklərin son işlənməsi üçün nəzərdə tutulmuş alətdir. Alarkən tor və bıçaqların dəyişdirilməsi, təmizlənmə qaydası və iş müddəti barədə məlumatı yoxlayın. İstifadə zamanı konkret modelin təlimatına əməl edin.",
+      "blades": "Bıçaq və daraq başlığını cihazın dəqiq modelinə görə seçin. Xarici görünüşün oxşarlığı uyğunluğa zəmanət vermir. Sifarişdən əvvəl alətin model adını WhatsApp-da göndərərək uyğunluğu dəqiqləşdirin.",
+      "accessories": "Aksesuarı istifadə etdiyiniz alətə və iş məqsədinə uyğun seçin. Ölçü, birləşmə növü və uyğun modellər məhsul təsvirində göstərilibsə, onları yoxlayın. Şübhə olduqda sifarişdən əvvəl məsləhət alın."
+    }
   }
 }

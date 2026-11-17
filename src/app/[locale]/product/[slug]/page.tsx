@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/Section";
 import { getProduct, getRelated } from "@/lib/product";
 import { getSpecTypes } from "@/lib/spec-data";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SITE_URL, openGraph, pageAlternates } from "@/lib/seo";
+import { SITE_URL, breadcrumbData, openGraph, pageAlternates } from "@/lib/seo";
 import { productDescription } from "@/lib/product-description";
 
 type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<{ variant?: string }> };
@@ -19,7 +19,10 @@ export async function generateMetadata({ params }: Props) {
   if (!p) return {};
   const description = productDescription(p).slice(0, 160);
   const images = p.images[0] ? [p.images[0].url] : undefined; // main photo first
-  return { title: `${p.name} · Gamma Piu`, description, alternates: pageAlternates(locale, `/product/${slug}`), openGraph: openGraph(locale, { title: p.name, description, images }) };
+  const t = await getTranslations({ locale, namespace: "Product" });
+  const title = t("metaTitle", { name: p.name, category: p.categoryName || p.brand || "Gamma+" });
+  return { title, description, alternates: pageAlternates(locale, `/product/${slug}`), openGraph: openGraph(locale, { title, description, images }),
+    twitter: { card: "summary_large_image", title, description, images: images ?? [`${SITE_URL}/images/share-card.png`] } };
 }
 
 export default async function ProductPage({ params, searchParams }: Props) {
@@ -48,6 +51,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
       image: p.images.filter((image) => image.variantId === variant.id || !image.variantId).slice(0, 5).map((image) => image.url),
       offers: {
         "@type": "Offer", priceCurrency: "AZN", price: variant.price,
+        seller: { "@id": `${SITE_URL}/#store` },
         availability: variant.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
         itemCondition: "https://schema.org/NewCondition", url: `${productUrl}?variant=${variant.id}`,
       },
@@ -57,9 +61,15 @@ export default async function ProductPage({ params, searchParams }: Props) {
   return (
     <Container className="flex flex-col gap-10 pb-16 pt-6">
       <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbData(locale, [
+        { name: t("Nav.home"), path: "" }, { name: t("Nav.catalog"), path: "/catalog" },
+        ...(category ? [{ name: category, path: `/catalog/${p.category}` }] : []),
+        { name: p.name, path: `/product/${p.slug}` },
+      ])} />
       <nav aria-label={t("Product.breadcrumb")} className="text-xs text-muted">
         <Link href="/" className="link-text">{t("Nav.home")}</Link>
-        {category && <> / <Link href={`/catalog?cat=${p.category}`} className="link-text">{category}</Link></>} / {p.name}
+        {" / "}<Link href="/catalog" className="link-text">{t("Nav.catalog")}</Link>
+        {category && <> / <Link href={`/catalog/${p.category}`} className="link-text">{category}</Link></>} / {p.name}
       </nav>
 
       <ProductMain key={chosen.id} initialVariantId={chosen.id} productId={p.id} group={p.group} eyebrow={eyebrow} name={p.name} description={description} variants={p.variants} images={p.images} />

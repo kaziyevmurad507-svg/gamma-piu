@@ -81,7 +81,8 @@
     "addedToast": "Added to your cart",
     "goToCart": "Go to cart",
     "cartLimit": "Maximum quantity already in cart",
-    "preorder": "Pre-order"
+    "preorder": "Pre-order",
+    "metaTitle": "{name} — {category}, Baku | Gamma+"
   },
   "Home": {
     "eyebrow": "GAMMA+ · BAKU, AZERBAIJAN",
@@ -196,7 +197,8 @@
     "showResults": "Show {count}",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {page} of {pages}"
+    "page": "Page {page} of {pages}",
+    "metaTitle": "Gamma+ Catalog Baku — Barber & Salon Tools"
   },
   "Stock": {
     "in_stock": "In stock",
@@ -336,5 +338,26 @@
     "s4Title": "Product information and enquiries",
     "s4Text": "Ask the seller on WhatsApp about specifications, included accessories, warranty, returns or an existing purchase. Confirm the applicable conditions before purchasing. You can also write to kaziyevmurad507@gmail.com. These descriptions do not limit rights provided by applicable law.",
     "cta": "Contact on WhatsApp"
+  },
+  "Category": {
+    "title": "Gamma+ {category} in Baku",
+    "intro": "Browse {category} in the Gamma+ catalog. Compare models, prices and available variants, then confirm your Baku order via WhatsApp.",
+    "explore": "Gamma+ categories",
+    "guideTitle": "What to compare before buying",
+    "guideDefault": "Choose a tool for the work you do. Compare specifications, dimensions and included accessories on the individual product pages.",
+    "ordering": "Product pages show prices, available colors and stock status. Confirm the included accessories, compatibility and delivery via WhatsApp before ordering. Delivery within Baku is free.",
+    "filters": "Browse with filters",
+    "help": "Get advice on WhatsApp",
+    "empty": "There are no products in this category yet. Ask about available options on WhatsApp.",
+    "guides": {
+      "clippers": "Compare the blade type, cutting-length adjustment and included guide combs when choosing a clipper. For a cordless model, check the stated runtime and charging time. Consider the kinds of haircuts you perform most often.",
+      "trimmers": "Trimmers are chosen for outlining and detail work. Compare blade shape, weight and grip. Separating clipper and trimmer tasks can help you choose a tool that fits your way of working.",
+      "dryers": "Compare weight, temperature and airflow settings, and included nozzles as well as power. A comfortable grip matters for extended salon use. Check the specifications of each model individually.",
+      "irons": "When choosing a straightener or curling tool, compare plate or barrel dimensions, temperature controls and the intended styling task. Choose the temperature according to the condition of the hair and the instructions for that model.",
+      "scissors": "Choose scissors for your cutting technique: straight cutting and thinning use different designs. Check the length, finger-ring comfort and whether the model is intended for your right or left hand.",
+      "shavers": "Shavers are used for finishing short hair. Before buying, check replacement foil and cutter availability, cleaning instructions and runtime. Follow the instructions for the specific model.",
+      "blades": "Match replacement blades and guide combs to the exact model of your clipper or trimmer. A similar appearance does not establish compatibility. Send your tool model name via WhatsApp to confirm the right part before ordering.",
+      "accessories": "Choose accessories for your tool and intended task. Check dimensions, attachment type and the list of compatible models when provided in the product description. Confirm compatibility before ordering if you are unsure."
+    }
   }
 }
